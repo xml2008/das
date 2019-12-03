@@ -1,5 +1,6 @@
 package com.ppdai.das.client;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.base.Preconditions;
+import com.ppdai.das.client.sqlbuilder.ColumnOrder;
 import com.ppdai.das.core.DasDiagnose;
 import com.ppdai.das.core.DasVersionInfo;
 import com.ppdai.das.core.HintEnum;
@@ -33,6 +35,8 @@ public class Hints {
     private DasVersionInfo versionInfo;
 
     private static final Object NULL = new Object();
+
+    private List<ColumnOrder> sorter = new ArrayList<>();
 
     /**
      * Creates a {@code Hints} instance.
@@ -660,7 +664,23 @@ public class Hints {
         return getString(HintEnum.tableShard);
     }
 
-    //The following are methods to be tested and opened
+    /**
+     * Sort results in-memory by given ColumnOrders.
+     *
+     * @param orders
+     * @return
+     */
+    public Hints setSorter(ColumnOrder... orders) {
+        for(Object order : orders) {
+            this.sorter.add((ColumnOrder) order);
+        }
+        return this;
+    }
+
+    public List<ColumnOrder> getSorter() {
+        return sorter;
+    }
+//The following are methods to be tested and opened
 
 //    /**
 //     * Set the insert field can be null value.
