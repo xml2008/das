@@ -2,7 +2,9 @@ package com.ppdai.das.console.cloud.dao;
 
 import com.ppdai.das.console.cloud.dto.view.DataBaseView;
 import com.ppdai.das.console.dao.base.BaseDao;
+import com.ppdai.das.console.dto.entry.das.DataBaseInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
@@ -23,6 +25,11 @@ public class DataBaseCloudDao extends BaseDao {
                 "where a4.app_id = '" + appid +
                 "') t2 on t1.id= t2.db_Id";
         return this.queryBySql(sql, DataBaseView.class);
+    }
+
+    public DataBaseInfo getDataBaseInfoByConditon(DataBaseInfo dataBaseInfo) throws SQLException {
+        List<DataBaseInfo> list = this.getDasClient().queryBySample(dataBaseInfo);
+        return CollectionUtils.isNotEmpty(list) ? list.get(0) : null;
     }
 
 }

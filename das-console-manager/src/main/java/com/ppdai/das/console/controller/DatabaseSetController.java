@@ -171,7 +171,7 @@ public class DatabaseSetController {
      */
     /*@RequestMapping(value = "/config")
     public ServiceResult getConfig(@RequestParam("appId") Long appId) throws Exception {
-        Project project = projectDao.getProjectByAppId(appId);
+        ProjectEntry project = projectDao.getProjectByAppId(appId);
         List<DatabaseSet> dbsets = databaseSetDao.getAllDatabaseSetByGroupId(project.getDal_group_id());
         if (CollectionUtils.isNotEmpty(dbsets)) {
             ConfigDataResponse das = apolloDatabaseSet.getDasResponse(project.getDal_group_id(), dbsets.get(0));

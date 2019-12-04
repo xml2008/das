@@ -29,7 +29,7 @@ public class ProjectView {
     private String namespace;
 
     @Column(name = "dal_group_id")
-    private Integer dal_group_id;
+    private Long dal_group_id;
 
     @Column(name = "dal_config_name")
     private String dal_config_name;
@@ -74,6 +74,9 @@ public class ProjectView {
     @Column(name = "user_ids")
     private String userIds;
 
+    @Column(name = "user_noes")
+    private String userNoes;
+
     @Column(name = "comment")
     private String comment;
 
@@ -104,4 +107,7 @@ public class ProjectView {
         return StringUtil.toList(userIds);
     }
 
+    public List<String> getUserNoes() {
+        return StringUtil.toList(userNoes);
+    }
 }

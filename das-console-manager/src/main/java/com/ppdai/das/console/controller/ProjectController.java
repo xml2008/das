@@ -187,7 +187,7 @@ public class ProjectController {
      */
  /*   @RequestMapping(value = "/config")
     public ServiceResult getConfig(@RequestParam("appId") long appId) throws Exception {
-        Project project = projectDao.getProjectByAppId(appId);
+        ProjectEntry project = projectDao.getProjectByAppId(appId);
         ConfigDataResponse configDataResponse = appDataProject.getDasResponse(project);
         return ServiceResult.success(configDataResponse);
     }*/

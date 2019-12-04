@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ProjectView {
+public class ProjectCloudView {
 
     @Column(name = "id")
     private Long id;

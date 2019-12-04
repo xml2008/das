@@ -2,14 +2,12 @@ package com.ppdai.das.console.common.utils;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.SetUtils;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +51,28 @@ public class StringUtil {
         return ListUtils.EMPTY_LIST;
     }
 
+    /**
+     * "a,b,c,d ---> [a,b,c,d]"
+     */
+    public static List<Long> toLongList(String values) {
+        if (StringUtils.isNotBlank(values)) {
+            List<String> list = toList(values, ",");
+            return toLongList(list);
+        }
+        return ListUtils.EMPTY_LIST;
+    }
+
+
+    public static List<Long> toLongList(List<String> values) {
+        List<Long> rs = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(values)) {
+            for (String str : values) {
+                rs.add(Long.valueOf(str));
+            }
+            return rs;
+        }
+        return ListUtils.EMPTY_LIST;
+    }
 
     public static List<String> toList(String values, String separator) {
         if (StringUtils.isNotBlank(values)) {

@@ -1,89 +1,70 @@
 package com.ppdai.das.console.cloud.service;
 
-import com.ppdai.das.console.api.DataBaseConfiguration;
-import com.ppdai.das.console.api.DefaultConfiguration;
-import com.ppdai.das.console.common.utils.DasEnv;
+import com.google.common.collect.Lists;
+import com.ppdai.das.console.cloud.dao.DataBaseCloudDao;
+import com.ppdai.das.console.cloud.dto.model.ServiceResult;
+import com.ppdai.das.console.common.validates.chain.ValidateResult;
 import com.ppdai.das.console.common.validates.chain.ValidatorChain;
-import com.ppdai.das.console.constant.Consts;
-import com.ppdai.das.console.constant.Message;
-import com.ppdai.das.console.dao.*;
+import com.ppdai.das.console.common.validates.group.db.AddDataBase;
+import com.ppdai.das.console.dao.DataBaseDao;
+import com.ppdai.das.console.dao.GroupDao;
+import com.ppdai.das.console.dao.LoginUserDao;
+import com.ppdai.das.console.dto.entry.das.DasGroup;
 import com.ppdai.das.console.dto.entry.das.DataBaseInfo;
 import com.ppdai.das.console.dto.entry.das.LoginUser;
-import com.ppdai.das.console.dto.model.Paging;
-import com.ppdai.das.console.dto.model.page.ListResult;
-import com.ppdai.das.console.dto.model.page.PagerUtil;
-import com.ppdai.das.console.dto.view.DataBaseView;
-import com.ppdai.das.console.service.PermissionService;
-import com.ppdai.das.console.service.SetupDataBaseService;
-import org.apache.commons.collections.CollectionUtils;
+import com.ppdai.das.console.service.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
-
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class DatabaseCloudService {
 
     @Autowired
-    private Consts consts;
-
-    @Autowired
-    private Message message;
-
-    @Autowired
-    private TableEntityDao tableEntityDao;
-
-    @Autowired
-    private UserGroupDao userGroupDao;
+    private GroupDao groupDao;
 
     @Autowired
     private DataBaseDao dataBaseDao;
 
     @Autowired
-    private DatabaseSetDao databaseSetDao;
+    private LoginUserDao loginUserDao;
 
     @Autowired
-    private DataBaseSetEntryDao dataBaseSetEntryDao;
+    private DatabaseService databaseService;
 
     @Autowired
-    private PermissionService permissionService;
-
-    @Autowired
-    private SetupDataBaseService setupDataBaseService;
-
-    @Autowired
-    private DeleteCheckDao deleteCheckDao;
-
-    @Autowired
-    private DataBaseConfiguration dataBaseConfiguration;
-
-    @Autowired
-    private DefaultConfiguration defaultConfiguration;
+    private DataBaseCloudDao dataBaseCloudDao;
 
     /**
-     * 5 - 数据库一览 物理数据增删改
-     * 删改权限：1）判断user是否在管理员组
+     * 添加物理库
      */
-    public ValidatorChain validatePermision(LoginUser user, Errors errors) {
-        return ValidatorChain.newInstance().controllerValidate(errors)
-                .addAssert(() -> permissionService.isManagerById(user.getId()), message.group_message_no_pemission);
-    }
+    public ServiceResult<String> addDataBase(@Validated(AddDataBase.class) @RequestBody DataBaseInfo dataBaseInfo, String workName, Errors errors) throws Exception {
+        LoginUser loginUser = loginUserDao.getUserByUserName(workName);
+        DasGroup dasGroup = groupDao.getDalGroupById(dataBaseInfo.getDal_group_id());
+        if (loginUser == null) {
+            return ServiceResult.fail("当前用户" + workName + "未注册das，请联系管理员添加");
+        }
+        DataBaseInfo condtion = DataBaseInfo.builder()
+                .db_type(dataBaseInfo.getDb_type())
+                .db_address(dataBaseInfo.getDb_address())
+                .db_port(dataBaseInfo.getDb_port())
+                .db_catalog(dataBaseInfo.getDb_catalog())
+                .db_user(dataBaseInfo.getDb_user())
+                .db_password(dataBaseInfo.getDb_password())
+                .dal_group_id(dataBaseInfo.getDal_group_id())
+                .build();
 
-    public ListResult<DataBaseView> findDbPageListByUserId(Paging<DataBaseInfo> paging, Long userId) throws SQLException {
-        Long count = dataBaseDao.getTotalCountByUserId(paging, userId);
-        return PagerUtil.find(count, paging.getPage(), paging.getPageSize(), () -> {
-            List<DataBaseView> list = dataBaseDao.findDbPageListByUserId(paging, userId);
-            for (DataBaseView dataBaseView : list) {
-                dataBaseView.setDb_password(DasEnv.encdecConfiguration.decrypt(dataBaseView.getDb_password()));
-            }
-            if (CollectionUtils.isEmpty(list)) {
-                return Collections.emptyList();
-            }
-            return list;
-        });
+        dataBaseInfo.setUpdateUserNo(loginUser.getUserNo());
+        ValidateResult validateRes = ValidatorChain.newInstance().controllerValidate(errors)
+                .addAssert(() -> dataBaseDao.getCountByName(dataBaseInfo.getDbname()) == 0, "物理库标识符" + dataBaseInfo.getDbname() + "已经存在!")
+                .addAssert(() -> dataBaseCloudDao.getDataBaseInfoByConditon(condtion) == null, dataBaseInfo.getDbname() + ", 在组" + dasGroup.getGroup_name() + "已经存在 !")
+                .addAssert(() -> databaseService.addDataBaseInfo(loginUser, dataBaseInfo)).validate();
+        if (!validateRes.isValid()) {
+            return ServiceResult.fail(validateRes.getSummarize());
+        }
+        return ServiceResult.toServiceResult(databaseService.addDataCenter(loginUser, Lists.newArrayList(dataBaseInfo)));
     }
 
 }

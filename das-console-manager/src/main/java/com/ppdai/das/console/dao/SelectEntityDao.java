@@ -53,7 +53,10 @@ public class SelectEntityDao extends BaseDao {
     }
 
     public Long getSelectEntityTotalCount(Paging<TaskSql> paging) throws SQLException {
-        return this.getCount("SELECT count(1) FROM task_sql");
+        String sql = "select count(1) from task_sql t1 " +
+                " join login_users t2 on t1.update_user_no = t2.user_no " +
+                " join databaseset t3 on t1.dbset_id = t3.id" + appenWhere(paging);
+        return this.getCount(sql);
     }
 
     public List<TaskSqlView> findSelectEntityPageList(Paging<TaskSql> paging) throws SQLException {

@@ -176,10 +176,10 @@ public class ProjectDao extends BaseDao {
         return this.queryBySql(sql, Project.class, Parameter.integerOf(StringUtils.EMPTY, appGroupId));
     }
 
-    private String getfindProjectSql() {
+    public String getfindProjectSql() {
         String selected = "SELECT t1.id, t1.name, t1.namespace, t1.app_id, t1.dal_group_id, t1.dal_config_name, t1.update_user_no, t1.insert_time, t1.update_time, t1.comment, " +
                 "t1.pre_release_time,t1.first_release_time, t1.app_scene,t1.token,group_concat(distinct t3.name) as dbset_namees, group_concat(distinct t3.id) as dbset_ids, " +
-                "group_concat(distinct t4.user_real_name) user_real_name, group_concat(distinct t5.user_id) user_ids, group_concat(distinct t6.user_real_name) project_users, " +
+                "group_concat(distinct t4.user_real_name) user_real_name, group_concat(distinct t5.user_id) user_ids, group_concat(distinct t6.user_no) user_noes, group_concat(distinct t6.user_real_name) project_users, " +
                 "group_concat(distinct t7.group_name) group_name";
         String sql = " FROM project t1 " +
                 "left join project_dbset_relation t2 on t2.project_id = t1.id " +
