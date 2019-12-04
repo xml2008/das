@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -226,6 +227,27 @@ public class DasClientDBTest extends DataPreparer {
                 pre = p;
             }
             assertEquals("test", pk.getName());
+        }
+    }
+
+    @Test
+    public void testSortMap() throws Exception{
+        for(int i = 0; i < DB_MODE;i++) {
+            SqlBuilder sqlBuilder = SqlBuilder.selectAllFrom(p).where(p.Name.eq("test")).intoMap();
+            sqlBuilder.hints()
+                    .setSorter(p.PeopleID.asc(), p.CountryID.desc())
+                    .diagnose();
+            List<Map> plist = dao.query(sqlBuilder);
+            assertNotNull(plist);
+            assertEquals(8, plist.size());
+            Map pre = null;
+            for(Map p : plist) {
+                if(pre != null) {
+                    //Assert order
+                    assertTrue(Integer.parseInt(p.get("PeopleID").toString())  >= Integer.parseInt(pre.get("PeopleID").toString()));
+                }
+                pre = p;
+            }
         }
     }
 
