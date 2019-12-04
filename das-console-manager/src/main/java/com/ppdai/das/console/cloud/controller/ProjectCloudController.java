@@ -31,7 +31,6 @@ public class ProjectCloudController {
         return ServiceResult.success(projectCloudService.getAppidListByWorkName(name));
     }
 
-
     /**
      * 1、新建project
      */

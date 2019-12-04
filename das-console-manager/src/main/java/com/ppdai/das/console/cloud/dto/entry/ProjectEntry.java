@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -32,6 +31,7 @@ public class ProjectEntry {
     @NotBlank(message = "{project.name.notNull}", groups = {AddProject.class, UpdateProject.class})
     private String app_name_en;
 
+    @NotBlank(message = "{project.comment.notNull}", groups = {AddProject.class, UpdateProject.class})
     private String comment;
 
     /**
@@ -49,12 +49,12 @@ public class ProjectEntry {
     /**
      * 应用场景
      **/
+    @NotBlank(message = "{project.app_scene.notNull}", groups = {AddProject.class, UpdateProject.class})
     private String app_scene;
 
     /**
      * 首次上线时间
      **/
-    @Column(name = "first_release_time")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date first_release_time;
 

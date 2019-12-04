@@ -9,7 +9,6 @@ import com.ppdai.das.console.cloud.dto.view.ProjectCloudView;
 import com.ppdai.das.console.common.utils.StringUtil;
 import com.ppdai.das.console.common.validates.chain.ValidateResult;
 import com.ppdai.das.console.common.validates.chain.ValidatorChain;
-import com.ppdai.das.console.common.validates.group.project.AddProject;
 import com.ppdai.das.console.dao.LoginUserDao;
 import com.ppdai.das.console.dao.ProjectDao;
 import com.ppdai.das.console.dto.entry.das.LoginUser;
@@ -22,8 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -58,14 +55,18 @@ public class ProjectCloudService {
         return list.stream().map(i -> i.getApp_id()).collect(Collectors.toList());
     }
 
-    public ServiceResult<String> addProject(@Validated(AddProject.class) @RequestBody ProjectEntry projectEntry, String workName, Errors errors) throws Exception {
+    public ServiceResult<String> addProject(ProjectEntry projectEntry, String workName, Errors errors) throws Exception {
+        ValidatorChain validatorChain = ValidatorChain.newInstance().controllerValidate(errors);
+        if (!validatorChain.validate().isValid()) {
+            return ServiceResult.fail(validatorChain.validate().getSummarize());
+        }
         Project project = toProject(projectEntry);
         LoginUser loginUser = loginUserDao.getUserByUserName(workName);
         if (loginUser == null) {
             return ServiceResult.fail("当前用户" + workName + "未注册das，请联系管理员添加");
         }
         project.setUpdate_user_no(loginUser.getUserNo());
-        ValidateResult validateRes = ValidatorChain.newInstance().controllerValidate(errors)
+        ValidateResult validateRes = validatorChain
                 .addAssert(() -> groupService.isNotExistInProjectAndGroup(project.getName()), project.getName() + " 已存在！且组名和项目名不能重复！")
                 .addAssert(() -> projectDao.getCountByAppId(project.getApp_id()) == 0, "APPID:" + project.getApp_id() + " 已存在！")
                 .addAssert(() -> projectService.insertProject(project)).validate();

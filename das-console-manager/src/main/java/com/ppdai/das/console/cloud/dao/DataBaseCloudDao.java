@@ -22,8 +22,7 @@ public class DataBaseCloudDao extends BaseDao {
                 "inner join databaseset a2 on a1.dbset_id = a2.id\n" +
                 "inner join project_dbset_relation a3 on a3.dbset_id = a2.id\n" +
                 "inner join project a4 on a4.id = project_id\n" +
-                "where a4.app_id = '" + appid +
-                "') t2 on t1.id= t2.db_Id";
+                "where a4.app_id = '" + appid + "') t2 on t1.id= t2.db_Id";
         return this.queryBySql(sql, DataBaseView.class);
     }
 
