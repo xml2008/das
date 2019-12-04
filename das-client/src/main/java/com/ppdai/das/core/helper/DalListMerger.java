@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import com.google.common.collect.ComparisonChain;
 import com.ppdai.das.client.sqlbuilder.ColumnOrder;
@@ -21,14 +23,28 @@ public class DalListMerger<T> implements ResultMerger<List<T>> {
 	}
 	
 	public DalListMerger(List<ColumnOrder> sorters) {
+		if(sorters == null || sorters.isEmpty()) {
+			return;
+		}
+
 		this.comparator = (o1, o2) ->{
+			final Comparable least = (i) -> Integer.MIN_VALUE;
 			ComparisonChain comparisonChain = ComparisonChain.start();
 			for(ColumnOrder sorter: sorters){
 				try {
-					Field f = o1.getClass().getDeclaredField(Introspector.decapitalize(sorter.getColumn().getColumn().getColumnName()));
-					f.setAccessible(true);
-					Object v1 = f.get(o1);
-					Object v2 = f.get(o2);
+					Object v1 = null;
+					Object v2 = null;
+					String colName = sorter.getColumn().getColumn().getColumnName();
+					if (o1 instanceof Map || o2 instanceof Map) {//Map entity
+						v1 = Optional.of(((Map)o1).get(colName)).orElse(least);
+						v2 = Optional.of(((Map)o2).get(colName)).orElse(least);
+
+					} else {//POJO entity
+						Field f = o1.getClass().getDeclaredField(Introspector.decapitalize(colName));
+						f.setAccessible(true);
+						v1 = Optional.of(f.get(o1)).orElse(least);
+						v2 = Optional.of(f.get(o2)).orElse(least);
+					}
 					if(sorter.isAsc()) {
 						comparisonChain = comparisonChain.compare((Comparable)v1, (Comparable)v2);
 					} else {
@@ -50,8 +66,10 @@ public class DalListMerger<T> implements ResultMerger<List<T>> {
 
 	@Override
 	public List<T> merge() {
-		if(comparator != null)
+		if(comparator != null) {
 			Collections.sort(result, comparator);
+		}
+
 		return result;
 	}
 }
