@@ -209,6 +209,27 @@ public class DasClientDBTest extends DataPreparer {
     }
 
     @Test
+    public void testSort() throws Exception{
+        for(int i = 0; i < DB_MODE;i++) {
+            Person pk = new Person();
+            pk.setName("test");
+            Hints hints = new Hints().setSorter(p.PeopleID.asc(), p.CountryID.desc());
+            List<Person> plist = dao.queryBySample(pk, hints);
+            assertNotNull(plist);
+            assertEquals(8, plist.size());
+            Person pre = null;
+            for(Person p : plist) {
+                if(pre != null) {
+                    //Assert order
+                   assertTrue(p.getPeopleID() >= pre.getPeopleID());
+                }
+                pre = p;
+            }
+            assertEquals("test", pk.getName());
+        }
+    }
+
+    @Test
     public void testQueryById() throws Exception {
         for (int i = 0; i < DB_MODE; i++) {
             for (int j = 0; j < TABLE_MODE; j++) {
