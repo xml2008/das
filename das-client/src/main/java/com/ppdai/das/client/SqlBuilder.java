@@ -584,4 +584,11 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
     public static void setLimitThreshold(int threshold) {
         limitThreshold = threshold;
     }
+
+    public SqlBuilder reWritePage(int shardNumber) {
+        segments.stream()
+                .filter(seg -> seg instanceof Page)
+                .forEach(page -> ((Page) page).reWritePage(shardNumber));
+        return this;
+    }
 }

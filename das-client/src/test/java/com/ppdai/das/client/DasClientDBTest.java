@@ -9,6 +9,7 @@ import static com.ppdai.das.client.SqlBuilder.selectAllFrom;
 import static com.ppdai.das.client.SqlBuilder.selectTop;
 import static com.ppdai.das.core.enums.DatabaseCategory.MySql;
 import static com.ppdai.das.core.enums.DatabaseCategory.SqlServer;
+import static junit.framework.Assert.assertNotSame;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -248,6 +249,21 @@ public class DasClientDBTest extends DataPreparer {
                 }
                 pre = p;
             }
+        }
+    }
+
+    @Test
+    public void testCrossShardsPageRoughly() throws Exception{
+        for(int i = 0; i < DB_MODE;i++) {
+            Person pk = new Person();
+            pk.setName("test");
+            Hints hints = new Hints();
+            List<Person> plist = dao.queryBySample(pk, PageRange.atPage(2, 2, p.PeopleID.asc()), hints.crossShardsPageRoughly());
+            assertNotNull(plist);
+            assertEquals(2, plist.size());
+
+            assertEquals(plist.get(0).getPeopleID(), plist.get(1).getPeopleID());
+            assertNotSame(plist.get(0).getCountryID(), plist.get(1).getCountryID());
         }
     }
 
