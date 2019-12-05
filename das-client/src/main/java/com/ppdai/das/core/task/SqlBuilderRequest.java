@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 
 import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.Parameter;
+import com.ppdai.das.client.SqlBuilder;
 import com.ppdai.das.core.DasConfigureFactory;
 import com.ppdai.das.core.DasException;
 import com.ppdai.das.core.DasLogger;
@@ -41,11 +42,20 @@ public class SqlBuilderRequest<T> implements SqlRequest<T>{
         this.logicDbName = logicDbName;
         this.provider = provider;
         this.hints = provider.getHints();
-        this.parameters = provider.buildParameters();
         this.task = provider.buildTask(appId, logicDbName);
         shards = getShards();
+        reWritePage();
     }
-    
+
+    //Rewrite page size and offset, if shards exist
+    private void reWritePage() throws SQLException {
+        if(shards != null && shards.size() > 1 && hints.isCrossShardsPageRoughly()) {
+            SqlBuilder sqlBuilder = provider.getRawRequest();
+            sqlBuilder.reWritePage(shards.size());
+        }
+        this.parameters = provider.buildParameters();
+    }
+
     private Set<String> getShards() throws SQLException {
         if (isShardingEnabled(appId, logicDbName) == false)
             return null;
