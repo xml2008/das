@@ -38,6 +38,8 @@ public class Hints {
 
     private List<ColumnOrder> sorter = new ArrayList<>();
 
+    private boolean crossShardsPageRoughly = false;
+
     /**
      * Creates a {@code Hints} instance.
      *
@@ -679,6 +681,18 @@ public class Hints {
 
     public List<ColumnOrder> getSorter() {
         return sorter;
+    }
+
+    /**
+     * Enable page function roughly
+     */
+    public Hints crossShardsPageRoughly() {
+        crossShardsPageRoughly = true;
+        return this;
+    }
+
+    public boolean isCrossShardsPageRoughly() {
+        return crossShardsPageRoughly;
     }
 //The following are methods to be tested and opened
 

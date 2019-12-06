@@ -23,7 +23,6 @@ public class SqlBuilderProvider implements StatementConditionProvider {
     private boolean isQuery;
     private DalResultSetExtractor<?> extractor;
     private Supplier<?> mergerFactory;
-    private ResultMerger resultMerger;
 
     private SqlBuilderProvider(SqlBuilder builder, boolean isQuery, DalResultSetExtractor<?> extractor) {
         this.builder = builder;
@@ -34,11 +33,6 @@ public class SqlBuilderProvider implements StatementConditionProvider {
     private SqlBuilderProvider(SqlBuilder builder, boolean isQuery, DalResultSetExtractor<?> extractor, Supplier<?> mergerFactory) {
         this(builder, isQuery, extractor);
         this.mergerFactory = mergerFactory;
-    }
-
-    private SqlBuilderProvider(SqlBuilder builder, boolean isQuery, DalResultSetExtractor<?> extractor, ResultMerger resultMerger) {
-        this(builder, isQuery, extractor);
-        this.resultMerger = resultMerger;
     }
 
     public static SqlBuilderProvider update(SqlBuilder builder) {
@@ -55,7 +49,7 @@ public class SqlBuilderProvider implements StatementConditionProvider {
 
     public static SqlBuilderProvider queryList(SqlBuilder builder) {
         DalResultSetExtractor<?> extractor = new DalRowMapperExtractor<>(StatementConditionProvider.getMapper(builder));
-        return new SqlBuilderProvider(builder, true, extractor, new DalListMerger(builder.hints().getSorter()));
+        return new SqlBuilderProvider(builder, true, extractor, ()-> new DalListMerger(builder.hints().getSorter()));
     }
 
     @Override
@@ -75,7 +69,7 @@ public class SqlBuilderProvider implements StatementConditionProvider {
     @SuppressWarnings("unchecked")
     @Override
     public <T> ResultMerger<T> buildMerger() {
-        return mergerFactory == null ? resultMerger : (ResultMerger<T>)mergerFactory.get();
+        return (ResultMerger<T>)mergerFactory.get();
     }
 
     @Override
