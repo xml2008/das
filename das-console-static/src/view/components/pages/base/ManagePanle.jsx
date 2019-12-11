@@ -231,6 +231,11 @@ export default class ManagePanle extends Component {
 
     createCheckModel = () => {
         const states = this.getValueToJson(this.states)
+        if (states.checkData && states.checkData.code === 500) {
+            this.handleCheckCancel()
+            this.showErrorsNotification(states.checkData.msg)
+            return
+        }
         if (states.checkData && states.checkData.item && states.checkData.item.list && states.checkData.item.list.length > 0) {
             const size = DataUtil.ObjUtils.getAtrNumber(states.checkData.item.list[0]).length
             if (size === 2) {

@@ -39,14 +39,14 @@ export default class ProjectListModel {
                 sort: true
             },
             {
-                name: '项目名称',
+                name: '项目英文名',
                 width: 13,
                 key: 'name',
                 sort: true,
                 popover: {title: '逻辑库', maximum: 10}
             },
             {
-                name: '项目中文名(等描述)',
+                name: '项目中文名(描述等)',
                 width: 22,
                 key: 'comment',
                 popover: {title: '备注', maximum: 10}

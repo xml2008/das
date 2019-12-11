@@ -316,7 +316,7 @@ export default class ProjectManage extends ManagePanle {
                                 <Button icon='key' size='small'/>
                             </Tooltip>
                  </Popconfirm>
-                            </span>
+            </span>
         }
 
         const buttonDbInfo = (row) => {
@@ -358,6 +358,7 @@ export default class ProjectManage extends ManagePanle {
         const {progressVisible, dbinfoVisible} = this.state
         const {projectmodel, setValueByReducers} = this.props
         const states = this.getValueToJson(this.states)
+        window.console.log('states------->', states, progressVisible, dbinfoVisible)
         return (<div>
             {states.editeVisible ? ::this.createModel() : null}
             {states.checkVisible ? ::this.createCheckModel() : null}
