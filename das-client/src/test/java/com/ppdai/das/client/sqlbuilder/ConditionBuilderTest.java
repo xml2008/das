@@ -166,7 +166,34 @@ public class ConditionBuilderTest {
     }
 
     @Test
-    public void testSelectWhereNotAll() throws SQLException {
+    public void testSelectWhereSimple() throws SQLException {
+        SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().includeAll().append(SegmentConstants.TRUE).or(SegmentConstants.FALSE);
+        ConditionList cl = builder.buildQueryConditions();
+        
+        cl = (ConditionList)cl.get(0);//get first
+        
+        assertFalse(cl.isIntersected());
+        assertEquals(2, cl.size());
+        
+        assertTrue(cl.get(1) instanceof ColumnCondition);
+        
+        cl = (ConditionList)cl.get(0);
+        assertEquals(2, cl.size());
+    }
+
+    @Test
+    public void testSelectWhereNotSimple() throws SQLException {
+        SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().not().includeAll().and().append(SegmentConstants.TRUE);
+        ConditionList cl = builder.buildQueryConditions();
+        
+        assertTrue(cl.isIntersected());
+        assertEquals(2, cl.size());
+        
+        assertTrue(cl.get(0) instanceof ColumnCondition);
+    }
+
+    @Test
+    public void testSelectWhereNotOr() throws SQLException {
         SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().not().includeAll().and().not().excludeAll().and(SegmentConstants.TRUE).or(SegmentConstants.FALSE);
         ConditionList cl = builder.buildQueryConditions();
         cl = (ConditionList)cl.get(0);//get first
@@ -182,4 +209,22 @@ public class ConditionBuilderTest {
         assertEquals(2, cl.size());
     }
 
+    @Test
+    public void testSelectWhereNotAnd() throws SQLException {
+        SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().not().excludeAll().and().not().includeAll().and(SegmentConstants.TRUE).and(SegmentConstants.FALSE);
+        ConditionList cl = builder.buildQueryConditions();
+        cl = (ConditionList)cl.get(0);//get first
+        
+        assertFalse(cl.isIntersected());
+        assertEquals(2, cl.size());
+        
+        assertTrue(cl.get(0) instanceof ColumnCondition);
+        
+        cl = (ConditionList)cl.get(1);
+        assertTrue(cl.isIntersected());
+        assertEquals(3, cl.size());
+        assertTrue(cl.get(0) instanceof ColumnCondition);
+        assertTrue(cl.get(1) instanceof ColumnCondition);
+        assertTrue(cl.get(2) instanceof ColumnCondition);
+    }
 }
