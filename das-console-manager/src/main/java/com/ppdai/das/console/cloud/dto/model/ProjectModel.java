@@ -45,7 +45,7 @@ public class ProjectModel {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date first_release_time;
 
-    private List<Long> dbSetIds;
+    private List<Long> db_set_ids;
 
-    private List<String> userNoes;
+    private List<String> user_noes;
 }

@@ -36,6 +36,9 @@ public class DatabaseCloudService {
     private LoginUserDao loginUserDao;
 
     @Autowired
+    private GroupCloudService groupCloudService;
+
+    @Autowired
     private DatabaseService databaseService;
 
     @Autowired
@@ -65,7 +68,21 @@ public class DatabaseCloudService {
         if (dasGroup == null) {
             return ServiceResult.fail("当前组id不存在！！！");
         }
-        DataBaseInfo condtion = DataBaseInfo.builder()
+        DataBaseInfo condtion = toCondtion(dataBaseInfo);
+        dataBaseInfo.setUpdateUserNo(loginUser.getUserNo());
+        ValidateResult validateRes = validatorChain
+                .addAssert(() -> groupCloudService.isWorkNameInGrroup(dataBaseInfo.getDal_group_id(), workName), "当前用户" + workName + "不在组内")
+                .addAssert(() -> dataBaseDao.getCountByName(dataBaseInfo.getDbname()) == 0, "物理库标识符" + dataBaseInfo.getDbname() + "已经存在!")
+                .addAssert(() -> dataBaseCloudDao.getDataBaseInfoByConditon(condtion) == null, dataBaseInfo.getDbname() + ", 在组" + dasGroup.getGroup_name() + "已经存在 !")
+                .addAssert(() -> databaseService.addDataBaseInfo(loginUser, dataBaseInfo)).validate();
+        if (!validateRes.isValid()) {
+            return ServiceResult.fail(validateRes.getSummarize());
+        }
+        return ServiceResult.toServiceResult(databaseService.addDataCenter(loginUser, Lists.newArrayList(dataBaseInfo)));
+    }
+
+    public DataBaseInfo toCondtion(DataBaseInfo dataBaseInfo) {
+        return DataBaseInfo.builder()
                 .db_type(dataBaseInfo.getDb_type())
                 .db_address(dataBaseInfo.getDb_address())
                 .db_port(dataBaseInfo.getDb_port())
@@ -74,16 +91,6 @@ public class DatabaseCloudService {
                 .db_password(dataBaseInfo.getDb_password())
                 .dal_group_id(dataBaseInfo.getDal_group_id())
                 .build();
-
-        dataBaseInfo.setUpdateUserNo(loginUser.getUserNo());
-        ValidateResult validateRes = validatorChain
-                .addAssert(() -> dataBaseDao.getCountByName(dataBaseInfo.getDbname()) == 0, "物理库标识符" + dataBaseInfo.getDbname() + "已经存在!")
-                .addAssert(() -> dataBaseCloudDao.getDataBaseInfoByConditon(condtion) == null, dataBaseInfo.getDbname() + ", 在组" + dasGroup.getGroup_name() + "已经存在 !")
-                .addAssert(() -> databaseService.addDataBaseInfo(loginUser, dataBaseInfo)).validate();
-        if (!validateRes.isValid()) {
-            return ServiceResult.fail(validateRes.getSummarize());
-        }
-        return ServiceResult.toServiceResult(databaseService.addDataCenter(loginUser, Lists.newArrayList(dataBaseInfo)));
     }
 
     public DataBaseInfo toDataBaseInfo(DataBaseEntry dataBaseEntry) {

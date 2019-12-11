@@ -52,4 +52,10 @@ public class JavaDasGenerator {
         new FreeSqlCodeProcessor().process(ctx);
     }
 
+
+    public void prepareTable(JavaCodeGenContext ctx, Long task_table_id) throws Exception {
+        new TableDataProcessor().process(ctx, task_table_id);
+        new TableCodeProcessor().process(ctx);
+    }
+
 }

@@ -10,6 +10,9 @@ import java.io.File;
 @Slf4j
 public class DirectoryPreparerProcessor {
 
+    final public static String TABLE_FILE_NAME = "Table";
+    final public static String ENTITY_FILE_NAME = "Entity";
+
     public static void process(DbSetGenContext ctx) throws Exception {
         File dir = new File(String.format("%s/%s/java", ctx.getGeneratePath(), ctx.getProjectId()));
         try {
@@ -24,8 +27,8 @@ public class DirectoryPreparerProcessor {
         File dir = new File(String.format("%s/%s/java", ctx.getGeneratePath(), ctx.getProjectId()));
 
         try {
-            createFile("Table", dir, ctx.isRegenerate());
-            createFile("Entity", dir, ctx.isRegenerate());
+            createFile(TABLE_FILE_NAME, dir, ctx.isRegenerate());
+            createFile(ENTITY_FILE_NAME, dir, ctx.isRegenerate());
         } catch (Throwable e) {
             log.error(e.getMessage());
             throw e;

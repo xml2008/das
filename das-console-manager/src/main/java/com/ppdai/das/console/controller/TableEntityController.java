@@ -63,7 +63,6 @@ public class TableEntityController {
         return ServiceResult.success();
     }
 
-
     /**
      * 2、批量新建
      */

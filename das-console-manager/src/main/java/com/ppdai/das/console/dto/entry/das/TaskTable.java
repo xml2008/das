@@ -160,7 +160,7 @@ public class TaskTable {
     /** task_table id **/
 	@NotNull(message = "{genTaskByTableViewSp.dbset_id.notNull}", groups = {AddTableEntity.class, UpdateTableEntity.class})
 	@Column(name = "dbset_id")
-	private Integer dbset_id;
+	private Long dbset_id;
 
     /** 字段类型 **/
 	@Column(name = "field_type")
