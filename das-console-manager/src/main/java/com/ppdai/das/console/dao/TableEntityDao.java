@@ -59,9 +59,15 @@ public class TableEntityDao extends BaseDao {
         return this.getDasClient().queryByPk(taskTable);
     }
 
-    public List<TaskTable> getTaskTableByDbNames(Long project_id, List<String> names) throws SQLException {
+    public List<TaskTable> getTaskTableByCustomTableNames(Long project_id, List<String> names) throws SQLException {
         TaskTable.TaskTableDefinition t = TaskTable.TASKTABLE;
         SqlBuilder builder = SqlBuilder.selectAllFrom(t).where().allOf(t.customTableName.in(names), t.projectId.eq(project_id)).into(TaskTable.class);
+        return this.getDasClient().query(builder);
+    }
+
+    public List<TaskTable> getTaskTablesByTableNames(Long project_id, List<String> names) throws SQLException {
+        TaskTable.TaskTableDefinition t = TaskTable.TASKTABLE;
+        SqlBuilder builder = SqlBuilder.selectAllFrom(t).where().allOf(t.tableNames.in(names), t.projectId.eq(project_id)).into(TaskTable.class);
         return this.getDasClient().query(builder);
     }
 
@@ -94,7 +100,7 @@ public class TableEntityDao extends BaseDao {
     }
 
     public List<TaskTableView> findTableEntityPageList(Paging<TaskTable> paging) throws SQLException {
-        String sql = " select t1.id, t1.project_id, t1.table_names,t1.view_names,t1.custom_table_name,t1.update_user_no,t1.dbset_id, t1.update_user_no, t1.comment, t1.update_time, t1.field_type, t2.name as dbset_name, t3.user_real_name from task_table t1 " +
+        String sql = "select t1.id, t1.project_id,t1.dbset_id, t1.table_names,t1.custom_table_name,t1.view_names,t1.prefix,suffix, t1.cud_by_sp,t1.pagination,t1.generated,t1.version,t1.update_user_no,t1.update_time,t1.comment,t1.sql_style,t1.api_list,t1.approved,t1.approveMsg,t1.field_type, t2.name as dbset_name, t3.user_real_name from task_table t1 " +
                 " left join databaseset t2 on t1.dbset_id = t2.id " +
                 " left join login_users t3 on t1.update_user_no = t3.user_no " + appenCondition(paging);
         return this.queryBySql(sql, TaskTableView.class);
@@ -106,6 +112,7 @@ public class TableEntityDao extends BaseDao {
             return StringUtils.EMPTY;
         }
         return SelectCoditonBuilder.getInstance().setTab("t1.").where()
+                .equal("id", taskTable.getId())
                 .equal("project_id", taskTable.getProject_id())
                 .likeLeft("view_names", taskTable.getView_names())
                 .likeLeft("table_names", taskTable.getTable_names())

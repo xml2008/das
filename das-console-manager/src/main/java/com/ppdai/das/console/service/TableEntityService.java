@@ -71,11 +71,17 @@ public class TableEntityService {
                 taskTable.setUpdate_user_no(user.getUserNo());
                 this.initTaskTable(taskTable);
             }
-            List<String> names = list.stream().map(i -> i.getCustom_table_name()).collect(Collectors.toList());
-            List<TaskTable> taskTableList = tableEntityDao.getTaskTableByDbNames(list.get(0).getProject_id(), names);
-            if (!CollectionUtils.isEmpty(taskTableList)) {
-                String existDbs = Joiner.on(",").join(taskTableList.stream().map(i -> i.getCustom_table_name()).collect(Collectors.toList()));
-                return ServiceResult.fail(existDbs + "，已经存在! 请在表实体管理页删除此实体类，再新建！！");
+            List<String> cusnames = list.stream().map(i -> i.getCustom_table_name()).collect(Collectors.toList());
+            List<TaskTable> taskTableList = tableEntityDao.getTaskTableByCustomTableNames(list.get(0).getProject_id(), cusnames);
+            if (CollectionUtils.isNotEmpty(taskTableList)) {
+                String existDbs = Joiner.on(",").join(taskTableList.stream().map(i -> i.getCustom_table_name()).collect(Collectors.toSet()));
+                return ServiceResult.fail("自定义表名'" + existDbs + "'，已经存在! 请在表实体管理页删除此实体类，再新建！！");
+            }
+            List<String> tablenames = list.stream().map(i -> i.getTable_names()).collect(Collectors.toList());
+            taskTableList = tableEntityDao.getTaskTablesByTableNames(list.get(0).getProject_id(), tablenames);
+            if (CollectionUtils.isNotEmpty(taskTableList)) {
+                String existDbs = Joiner.on(",").join(taskTableList.stream().map(i -> i.getTable_names()).collect(Collectors.toSet()));
+                return ServiceResult.fail("表'" + existDbs + "'，已经存在! 请在表实体管理页删除此实体类，再新建！！");
             }
 
             boolean isSussess = tableEntityDao.getDasClient().execute(() -> {

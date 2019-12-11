@@ -32,7 +32,7 @@ public class TableEntityDaoTest {
     @Before
     public void setUp() {
         paging = new Paging<>();
-        taskTable = TaskTable.builder().table_names("tableNames").custom_table_name("SelectEntityDaoTest").project_id(999L).view_names("SelectEntityDaoTest").comment("project comment").approveMsg("ass").dbset_id(111).update_user_no("007").build();
+        taskTable = TaskTable.builder().table_names("tableNames").custom_table_name("SelectEntityDaoTest").project_id(999L).view_names("SelectEntityDaoTest").comment("project comment").approveMsg("ass").dbset_id(111L).update_user_no("007").build();
         taskTableModel = TaskTable.builder().project_id(39L).build();
         paging.setData(taskTableModel);
     }
@@ -48,7 +48,7 @@ public class TableEntityDaoTest {
     public void insertTaskTablelist() throws Exception {
         List<TaskTable> list = new ArrayList<>();
         for (int i = 1; i < 3; i++) {
-            list.add(TaskTable.builder().table_names("tableNames").custom_table_name("SelectEntityDaoTest").project_id(999L + i).view_names("SelectEntityDaoTest").comment("project comment").approveMsg("ass").dbset_id(111).update_user_no("007").build());
+            list.add(TaskTable.builder().table_names("tableNames").custom_table_name("SelectEntityDaoTest").project_id(999L + i).view_names("SelectEntityDaoTest").comment("project comment").approveMsg("ass").dbset_id(111L).update_user_no("007").build());
         }
         int[] ins = tableEntityDao.insertTaskTablelist(list);
         System.out.println("insertTaskTablelist :-------> " + ins);
@@ -90,8 +90,8 @@ public class TableEntityDaoTest {
     @Test
     public void getTaskTableByDbNames() throws Exception {
         List<String> names = Lists.newArrayList("risk_scene_strategy", "risk_template");
-        List<TaskTable> list = tableEntityDao.getTaskTableByDbNames(39L, names);
-        System.out.println("getTaskTableByDbNames :-------> " + list);
+        List<TaskTable> list = tableEntityDao.getTaskTableByCustomTableNames(39L, names);
+        System.out.println("getTaskTableByCustomTableNames :-------> " + list);
         Assert.assertTrue(list.size() > 0);
     }
 

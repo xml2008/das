@@ -58,9 +58,15 @@ public class ProjectEntry {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date first_release_time;
 
-    private List<Long> dbSetIds;
+    private List<Long> db_set_ids;
 
-    private List<String> userNoes;
+    private List<String> user_noes;
+
+    /**
+     * 操作人域账号
+     **/
+    @NotBlank(message = "{project.work_name.notNull}", groups = {AddProject.class, UpdateProject.class})
+    private String work_name;
 
     private List<Long> userIds;
 
@@ -70,8 +76,8 @@ public class ProjectEntry {
 
     public List<Item> getItems() {
         items = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(dbSetIds)) {
-            for (Long dbsetid : dbSetIds) {
+        if (CollectionUtils.isNotEmpty(db_set_ids)) {
+            for (Long dbsetid : db_set_ids) {
                 items.add(new Item(dbsetid, StringUtils.EMPTY));
             }
         }
@@ -80,7 +86,7 @@ public class ProjectEntry {
 
     public List<Item> getUsers() {
         users =  new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(dbSetIds)) {
+        if (CollectionUtils.isNotEmpty(userIds)) {
             for (Long userid : userIds) {
                 users.add(new Item(userid, StringUtils.EMPTY));
             }

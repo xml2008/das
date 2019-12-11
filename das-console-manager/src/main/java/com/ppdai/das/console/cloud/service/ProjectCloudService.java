@@ -6,6 +6,7 @@ import com.ppdai.das.console.cloud.dto.entry.ProjectEntry;
 import com.ppdai.das.console.cloud.dto.model.ProjectModel;
 import com.ppdai.das.console.cloud.dto.model.ServiceResult;
 import com.ppdai.das.console.cloud.dto.view.ProjectCloudView;
+import com.ppdai.das.console.cloud.dto.view.ProjectItem;
 import com.ppdai.das.console.common.utils.StringUtil;
 import com.ppdai.das.console.common.validates.chain.ValidateResult;
 import com.ppdai.das.console.common.validates.chain.ValidatorChain;
@@ -15,6 +16,7 @@ import com.ppdai.das.console.dto.entry.das.LoginUser;
 import com.ppdai.das.console.dto.entry.das.Project;
 import com.ppdai.das.console.dto.view.ProjectView;
 import com.ppdai.das.console.service.GroupService;
+import com.ppdai.das.console.service.PermissionService;
 import com.ppdai.das.console.service.ProjectService;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
@@ -47,6 +49,12 @@ public class ProjectCloudService {
     @Autowired
     private LoginUserCloudDao loginUserCloudDao;
 
+    @Autowired
+    private GroupCloudService groupCloudService;
+
+    @Autowired
+    private PermissionService permissionService;
+
     public List<String> getAppidListByWorkName(String workname) throws SQLException {
         if (StringUtils.isBlank(workname)) {
             return ListUtils.EMPTY_LIST;
@@ -67,6 +75,9 @@ public class ProjectCloudService {
         }
         project.setUpdate_user_no(loginUser.getUserNo());
         ValidateResult validateRes = validatorChain
+                .addAssert(() -> groupCloudService.isWorkNameInGrroup(projectEntry.getDas_group_id(), workName) || permissionService.isManagerById(loginUser.getId()), "当前用户" + workName + "不在组内,或没有权限")
+                .addAssert(() -> groupCloudService.isWorkNoesInGrroup(projectEntry.getDas_group_id(), projectEntry.getUser_noes()))
+                .addAssert(() -> groupCloudService.isDbSetIdsInGrroup(projectEntry.getDas_group_id(), projectEntry.getDb_set_ids()))
                 .addAssert(() -> groupService.isNotExistInProjectAndGroup(project.getName()), project.getName() + " 已存在！且组名和项目名不能重复！")
                 .addAssert(() -> projectDao.getCountByAppId(project.getApp_id()) == 0, "APPID:" + project.getApp_id() + " 已存在！")
                 .addAssert(() -> projectService.insertProject(project)).validate();
@@ -88,7 +99,7 @@ public class ProjectCloudService {
     }
 
     private Project toProject(ProjectEntry projectEntry) throws SQLException {
-        List<Long> userIds = toOserIds(projectEntry.getUserNoes());
+        List<Long> userIds = toOserIds(projectEntry.getUser_noes());
         projectEntry.setUserIds(userIds);
         return Project.builder()
                 .app_id(projectEntry.getApp_id())
@@ -112,8 +123,13 @@ public class ProjectCloudService {
                 .first_release_time(projectView.getFirst_release_time())
                 .pre_release_time(projectView.getPre_release_time())
                 .das_group_id(projectView.getDal_group_id())
-                .dbSetIds(StringUtil.toLongList(projectView.getDbsetIds()))
-                .userNoes(projectView.getUserNoes())
+                .db_set_ids(StringUtil.toLongList(projectView.getDbsetIds()))
+                .user_noes(projectView.getUserNoes())
                 .build();
+    }
+
+    public List<ProjectItem> getProjectList(Long group_id) throws SQLException {
+        List<Project> list = projectDao.getProjectByGroupId(group_id);
+        return list.stream().map(i -> new ProjectItem(i.getId(), i.getName())).collect(Collectors.toList());
     }
 }

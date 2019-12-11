@@ -63,6 +63,12 @@ public class DataBaseEntry {
     private Date update_time;
 
     /**
+     * 操作人域账号
+     **/
+    @NotBlank(message = "{project.work_name.notNull}", groups = {AddDataBase.class})
+    private String work_name;
+
+    /**
      * 最后操作人
      **/
     @Column(name = "update_user_no")
