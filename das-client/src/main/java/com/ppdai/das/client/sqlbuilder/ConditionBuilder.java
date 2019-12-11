@@ -175,20 +175,25 @@ public class ConditionBuilder {
     }
 
     private Condition parseCondition(List<Segment> filtered) {
-        LinkedList<Condition> providers = new LinkedList<>();
+        LinkedList<Condition> conditions = new LinkedList<>();
         Stack<Segment> stack = new Stack<>();
         
         for(Segment entry: filtered) {
             //The table column expressions
-            if(isBuilder(entry)) {
-                providers.add(((ConditionProvider)entry).build());
+            if(isProvider(entry)) {
+                Condition c = ((ConditionProvider)entry).build();
+                if(isNot(getTop(stack))) {
+                    stack.pop();//remove NOT
+                    c.reverse();
+                }
+                conditions.add(c);
             }
-            else if(isLeft(entry)){
+            else if(isLeft(entry) || isNot(entry)){
                 stack.push(entry);
             } 
             else if(isRight(entry)){
                 while(!isLeft(entry = stack.pop())) {
-                    combine(entry, providers);
+                    combine(entry, conditions);
                 }
             } 
             else if(isAnd(entry)){
@@ -196,7 +201,7 @@ public class ConditionBuilder {
                 if(top == null || isOr(top) || isLeft(top))
                     stack.push(entry);
                 else {
-                    combine(stack.pop(), providers);
+                    combine(stack.pop(), conditions);
                     stack.push(entry);
                 }
             } 
@@ -205,21 +210,18 @@ public class ConditionBuilder {
                 if(top == null || isLeft(top))
                     stack.push(entry);
                 else {
-                    combine(stack.pop(), providers);
+                    combine(stack.pop(), conditions);
                     stack.push(entry);
                 }
-            }
-            else if(isNot(entry)){
-                stack.push(entry);
             }
         }
         
         while(!stack.isEmpty()) {
             Segment entry = stack.pop();
-            combine(entry, providers);
+            combine(entry, conditions);
         }
         
-        return providers.getLast();
+        return conditions.getLast();
     }
 
     private Segment getTop(Stack<Segment> stack) {
@@ -247,10 +249,10 @@ public class ConditionBuilder {
      * @return if current segment is an expression
      */
     private boolean isConditionCandidate(Segment segment) {
-        return isBuilder(segment) || expressionCandidates.contains(segment);
+        return isProvider(segment) || expressionCandidates.contains(segment);
     }
     
-    private boolean isBuilder(Segment segment) {
+    private boolean isProvider(Segment segment) {
         return segment instanceof ConditionProvider;
     }
     

@@ -14,7 +14,9 @@ public enum OperatorEnum {
     LIKE("%s LIKE ?"),
     NOT_LIKE("%s NOT LIKE ?"),
     IS_NULL("%s IS NULL"),
-    IS_NOT_NULL("%s IS NOT NULL");
+    IS_NOT_NULL("%s IS NOT NULL"),
+    //For Boolean and customized expression
+    UN_DEFINED("UNDEFINED");
 
     
     private String template;
@@ -42,6 +44,7 @@ public enum OperatorEnum {
         case NOT_LIKE: return LIKE;
         case IS_NULL: return IS_NOT_NULL;
         case IS_NOT_NULL: return IS_NULL;
+        case UN_DEFINED: return UN_DEFINED;
         default:
             return null;
         }

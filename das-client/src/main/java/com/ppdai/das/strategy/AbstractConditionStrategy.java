@@ -122,6 +122,9 @@ public abstract class AbstractConditionStrategy extends AbstractShardingStrategy
         if(context.getValue() instanceof AbstractColumn)
             return shardingContext.getAllShards();
 
+        if(context.getOperator() == OperatorEnum.UN_DEFINED)
+            return shardingContext.getAllShards();
+
         if(!isRelated.test(context))
             return shardingContext.getAllShards();
         

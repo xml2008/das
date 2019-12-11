@@ -154,7 +154,7 @@ public class ShardingManager {
     }
     
     private static String validateId(String shardId, Set<String> validateShards) throws SQLException {
-        if(!validateShards.contains(shardId))
+        if(validateShards != null && !validateShards.isEmpty() && !validateShards.contains(shardId))
             throw new SQLException("No shard defined for id: " + shardId);
 
         return shardId;
