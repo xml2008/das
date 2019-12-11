@@ -1,6 +1,11 @@
 package com.ppdai.das.client.sqlbuilder;
 
-public class CustomizedExpression extends Expression {
+import com.ppdai.das.strategy.ColumnCondition;
+import com.ppdai.das.strategy.Condition;
+import com.ppdai.das.strategy.ConditionProvider;
+import com.ppdai.das.strategy.OperatorEnum;
+
+public class CustomizedExpression extends Expression implements ConditionProvider {
     private String template;
     
     public CustomizedExpression(String template) {
@@ -14,5 +19,10 @@ public class CustomizedExpression extends Expression {
 
     public String toString() {
         return build(new DefaultBuilderContext());
+    }
+
+    @Override
+    public Condition build() {
+        return new ColumnCondition(OperatorEnum.UN_DEFINED, "", "", null);
     }
 }
