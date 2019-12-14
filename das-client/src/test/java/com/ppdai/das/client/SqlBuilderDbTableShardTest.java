@@ -508,57 +508,106 @@ public class SqlBuilderDbTableShardTest extends DataPreparer {
         assertEquals(32, results);
     }
 
+    private void assertBuilder(int size, SqlBuilder builder) throws SQLException {
+        List<Person> plist = dao.query(builder.orderBy(p.PeopleID.asc()).into(Person.class));
+        assertEquals(size, plist.size());
+    }
+    
+    private SqlBuilder builder() {
+        return selectAllFrom(p).where();
+    }
+
+    @Test
+    public void testQueryExclude() throws Exception {
+        List<Integer> pks = new ArrayList<>();
+        for (int j = 0; j < TABLE_MODE; j++) 
+            pks.add(j+1);
+
+        assertBuilder(32, builder().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(32, builder().not().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(0, builder().not().leftBracket().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket());
+        assertBuilder(32, builder().not().not().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(0, builder().not().leftBracket().not().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket());
+    }
+
+    @Test
+    public void testQueryInclude() throws Exception {
+        List<Integer> pks = new ArrayList<>();
+        for (int j = 0; j < TABLE_MODE; j++) 
+            pks.add(j+1);
+
+        assertBuilder(32, builder().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(0, builder().not().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(32, builder().not().not().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(32, builder().not().leftBracket().not().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket());
+        assertBuilder(0, builder().not().leftBracket().not().leftBracket().not().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket().rightBracket());
+    }
+ 
     @Test
     public void testQuery() throws Exception {
         List<Integer> pks = new ArrayList<>();
         for (int j = 0; j < TABLE_MODE; j++) 
             pks.add(j+1);
 
-        SqlBuilder builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).orderBy(p.PeopleID.asc()).into(Person.class);
-        List<Person> plist = dao.query(builder);
-        assertEquals(2*4*4, plist.size());
+        assertBuilder(32, builder().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(32, builder().not().not().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(32, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket());
         
         //Please note below is using anyOf
-        builder = selectAllFrom(p).where().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(32, plist.size());
+        assertBuilder(32, builder().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
+        assertBuilder(0, builder().not().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
+        assertBuilder(32, builder().not().not().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
+        assertBuilder(32, builder().not().leftBracket().not().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")).rightBracket());
+        assertBuilder(0, builder().not().leftBracket().not().leftBracket().not().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")).rightBracket().rightBracket());
         
         //Please note below is using allOf
-        builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(16, plist.size());
+        assertBuilder(16, builder().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
+        assertBuilder(16, builder().not().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
+        assertBuilder(16, builder().not().not().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
+        assertBuilder(16, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")).rightBracket());
+        assertBuilder(16, builder().not().leftBracket().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")).rightBracket().rightBracket());
         
-        builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.CountryID.in(0,1,2,3)).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(32, plist.size());
+        assertBuilder(32, builder().allOf(p.PeopleID.in(pks), p.CountryID.in(0,1,2,3)));
+        assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.in(0,1,2,3)));
+        assertBuilder(0, builder().not().leftBracket().allOf(p.PeopleID.in(pks), p.CountryID.in(0,1,2,3)).rightBracket());
+        assertBuilder(32, builder().leftBracket().not().not().allOf(p.PeopleID.in(pks), p.CountryID.in(0,1,2,3)).rightBracket());
+        assertBuilder(32, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.in(0,1,2,3)).rightBracket());
         
-        builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(16, plist.size());
+        assertBuilder(16, builder().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))));
+        assertBuilder(16, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))));
+        assertBuilder(16, builder().leftBracket().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))).rightBracket().rightBracket());
+        assertBuilder(16, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))).rightBracket());
         
-        builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(16, plist.size());
+        assertBuilder(16, builder().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)));
+        assertBuilder(16, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)));
+        assertBuilder(16, builder().not().not().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)));
+        assertBuilder(16, builder().leftBracket().not().not().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)).rightBracket());
         
-        builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(32, plist.size());
+        assertBuilder(32, builder().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)));
+        assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)));
+        assertBuilder(32, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)).rightBracket());
+        assertBuilder(32, builder().leftBracket().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)).rightBracket().rightBracket());
 
-        builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(32, plist.size());
+        assertBuilder(32, builder().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))));
+        assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))));
+        assertBuilder(32, builder().not().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))));
+        assertBuilder(32, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))).rightBracket());
 
-        builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(4*2, plist.size());
+        assertBuilder(4*2, builder().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))));
+        assertBuilder(24, builder().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))));
+        assertBuilder(4*2, builder().not().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))));
+        assertBuilder(4*2, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))).rightBracket());
 
-        builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(32, plist.size());
+        assertBuilder(32, builder().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)));
+        assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)));
+        assertBuilder(32, builder().not().not().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)));
+        assertBuilder(32, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)).rightBracket());
 
-        builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)).orderBy(p.PeopleID.asc()).into(Person.class);
-        plist = dao.query(builder);
-        assertEquals(16, plist.size());
+        assertBuilder(16, builder().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)));
+        assertBuilder(16, builder().not().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)));
+        assertBuilder(16, builder().not().not().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)));
+        assertBuilder(16, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)).rightBracket());
     }
     
     @Test

@@ -3,6 +3,7 @@ package com.ppdai.das.client.sqlbuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static com.ppdai.das.client.SegmentConstants.*;
 
 import java.sql.SQLException;
@@ -226,5 +227,22 @@ public class ConditionBuilderTest {
         assertTrue(cl.get(0) instanceof ColumnCondition);
         assertTrue(cl.get(1) instanceof ColumnCondition);
         assertTrue(cl.get(2) instanceof ColumnCondition);
+    }
+
+    @Test
+    public void testSelectWhereNotWellFormated() throws SQLException {
+        SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().not();
+        try {
+            builder.buildQueryConditions();
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
+
+        builder = SqlBuilder.selectAllFrom(p).where().append(SegmentConstants.TRUE, SegmentConstants.AND);
+        try {
+            builder.buildQueryConditions();
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
     }
 }

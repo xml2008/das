@@ -445,22 +445,16 @@ public class SqlBuilderDBShardTest extends DataPreparer {
     }
 
     @Test
-    public void testQuery() throws Exception {
+    public void testQueryExclude() throws Exception {
         List<Integer> pks = new ArrayList<>();
         for (int j = 0; j < TABLE_MODE; j++) 
             pks.add(j+1);
 
-        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
-        assertBuilder(8, builder().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
-        assertBuilder(4, builder().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
-        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(0,1,2,3))));
-        assertBuilder(4, builder().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))));
-        assertBuilder(4, builder().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)));
-        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)));
-        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))));
-        assertBuilder(2, builder().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))));
-        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)));
-        assertBuilder(4, builder().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)));
+        assertBuilder(8, builder().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(8, builder().not().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(0, builder().not().leftBracket().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket());
+        assertBuilder(8, builder().not().not().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(0, builder().not().leftBracket().not().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket());
     }
 
     @Test
@@ -471,20 +465,11 @@ public class SqlBuilderDBShardTest extends DataPreparer {
 
         assertBuilder(8, builder().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
         assertBuilder(0, builder().not().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(8, builder().not().not().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(8, builder().not().leftBracket().not().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket());
+        assertBuilder(0, builder().not().leftBracket().not().leftBracket().not().includeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket().rightBracket());
     }
  
-    @Test
-    public void testQueryExclude() throws Exception {
-        List<Integer> pks = new ArrayList<>();
-        for (int j = 0; j < TABLE_MODE; j++) 
-            pks.add(j+1);
-
-        assertBuilder(8, builder().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
-        assertBuilder(8, builder().not().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
-        assertBuilder(8, builder().not().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
-        assertBuilder(8, builder().not().not().excludeAll().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
-    }
-
     private void assertBuilder(int size, SqlBuilder builder) throws SQLException {
         List<Person> plist = dao.query(builder.orderBy(p.PeopleID.asc()).into(Person.class));
         assertEquals(size, plist.size());
@@ -495,54 +480,70 @@ public class SqlBuilderDBShardTest extends DataPreparer {
     }
 
     @Test
-    public void testQueryNot() throws Exception {
+    public void testQuery() throws Exception {
         List<Integer> pks = new ArrayList<>();
         for (int j = 0; j < TABLE_MODE; j++) 
             pks.add(j+1);
 
+        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(8, builder().not().not().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)));
+        assertBuilder(8, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.ProvinceID.eq(1)).rightBracket());
+
+        assertBuilder(8, builder().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
         assertBuilder(0, builder().not().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
         assertBuilder(8, builder().not().not().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
         assertBuilder(8, builder().not().leftBracket().not().anyOf(p.PeopleID.in(pks), p.Name.like("test_1%")).rightBracket());
 
+        
+        assertBuilder(4, builder().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
         assertBuilder(4, builder().not().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
         assertBuilder(4, builder().not().not().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")));
         assertBuilder(4, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.Name.like("test_1%")).rightBracket());
         
+
+        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(0,1,2,3))));
         assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(0,1,2,3))));
         assertBuilder(8, builder().not().not().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(0,1,2,3))));
         assertBuilder(8, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(0,1,2,3))).rightBracket());
         
+
+        assertBuilder(4, builder().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))));
         assertBuilder(4, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))));
         assertBuilder(4, builder().not().not().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))));
         assertBuilder(4, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.in(Arrays.asList(1,2,3))).rightBracket());
         
+        assertBuilder(4, builder().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)));
         assertBuilder(4, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)));
         assertBuilder(4, builder().not().not().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)));
         assertBuilder(4, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.gt(0)).rightBracket());
         
-        
+        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)));
         assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)));
         assertBuilder(8, builder().not().not().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)));
         assertBuilder(8, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.gteq(0)).rightBracket());
         
+        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))));
         assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))));
         assertBuilder(8, builder().not().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))));
         assertBuilder(8, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.neq(-1))).rightBracket());
         
-        
+        assertBuilder(2, builder().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))));
         assertBuilder(6, builder().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))));
         assertBuilder(2, builder().not().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))));
         assertBuilder(2, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), allOf(p.CountryID.gteq(0), p.CityID.eq(1))).rightBracket());
         
+        assertBuilder(8, builder().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)));
         assertBuilder(0, builder().not().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)));
         assertBuilder(8, builder().not().not().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)));
         assertBuilder(8, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CountryID.between(0, 1)).rightBracket());
         
+        assertBuilder(4, builder().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)));
         assertBuilder(4, builder().not().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)));
         assertBuilder(4, builder().not().not().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)));
         assertBuilder(4, builder().not().leftBracket().not().allOf(p.PeopleID.in(pks), p.CityID.between(2, 3)).rightBracket());
     }
-    
+
     @Test
     public void testInsertBuilder() throws Exception {
         for(int i = 0; i < DB_MODE;i++) {
