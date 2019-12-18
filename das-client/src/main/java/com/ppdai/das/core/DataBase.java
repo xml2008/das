@@ -8,7 +8,9 @@ public class DataBase {
 	private boolean master;
 	private String sharding;
 	private String connectionString;
-	
+
+	private String alias = "";
+
 	public DataBase(String name, 
 			boolean master, 
 			String sharding, 
@@ -17,6 +19,11 @@ public class DataBase {
 		this.master = master;
 		this.sharding = sharding;
 		this.connectionString = connectionString;
+	}
+
+	public DataBase setAlias(String alias) {
+		this.alias = alias;
+		return this;
 	}
 
 	@Override

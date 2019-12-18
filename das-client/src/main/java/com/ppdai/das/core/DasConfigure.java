@@ -1,8 +1,13 @@
 package com.ppdai.das.core;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.ImmutableMap;
 import com.ppdai.das.core.configure.DataSourceConfigure;
@@ -25,6 +30,76 @@ public class DasConfigure {
         this.locator = locator;
         this.facory = facory;
         this.selector = selector;
+
+        ScheduledExecutorService executer = Executors.newScheduledThreadPool(3, r -> {
+            Thread thread = new Thread(r, "Das-MGRDatabaseSelector@start: " + new Date());
+            thread.setDaemon(true);
+            return thread;
+        });
+        executer.scheduleWithFixedDelay(() ->{check();}, 5, 10, TimeUnit.SECONDS);
+
+    }
+
+    static class MGRInfo {
+        String id;
+        String host;
+        int port;
+        String state;
+        boolean isMaster;
+
+        public MGRInfo(String id, String host, int port, String state, boolean isMaster) {
+            this.id = id;
+            this.host = host;
+            this.port = port;
+            this.state = state;
+            this.isMaster = isMaster;
+        }
+    }
+
+    void check() {
+        String sql ="SELECT\n" +
+                "MEMBER_ID,\n" +
+                "MEMBER_HOST,\n" +
+                "MEMBER_PORT,\n" +
+                "MEMBER_STATE,\n" +
+                "IF(global_status.VARIABLE_NAME IS NOT NULL,\n" +
+                "'PRIMARY',\n" +
+                "'SECONDARY') AS MEMBER_ROLE\n" +
+                "FROM\n" +
+                "performance_schema.replication_group_members\n" +
+                "LEFT JOIN\n" +
+                "performance_schema.global_status ON global_status.VARIABLE_NAME = 'group_replication_primary_member'\n" +
+                "AND global_status.VARIABLE_VALUE = replication_group_members.MEMBER_ID;";
+        databaseSets.entrySet().forEach(set->{set.getValue().getDatabases().values().forEach(db->{
+            try {
+                List<MGRInfo> mgrInfos = new ArrayList<>();
+                //TODO: query MGR info
+                try (Connection connection = locator.getConnection(db.getConnectionString());
+                     Statement stmt = connection.createStatement();
+                     ResultSet rs = stmt.executeQuery(sql)){
+                     while(rs.next()){
+                        //Retrieve by column name
+                        String id  = rs.getString("MEMBER_ID");
+                        String host = rs.getString("MEMBER_HOST");
+                        int port = rs.getInt("MEMBER_PORT");
+                        String state = rs.getString("MEMBER_STATE");
+                        String role = rs.getString("MEMBER_ROLE");
+
+                        mgrInfos.add(new MGRInfo(id, host, port, state, "PRIMARY".equalsIgnoreCase(role)));
+                    }
+
+                }
+                mgrInfos.forEach(mgrInfo -> {
+                    db.setAlias(mgrInfo.id);
+                    if(mgrInfo.isMaster && set.getValue().getSlaveDbs().contains(db)) {
+                        //Move it to masterDbs, and move others to slaveDbs
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });});
     }
 
     public static class DatabaseSetChangeEvent {

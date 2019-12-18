@@ -1,6 +1,13 @@
 <das name="das-test">
   <databaseSets>
 
+      <!-- MGR -->
+      <databaseSet name="MRG" provider="mysqlProvider">
+          <add  name="mgr1" databaseType="Master" sharding="" connectionString="mgr1"/>
+          <add  name="mgr2" databaseType="Master" sharding="" connectionString="mgr2"/>
+          <add  name="mgr3" databaseType="Master" sharding="" connectionString="mgr3"/>
+      </databaseSet>
+
     <!-- MySqlSimple -->
     <databaseSet name="MySqlSimple" provider="mysqlProvider">
       <add  name="dal_shard_0" databaseType="Master" sharding="" connectionString="dal_shard_0"/>
@@ -92,7 +99,7 @@
 	  </settings>
   </TaskFactory>
   <DatabaseSelector>
-      <selector>com.ppdai.das.core.FreshnessSelector</selector>
+      <selector>com.ppdai.das.core.DefaultDatabaseSelector</selector>
       <settings>
          <freshnessReader>com.ppdai.das.core.SlaveStatusFreshnessReader</freshnessReader>
          <updateInterval>2</updateInterval>

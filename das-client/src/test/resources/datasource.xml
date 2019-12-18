@@ -2,28 +2,45 @@
 
 
 <Datasources>
+
+    <Datasource name="mgr1"
+                userName="mgr_test"
+                password="xotYxqQMDMSVXyak"
+                connectionUrl="jdbc:mysql://172.20.66.58:3406/performance_schema"
+                driverClassName="com.mysql.jdbc.Driver"/>
+    <Datasource name="mgr2"
+                userName="mgr_test"
+                password="xotYxqQMDMSVXyak"
+                connectionUrl="jdbc:mysql://172.20.66.59:3406/performance_schema"
+                driverClassName="com.mysql.jdbc.Driver"/>
+    <Datasource name="mgr3"
+                userName="mgr_test"
+                password="xotYxqQMDMSVXyak"
+                connectionUrl="jdbc:mysql://172.20.66.62:3406/performance_schema"
+                driverClassName="com.mysql.jdbc.Driver"/>
+
     <Datasource name="dal_shard_0"
                 userName="root"
                 password="root"
-                connectionUrl="jdbc:mysql://test_mysql:3306/dal_shard_0"
+                connectionUrl="jdbc:mysql://localhost:3306/dal_shard_0"
                 driverClassName="com.mysql.jdbc.Driver"/>
 
     <Datasource name="dal_shard_1"
                 userName="root"
                 password="root"
-                connectionUrl="jdbc:mysql://test_mysql:3306/dal_shard_1"
+                connectionUrl="jdbc:mysql://localhost:3306/dal_shard_1"
                 driverClassName="com.mysql.jdbc.Driver"/>
 
     <Datasource name="sql_shard_0"
                 userName="sa"
                 password="Sa123456"
-                connectionUrl="jdbc:sqlserver://test_sqlsvr:1433;DatabaseName=test4"
+                connectionUrl="jdbc:sqlserver://172.20.17.37:1433;DatabaseName=test4"
                 driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
 
     <Datasource name="sql_shard_1"
                 userName="sa"
                 password="Sa123456"
-                connectionUrl="jdbc:sqlserver://test_sqlsvr:1433;DatabaseName=test5"
+                connectionUrl="jdbc:sqlserver://172.20.17.37:1433;DatabaseName=test5"
                 driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
 </Datasources>
 
