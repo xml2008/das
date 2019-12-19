@@ -8,7 +8,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.ppdai.das.core.configure.DataSourceConfigure;
 import com.ppdai.das.core.configure.DataSourceConfigureProvider;
@@ -21,6 +24,8 @@ public class DasConfigure {
     private ConnectionLocator locator;
     private TaskFactory facory;
     private DatabaseSelector selector;
+    // MGR-0 -> [ip, port,id...]
+    private ConcurrentHashMap<String, List<MGRInfo>> mgrConfig = new ConcurrentHashMap<>();
 
     public DasConfigure(String appId, Map<String, DatabaseSet> databaseSets, DasLogger dalLogger,
             ConnectionLocator locator, TaskFactory facory, DatabaseSelector selector) {
@@ -31,23 +36,75 @@ public class DasConfigure {
         this.facory = facory;
         this.selector = selector;
 
+        check();
+        setDataBaseHost();
+
         ScheduledExecutorService executer = Executors.newScheduledThreadPool(3, r -> {
             Thread thread = new Thread(r, "Das-MGRDatabaseSelector@start: " + new Date());
             thread.setDaemon(true);
             return thread;
         });
-        executer.scheduleWithFixedDelay(() ->{check();}, 5, 10, TimeUnit.SECONDS);
+        executer.scheduleWithFixedDelay(() ->{checkMaster();}, 5, 10, TimeUnit.SECONDS);
 
     }
 
+    private void checkMaster() {
+        for (DatabaseSet set : databaseSets.values()) {
+            for (Map.Entry<String, DataBase> dbe : set.getDatabases().entrySet()) {
+                DataBase db = dbe.getValue();
+                if (db.isMGR()) {
+                    List<MGRInfo> infos = mgrConfig.get(db.getMrgName());
+                    infos.stream().filter(info -> info.id.equals(db.getMrgId())).forEach(info -> {
+                        if(info.isMaster && !db.isMaster()) {
+                            db.setMaster();
+                        } else if(!info.isMaster && db.isMaster()) {
+                            db.setSlave();
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    private MGRInfo findMgrIdByHost(String host) {
+        for(Map.Entry<String, List<MGRInfo>> en: mgrConfig.entrySet()) {
+            for (MGRInfo info: en.getValue()) {
+                if(info.host.equals(host)) {
+                    return info;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void setDataBaseHost() {
+        for (DatabaseSet set : databaseSets.values()) {
+            for (Map.Entry<String, DataBase> db : set.getDatabases().entrySet()) {
+                String hostURL = locator.getProvider().getDataSourceConfigure(db.getKey()).getConnectionUrl();
+                List<String> split = Splitter.on("jdbc:mysql://").splitToList(hostURL);
+                if (split.size() > 1) {//For MySQL only
+                    List<String> host = Splitter.on(":").splitToList(split.get(1));
+                    MGRInfo mgr = findMgrIdByHost(host.get(0));
+                    if (mgr != null) {
+                        db.getValue().setMrgId(mgr.id);
+                        db.getValue().setMrgNamed(mgr.name);
+                        db.getValue().setHost(host.get(0));
+                    }
+                }
+            }
+        }
+    }
+
     static class MGRInfo {
+        String name;
         String id;
         String host;
         int port;
         String state;
         boolean isMaster;
 
-        public MGRInfo(String id, String host, int port, String state, boolean isMaster) {
+        public MGRInfo(String name, String id, String host, int port, String state, boolean isMaster) {
+            this.name = name;
             this.id = id;
             this.host = host;
             this.port = port;
@@ -57,7 +114,7 @@ public class DasConfigure {
     }
 
     void check() {
-        String sql ="SELECT\n" +
+        String sql = "SELECT\n" +
                 "MEMBER_ID,\n" +
                 "MEMBER_HOST,\n" +
                 "MEMBER_PORT,\n" +
@@ -70,36 +127,33 @@ public class DasConfigure {
                 "LEFT JOIN\n" +
                 "performance_schema.global_status ON global_status.VARIABLE_NAME = 'group_replication_primary_member'\n" +
                 "AND global_status.VARIABLE_VALUE = replication_group_members.MEMBER_ID;";
-        databaseSets.entrySet().forEach(set->{set.getValue().getDatabases().values().forEach(db->{
-            try {
+
+        List<DatabaseSet> mgrSets = databaseSets.values().stream().filter(e -> e.getName().startsWith("MGR-")).collect(Collectors.toList());
+        for (DatabaseSet set : mgrSets) {
+            String setName = set.getName();
+            for (Map.Entry<String, DataBase> db : set.getDatabases().entrySet()) {
                 List<MGRInfo> mgrInfos = new ArrayList<>();
-                //TODO: query MGR info
-                try (Connection connection = locator.getConnection(db.getConnectionString());
+                try (Connection connection = locator.getConnection(db.getValue().getConnectionString());
                      Statement stmt = connection.createStatement();
-                     ResultSet rs = stmt.executeQuery(sql)){
-                     while(rs.next()){
+                     ResultSet rs = stmt.executeQuery(sql)) {
+                    while (rs.next()) {
                         //Retrieve by column name
-                        String id  = rs.getString("MEMBER_ID");
+                        String id = rs.getString("MEMBER_ID");
                         String host = rs.getString("MEMBER_HOST");
                         int port = rs.getInt("MEMBER_PORT");
                         String state = rs.getString("MEMBER_STATE");
                         String role = rs.getString("MEMBER_ROLE");
 
-                        mgrInfos.add(new MGRInfo(id, host, port, state, "PRIMARY".equalsIgnoreCase(role)));
+                        MGRInfo mgrInfo = new MGRInfo(setName, id, host, port, state, "PRIMARY".equalsIgnoreCase(role));
+                        mgrInfos.add(mgrInfo);
                     }
-
+                    mgrConfig.put(setName, mgrInfos);
+                    break;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-                mgrInfos.forEach(mgrInfo -> {
-                    db.setAlias(mgrInfo.id);
-                    if(mgrInfo.isMaster && set.getValue().getSlaveDbs().contains(db)) {
-                        //Move it to masterDbs, and move others to slaveDbs
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        });});
+        }
     }
 
     public static class DatabaseSetChangeEvent {

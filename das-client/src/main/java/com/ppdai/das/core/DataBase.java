@@ -1,6 +1,8 @@
 package com.ppdai.das.core;
 
 
+import com.google.common.base.Strings;
+
 import java.util.Objects;
 
 public class DataBase {
@@ -9,7 +11,9 @@ public class DataBase {
 	private String sharding;
 	private String connectionString;
 
-	private String alias = "";
+	private String host = "";
+    private String mrgName= "";
+	private String mrgId= "";
 
 	public DataBase(String name, 
 			boolean master, 
@@ -21,9 +25,31 @@ public class DataBase {
 		this.connectionString = connectionString;
 	}
 
-	public DataBase setAlias(String alias) {
-		this.alias = alias;
+	public String getMrgId() {
+		return mrgId;
+	}
+
+	public DataBase setMrgId(String mrgId) {
+		this.mrgId = mrgId;
 		return this;
+	}
+
+	public String getMrgName() {
+		return mrgName;
+	}
+
+	public DataBase setHost(String host) {
+		this.host = host;
+		return this;
+	}
+
+	public DataBase setMrgNamed(String mrgName) {
+		this.mrgName = mrgName;
+		return this;
+	}
+
+	public boolean isMGR() {
+		return !Strings.isNullOrEmpty(mrgName);
 	}
 
 	@Override
@@ -49,6 +75,14 @@ public class DataBase {
 
 	public boolean isMaster() {
 		return master;
+	}
+
+	public void setMaster() {
+		master = true;
+	}
+
+	public void setSlave() {
+		master = false;
 	}
 
 	public String getSharding() {

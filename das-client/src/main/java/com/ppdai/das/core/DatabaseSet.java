@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,6 +85,9 @@ public class DatabaseSet {
 	}
 
 	private void initShards() throws Exception {
+		masterDbs.clear();
+		slaveDbs.clear();
+
 		if(strategy == null || strategy.isShardByDb() == false){
 			// Init with no shard support
 			for(DataBase db: databases.values()) {
