@@ -19,12 +19,13 @@ export default class CheckboxGroupPlus extends Component {
 
     constructor(props, context) {
         super(props, context)
-        this.defaultCheckedList = this.initPlainOptions(props.options)
+        this.plainOptions = this.initPlainOptions(props.options)
+        const checkAll = this.plainOptions.length === props.defaultCheckedList.length
         this.state = {
-            plainOptions: this.defaultCheckedList,
-            checkedList: _.isEmpty(props.defaultCheckedList) ? this.defaultCheckedList : props.defaultCheckedList,
+            plainOptions: this.plainOptions,
+            checkedList: _.isEmpty(props.defaultCheckedList) ? this.plainOptions : props.defaultCheckedList,
             indeterminate: true,
-            checkAll: false
+            checkAll: checkAll
         }
     }
 

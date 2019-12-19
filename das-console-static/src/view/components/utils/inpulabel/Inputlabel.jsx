@@ -43,9 +43,9 @@ export default class Inputlabel extends Component {
         if (type === 1) {
             return <div className='inputlabel'>
                 <ERow className='pad-row'>
-                    <ECol sm={3} className="base-col">
+                    <ECol sm={3} className='base-col'>
                         <span className='spanInline'>{title}:</span>
-                        {star ? <span className="redFont spanInline">*</span> : null}
+                        {star ? <span className='redFont spanInline'>*</span> : null}
                     </ECol>
                     <ECol sm={7} end>
                         {children}
@@ -54,7 +54,7 @@ export default class Inputlabel extends Component {
             </div>
         }
         return <Row style={style}>
-            <Col>{star ? <span className="redFont spanInline">*</span> : null}{title}</Col>
+            <Col>{star ? <span className='redFont spanInline' style={{color: 'red'}}>*</span> : null}{title}</Col>
             <Col sm={24}>
                 {children}
             </Col>

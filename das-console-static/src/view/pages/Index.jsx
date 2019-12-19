@@ -26,11 +26,11 @@ class AppRouter extends Component {
         return (
             <div>
                 <Router history={this.history}>
-                    <Route path="/login" component={Login}/>
-                    <Route path="/register" component={Register}/>
-                    <Route path="/app" component={app}/>
-                    <Route path="/api" component={api}/>
-                    <Redirect from="/" to="/app"/>
+                    <Route path='/login' component={Login}/>
+                    <Route path='/register' component={Register}/>
+                    <Route path='/app' component={app}/>
+                    <Route path='/api' component={api}/>
+                    <Redirect from='/' to='/app'/>
                 </Router>
             </div>
         )
