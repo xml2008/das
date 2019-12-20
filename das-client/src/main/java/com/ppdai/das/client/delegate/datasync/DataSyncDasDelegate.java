@@ -33,12 +33,14 @@ public class DataSyncDasDelegate implements DasDelegate {
         return delegate.getLogicDbName();
     }
 
-    private <T> T syncTemplate(Callable callable, Object entity, Hints hints, DasOperation dasOperation) {
+    private <T> T syncTemplate(Callable callable, Object entity, Hints hints, DasOperation dasOperation) throws SQLException{
         Object result = null;
         Exception exception = null;
         try {
             result = callable.call();
             return result == null ? null :(T) result;
+        } catch (SQLException sqlEx) {
+            throw sqlEx;
         } catch (Exception e) {
             exception = e;
             throw new RuntimeException(e);
