@@ -84,7 +84,7 @@ public class DatabaseSet {
 		strategy.initialize(settings);
 	}
 
-	private void initShards() throws Exception {
+	public void initShards() throws Exception {
 		masterDbs.clear();
 		slaveDbs.clear();
 

@@ -8,14 +8,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.ppdai.das.core.configure.DataSourceConfigure;
 import com.ppdai.das.core.configure.DataSourceConfigureProvider;
 import com.ppdai.das.core.task.TaskFactory;
+
+import static com.ppdai.das.core.enums.DatabaseCategory.MySql;
 
 public class DasConfigure {
     private String appId;
@@ -36,32 +39,64 @@ public class DasConfigure {
         this.facory = facory;
         this.selector = selector;
 
-        check();
-        setDataBaseHost();
+        updateMGRInfo();
+        registerMGR();
 
         ScheduledExecutorService executer = Executors.newScheduledThreadPool(3, r -> {
             Thread thread = new Thread(r, "Das-MGRDatabaseSelector@start: " + new Date());
             thread.setDaemon(true);
             return thread;
         });
-        executer.scheduleWithFixedDelay(() ->{checkMaster();}, 5, 10, TimeUnit.SECONDS);
+        executer.scheduleWithFixedDelay(() -> {
+            try {
+                checkMaster();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 5, 5, TimeUnit.SECONDS);
 
     }
 
-    private void checkMaster() {
-        for (DatabaseSet set : databaseSets.values()) {
+    private List<DatabaseSet> mgrDatabaseSet() {
+       return databaseSets.values().stream().filter(e -> e.getName().startsWith("MGR-")).collect(Collectors.toList());
+    }
+
+    private List<DatabaseSet> nonMGRMySQLDatabaseSet() {
+        return databaseSets.values().stream().filter(e -> !e.getName().startsWith("MGR-") && e.getDatabaseCategory() == MySql).collect(Collectors.toList());
+    }
+
+    static boolean TEST = true;
+    private void checkMaster() throws Exception {
+        for (DatabaseSet set : nonMGRMySQLDatabaseSet()) {
+            AtomicBoolean isMasterChange = new AtomicBoolean(false);
             for (Map.Entry<String, DataBase> dbe : set.getDatabases().entrySet()) {
                 DataBase db = dbe.getValue();
                 if (db.isMGR()) {
                     List<MGRInfo> infos = mgrConfig.get(db.getMrgName());
-                    infos.stream().filter(info -> info.id.equals(db.getMrgId())).forEach(info -> {
+                    Optional<MGRInfo> found = infos.stream().filter(info -> info.id.equals(db.getMrgId())).findFirst();
+                    if(found.isPresent()) {
+                        MGRInfo info = found.get();
+                      /*  if(TEST) {
+                            if(db.isMaster()) {
+                                db.setSlave();
+                                isMasterChange.set(true);
+                            } else  {
+                                db.setMaster();
+                                isMasterChange.set(true);
+                            }
+                        }*/
                         if(info.isMaster && !db.isMaster()) {
                             db.setMaster();
+                            isMasterChange.set(true);
                         } else if(!info.isMaster && db.isMaster()) {
                             db.setSlave();
+                            isMasterChange.set(true);
                         }
-                    });
+                    }
                 }
+            }
+            if(isMasterChange.get()) {
+                set.initShards();
             }
         }
     }
@@ -77,10 +112,13 @@ public class DasConfigure {
         return null;
     }
 
-    private void setDataBaseHost() {
-        for (DatabaseSet set : databaseSets.values()) {
+    private void registerMGR() {
+        for (DatabaseSet set : nonMGRMySQLDatabaseSet()) {
             for (Map.Entry<String, DataBase> db : set.getDatabases().entrySet()) {
                 String hostURL = locator.getProvider().getDataSourceConfigure(db.getKey()).getConnectionUrl();
+                if (Strings.isNullOrEmpty(hostURL)) {//TODO:
+                    continue;
+                }
                 List<String> split = Splitter.on("jdbc:mysql://").splitToList(hostURL);
                 if (split.size() > 1) {//For MySQL only
                     List<String> host = Splitter.on(":").splitToList(split.get(1));
@@ -113,7 +151,7 @@ public class DasConfigure {
         }
     }
 
-    void check() {
+    void updateMGRInfo() {
         String sql = "SELECT\n" +
                 "MEMBER_ID,\n" +
                 "MEMBER_HOST,\n" +
@@ -128,8 +166,7 @@ public class DasConfigure {
                 "performance_schema.global_status ON global_status.VARIABLE_NAME = 'group_replication_primary_member'\n" +
                 "AND global_status.VARIABLE_VALUE = replication_group_members.MEMBER_ID;";
 
-        List<DatabaseSet> mgrSets = databaseSets.values().stream().filter(e -> e.getName().startsWith("MGR-")).collect(Collectors.toList());
-        for (DatabaseSet set : mgrSets) {
+        for (DatabaseSet set : mgrDatabaseSet()) {
             String setName = set.getName();
             for (Map.Entry<String, DataBase> db : set.getDatabases().entrySet()) {
                 List<MGRInfo> mgrInfos = new ArrayList<>();
