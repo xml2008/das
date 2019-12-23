@@ -37,7 +37,7 @@ public class DasConfigure {
         this.locator = locator;
         this.facory = facory;
         this.selector = selector;
-        this.mgrConfigReader = new TestMGRConfigReader(mgrDatabaseSet(), locator);
+        this.mgrConfigReader = new DefaultMGRConfigReader(mgrDatabaseSet(), locator);
 
         try {
             Map<String, List<MGRInfo>> mgrConfig = mgrConfigReader.readMGRConfig();
@@ -122,7 +122,7 @@ public class DasConfigure {
                     if (mgr != null) {
                         db.getValue().setMrgId(mgr.id);
                         db.getValue().setMrgNamed(mgr.name);
-                        db.getValue().setHost(host.get(0));
+                        db.getValue().setHost(mgr.host);
                     }
                 }
             }

@@ -21,6 +21,9 @@ public class DefaultMGRConfigReader implements MGRConfigReader {
     private ConnectionLocator locator;
 
     public DefaultMGRConfigReader(List<DatabaseSet> mgrDatabaseSet,ConnectionLocator locator) {
+        if(mgrDatabaseSet.isEmpty()) {
+            return;
+        }
         this.mgrDatabaseSet.addAll(mgrDatabaseSet);
         this.locator = locator;
 

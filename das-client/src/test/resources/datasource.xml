@@ -6,36 +6,47 @@
     <Datasource name="mgr1"
                 userName="mgr_test"
                 password="xotYxqQMDMSVXyak"
-                connectionUrl="jdbc:mysql://172.20.66.58:3406/performance_schema"
+                connectionUrl="jdbc:mysql://mgr58.mysql.ppdaicorp.com:3406/performance_schema"
                 driverClassName="com.mysql.jdbc.Driver"/>
     <Datasource name="mgr2"
                 userName="mgr_test"
                 password="xotYxqQMDMSVXyak"
-                connectionUrl="jdbc:mysql://172.20.66.59:3406/performance_schema"
+                connectionUrl="jdbc:mysql://mgr59.mysql.ppdaicorp.com:3406/performance_schema"
                 driverClassName="com.mysql.jdbc.Driver"/>
     <Datasource name="mgr3"
                 userName="mgr_test"
                 password="xotYxqQMDMSVXyak"
-                connectionUrl="jdbc:mysql://172.20.66.62:3406/performance_schema"
+                connectionUrl="jdbc:mysql://mgr62.mysql.ppdaicorp.com:3406/performance_schema"
+                driverClassName="com.mysql.jdbc.Driver"/>
+
+    <Datasource name="mgr_dal_shard_1"
+                userName="mgr_test"
+                password="xotYxqQMDMSVXyak"
+                connectionUrl="jdbc:mysql://mgr58.mysql.ppdaicorp.com:3406/dal_shard_0"
+                driverClassName="com.mysql.jdbc.Driver"/>
+    <Datasource name="mgr_dal_shard_2"
+                userName="mgr_test"
+                password="xotYxqQMDMSVXyak"
+                connectionUrl="jdbc:mysql://mgr59.mysql.ppdaicorp.com:3406/dal_shard_0"
+                driverClassName="com.mysql.jdbc.Driver"/>
+    <Datasource name="mgr_dal_shard_3"
+                userName="mgr_test"
+                password="xotYxqQMDMSVXyak"
+                connectionUrl="jdbc:mysql://mgr62.mysql.ppdaicorp.com:3406/dal_shard_0"
                 driverClassName="com.mysql.jdbc.Driver"/>
 
     <Datasource name="dal_shard_0"
-                userName="mgr_test"
-                password="xotYxqQMDMSVXyak"
-                connectionUrl="jdbc:mysql://172.20.66.58:3406/dal_shard_0"
+                userName="root"
+                password="root"
+                connectionUrl="jdbc:mysql://localhost:3306/dal_shard_0"
                 driverClassName="com.mysql.jdbc.Driver"/>
 
     <Datasource name="dal_shard_1"
-                userName="mgr_test"
-                password="xotYxqQMDMSVXyak"
-                connectionUrl="jdbc:mysql://172.20.66.59:3406/dal_shard_0"
+                userName="root"
+                password="root"
+                connectionUrl="jdbc:mysql://localhost:3306/dal_shard_1"
                 driverClassName="com.mysql.jdbc.Driver"/>
 
-    <Datasource name="dal_shard_2"
-                userName="mgr_test"
-                password="xotYxqQMDMSVXyak"
-                connectionUrl="jdbc:mysql://172.20.66.62:3406/dal_shard_0"
-                driverClassName="com.mysql.jdbc.Driver"/>
 
     <Datasource name="sql_shard_0"
                 userName="sa"
