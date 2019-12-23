@@ -20,6 +20,7 @@
     <databaseSet name="MySqlSimple" provider="mysqlProvider">
       <add  name="dal_shard_0" databaseType="Master" sharding="" connectionString="dal_shard_0"/>
       <add  name="dal_shard_1" databaseType="Master" sharding="" connectionString="dal_shard_1"/>
+        <add  name="dal_shard_2" databaseType="Master" sharding="" connectionString="dal_shard_2"/>
     </databaseSet>
 
     <!-- SqlSvrSimple -->

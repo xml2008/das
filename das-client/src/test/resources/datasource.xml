@@ -28,7 +28,13 @@
     <Datasource name="dal_shard_1"
                 userName="mgr_test"
                 password="xotYxqQMDMSVXyak"
-                connectionUrl="jdbc:mysql://172.20.66.59:3406/dal_shard_1"
+                connectionUrl="jdbc:mysql://172.20.66.59:3406/dal_shard_0"
+                driverClassName="com.mysql.jdbc.Driver"/>
+
+    <Datasource name="dal_shard_2"
+                userName="mgr_test"
+                password="xotYxqQMDMSVXyak"
+                connectionUrl="jdbc:mysql://172.20.66.62:3406/dal_shard_0"
                 driverClassName="com.mysql.jdbc.Driver"/>
 
     <Datasource name="sql_shard_0"

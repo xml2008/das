@@ -59,7 +59,7 @@ public class DasClientTest extends DataPreparer {
     
     @Before
     public void setup() throws Exception {
-        TimeUnit.SECONDS.sleep(15);
+       // TimeUnit.SECONDS.sleep(15);
         String[] statements = new String[TABLE_MODE];
         for (int k = 0; k < TABLE_MODE; k++) {
             statements[k] = String.format("INSERT INTO person(PeopleID, Name, CountryID, CityID, ProvinceID) VALUES(%d, 'test', %d, %d, 1)", k + 1, k, k);
@@ -91,8 +91,10 @@ public class DasClientTest extends DataPreparer {
         for(int i=0; i<999;i++) {
             try {
                 SqlBuilder builder = selectCount().from(p).intoObject();
+                Hints h = builder.hints().diagnose();
                 Number n = dao.queryObject(builder);
                 System.out.println(n);
+                System.out.println(h.getDiagnose());
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
