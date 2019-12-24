@@ -11,11 +11,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import com.ppdai.das.core.DasDiagnose;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,9 +46,9 @@ public class TableDaoTest extends DataPreparer {
     @Parameters
     public static Collection data() {
         return Arrays.asList(new Object[][]{
-                {SqlServer, false},
+           //     {SqlServer, false},
                 {MySql, false},                
-                {SqlServer, true},
+              //  {SqlServer, true},
                 {MySql, true},
         });
     }
@@ -138,7 +141,9 @@ public class TableDaoTest extends DataPreparer {
             Person pk = new Person();
             pk.setName("test");
 
-            plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID));
+            Hints hints = Hints.hints().diagnose();
+            plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID), hints);
+            DasDiagnose d = hints.getDiagnose();
             assertList(4, plist);
             
             plist = dao.queryBySample(pk, PageRange.atPage(2, 2, p.CityID, p.CountryID));
@@ -183,7 +188,7 @@ public class TableDaoTest extends DataPreparer {
         }
     }
 
-    @Test
+  @Test
     public void testCountBySample() throws Exception {
         Person pk = new Person();
         pk.setName("test");
@@ -211,7 +216,8 @@ public class TableDaoTest extends DataPreparer {
             assertEquals(1, dao.insert(p));
             p.setCountryID(null);
             p.setCityID(null);
-            List<Person> plist = dao.queryBySample(p);
+            //TimeUnit.MILLISECONDS.sleep(10);
+            List<Person> plist = dao.queryBySample(p, Hints.hints().masterOnly());
             assertNotNull(plist);
             assertEquals(k + 1, plist.size());
         }

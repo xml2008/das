@@ -1,9 +1,26 @@
 <das name="das-test">
   <databaseSets>
 
+    <!--  &lt;!&ndash; MGR &ndash;&gt;
+      <databaseSet name="MGR-0" provider="mysqlProvider">
+          <add  name="mgr1" databaseType="Master" sharding="" connectionString="mgr1"/>
+          <add  name="mgr2" databaseType="Master" sharding="" connectionString="mgr2"/>
+          <add  name="mgr3" databaseType="Master" sharding="" connectionString="mgr3"/>
+      </databaseSet>
+
+      &lt;!&ndash; MGR &ndash;&gt;
+      <databaseSet name="MGR-1" provider="mysqlProvider">
+          <add  name="mgr1" databaseType="Master" sharding="" connectionString="mgr1"/>
+          <add  name="mgr2" databaseType="Master" sharding="" connectionString="mgr2"/>
+          <add  name="mgr3" databaseType="Master" sharding="" connectionString="mgr3"/>
+      </databaseSet>-->
+
+
     <!-- MySqlSimple -->
     <databaseSet name="MySqlSimple" provider="mysqlProvider">
-      <add  name="dal_shard_0" databaseType="Master" sharding="" connectionString="dal_shard_0"/>
+      <add  name="mgr_dal_shard_1" databaseType="Master" sharding="" connectionString="mgr_dal_shard_1"/>
+      <add  name="mgr_dal_shard_2" databaseType="Master" sharding="" connectionString="mgr_dal_shard_2"/>
+      <add  name="mgr_dal_shard_3" databaseType="Master" sharding="" connectionString="mgr_dal_shard_3"/>
     </databaseSet>
 
     <!-- SqlSvrSimple -->
@@ -92,7 +109,7 @@
 	  </settings>
   </TaskFactory>
   <DatabaseSelector>
-      <selector>com.ppdai.das.core.FreshnessSelector</selector>
+      <selector>com.ppdai.das.core.DefaultDatabaseSelector</selector>
       <settings>
          <freshnessReader>com.ppdai.das.core.SlaveStatusFreshnessReader</freshnessReader>
          <updateInterval>2</updateInterval>
