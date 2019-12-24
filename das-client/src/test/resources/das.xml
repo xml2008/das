@@ -1,19 +1,19 @@
 <das name="das-test">
   <databaseSets>
 
-      <!-- MGR -->
+    <!--  &lt;!&ndash; MGR &ndash;&gt;
       <databaseSet name="MGR-0" provider="mysqlProvider">
           <add  name="mgr1" databaseType="Master" sharding="" connectionString="mgr1"/>
           <add  name="mgr2" databaseType="Master" sharding="" connectionString="mgr2"/>
           <add  name="mgr3" databaseType="Master" sharding="" connectionString="mgr3"/>
       </databaseSet>
 
-      <!-- MGR -->
+      &lt;!&ndash; MGR &ndash;&gt;
       <databaseSet name="MGR-1" provider="mysqlProvider">
           <add  name="mgr1" databaseType="Master" sharding="" connectionString="mgr1"/>
           <add  name="mgr2" databaseType="Master" sharding="" connectionString="mgr2"/>
           <add  name="mgr3" databaseType="Master" sharding="" connectionString="mgr3"/>
-      </databaseSet>
+      </databaseSet>-->
 
 
     <!-- MySqlSimple -->

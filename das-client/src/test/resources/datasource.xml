@@ -3,7 +3,7 @@
 
 <Datasources>
 
-    <Datasource name="mgr1"
+<!--    <Datasource name="mgr1"
                 userName="mgr_test"
                 password="xotYxqQMDMSVXyak"
                 connectionUrl="jdbc:mysql://mgr58.mysql.ppdaicorp.com:3406/performance_schema"
@@ -17,7 +17,7 @@
                 userName="mgr_test"
                 password="xotYxqQMDMSVXyak"
                 connectionUrl="jdbc:mysql://mgr62.mysql.ppdaicorp.com:3406/performance_schema"
-                driverClassName="com.mysql.jdbc.Driver"/>
+                driverClassName="com.mysql.jdbc.Driver"/>-->
 
     <Datasource name="mgr_dal_shard_1"
                 userName="mgr_test"

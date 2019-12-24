@@ -12,8 +12,9 @@ public class DataBase {
 	private String connectionString;
 
 	private String host = "";
-    private String mrgName= "";
-	private String mrgId= "";
+	private String mgrId= "";
+	private String mgrState;
+	private String mgrRole;
 
 	public DataBase(String name, 
 			boolean master, 
@@ -25,31 +26,40 @@ public class DataBase {
 		this.connectionString = connectionString;
 	}
 
-	public String getMrgId() {
-		return mrgId;
-	}
-
-	public DataBase setMrgId(String mrgId) {
-		this.mrgId = mrgId;
-		return this;
-	}
-
-	public String getMrgName() {
-		return mrgName;
-	}
-
 	public DataBase setHost(String host) {
 		this.host = host;
 		return this;
 	}
 
-	public DataBase setMrgNamed(String mrgName) {
-		this.mrgName = mrgName;
+	public String getHost() {
+		return host;
+	}
+
+	public String getMgrId() {
+		return mgrId;
+	}
+
+	public DataBase setMgrId(String mgrId) {
+		this.mgrId = mgrId;
 		return this;
 	}
 
-	public boolean isMGR() {
-		return !Strings.isNullOrEmpty(mrgName);
+	public String getMgrState() {
+		return mgrState;
+	}
+
+	public DataBase setMgrState(String mgrState) {
+		this.mgrState = mgrState;
+		return this;
+	}
+
+	public String getMgrRole() {
+		return mgrRole;
+	}
+
+	public DataBase setMgrRole(String mgrRole) {
+		this.mgrRole = mgrRole;
+		return this;
 	}
 
 	@Override

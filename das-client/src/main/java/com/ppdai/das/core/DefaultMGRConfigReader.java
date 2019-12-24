@@ -1,72 +1,74 @@
 package com.ppdai.das.core;
 
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class DefaultMGRConfigReader implements MGRConfigReader {
+public class DefaultMGRConfigReader {
 
-    // MGR-0 -> [ip, port,id...] -> [Database1, Database-2 ...]
-    private ConcurrentHashMap<String, List<DasConfigure.MGRInfo>> mgrConfig = new ConcurrentHashMap<>();
+    private static final String MGR_INFO =
+            "SELECT  MEMBER_ID, MEMBER_HOST, MEMBER_PORT, MEMBER_STATE, " +
+            "IF(global_status.VARIABLE_NAME IS NOT NULL, " +
+            "'PRIMARY', " +
+            "'SECONDARY') AS MEMBER_ROLE " +
+            "FROM performance_schema.replication_group_members " +
+            "LEFT JOIN performance_schema.global_status ON global_status.VARIABLE_NAME = 'group_replication_primary_member' " +
+            "AND global_status.VARIABLE_VALUE = replication_group_members.MEMBER_ID;";
+
+    private static final String TRANSACTIONS =
+            "SELECT COUNT_TRANSACTIONS_IN_QUEUE " +
+            "FROM performance_schema.replication_group_member_stats";
+
     private List<DatabaseSet> mgrDatabaseSet = new ArrayList<>();
     private ConnectionLocator locator;
 
     public DefaultMGRConfigReader(List<DatabaseSet> mgrDatabaseSet,ConnectionLocator locator) {
-        if(mgrDatabaseSet.isEmpty()) {
-            return;
-        }
         this.mgrDatabaseSet.addAll(mgrDatabaseSet);
         this.locator = locator;
-
-        updateMGRInfo();
-        ScheduledExecutorService executer = Executors.newScheduledThreadPool(1, r -> {
-            Thread thread = new Thread(r, "Das-MGRDatabaseReader@start: " + new Date());
-            thread.setDaemon(true);
-            return thread;
-        });
-
-        executer.scheduleWithFixedDelay(() -> {
-            try {
-                updateMGRInfo();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, 5, 5, TimeUnit.SECONDS);
     }
 
+    public List<DatabaseSet> getMgrDatabaseSet() {
+        return mgrDatabaseSet;
+    }
 
-    void updateMGRInfo() {
-        String sql = "SELECT\n" +
-                "MEMBER_ID,\n" +
-                "MEMBER_HOST,\n" +
-                "MEMBER_PORT,\n" +
-                "MEMBER_STATE,\n" +
-                "IF(global_status.VARIABLE_NAME IS NOT NULL,\n" +
-                "'PRIMARY',\n" +
-                "'SECONDARY') AS MEMBER_ROLE\n" +
-                "FROM\n" +
-                "performance_schema.replication_group_members\n" +
-                "LEFT JOIN\n" +
-                "performance_schema.global_status ON global_status.VARIABLE_NAME = 'group_replication_primary_member'\n" +
-                "AND global_status.VARIABLE_VALUE = replication_group_members.MEMBER_ID;";
+    static class MGRInfo {
+        String id;
+        String host;
+        String state;
+        String role;
 
+        public MGRInfo(String id, String host, String state, String role) {
+            this.id = id;
+            this.host = host;
+            this.state = state;
+            this.role = role;
+        }
+    }
+
+    public void updateMGRInfo() throws Exception {
+        Set<DatabaseSet> exceptionalSet = new HashSet<>();
         for (DatabaseSet set : mgrDatabaseSet) {
-            String setName = set.getName();
-            for (Map.Entry<String, DataBase> db : set.getDatabases().entrySet()) {
-                List<DasConfigure.MGRInfo> mgrInfos = new ArrayList<>();
-                try (Connection connection = locator.getConnection(db.getValue().getConnectionString());
+            AtomicBoolean isChanged = new AtomicBoolean(false);
+            for (DataBase db : set.getDatabases().values()) {
+                try (Connection connection = locator.getConnection(db.getConnectionString());
                      Statement stmt = connection.createStatement();
-                     ResultSet rs = stmt.executeQuery(sql)) {
-                    while (rs.next()) {
+                     ResultSet rs = stmt.executeQuery(MGR_INFO)) {
+
+                     String connectHost = url2Host(connection.getMetaData().getURL());
+                     Map<String, MGRInfo> infos = new HashMap<>();
+                     while (rs.next()) {
                         //Retrieve by column name
                         String id = rs.getString("MEMBER_ID");
                         String host = rs.getString("MEMBER_HOST");
@@ -74,31 +76,49 @@ public class DefaultMGRConfigReader implements MGRConfigReader {
                         String state = rs.getString("MEMBER_STATE");
                         String role = rs.getString("MEMBER_ROLE");
 
-                        DasConfigure.MGRInfo mgrInfo = new DasConfigure.MGRInfo(setName, id, host, port, state, "PRIMARY".equalsIgnoreCase(role));
-                        mgrInfos.add(mgrInfo);
+                        infos.put(host, new MGRInfo(id, host, state, role));
                     }
-                    mgrConfig.put(setName, mgrInfos);
-                    break;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                    MGRInfo info = infos.get(connectHost);
+                    if(info != null) {
+                        db.setMgrId(info.id)
+                                .setHost(info.host)
+                                .setMgrState(info.state)
+                                .setMgrRole(info.role);
+                        if ("PRIMARY".equals(info.role) && "ONLINE".equals(info.state) && !db.isMaster()) {
+                            db.setMaster();
+                            isChanged.set(true);
+                        }
+                        if ("SECONDARY".equals(info.role) && "ONLINE".equals(info.state) && db.isMaster()) {
+                            db.setSlave();
+                            isChanged.set(true);
+                        }
+                    }
+                } catch (MySQLSyntaxErrorException ex) {
+                    exceptionalSet.add(set);
                 }
             }
+            if(isChanged.get()) {
+                set.initShards();
+            }
         }
+        mgrDatabaseSet.removeAll(exceptionalSet);
     }
 
-    @Override
-    public Map<String, List<DasConfigure.MGRInfo>> readMGRConfig() {
-        return mgrConfig;
+    private String url2Host(String url) {
+        if (Strings.isNullOrEmpty(url)) {
+            return "";
+        }
+        List<String> split = Splitter.on("jdbc:mysql://").splitToList(url);
+        if (split.size() > 1) {//For MySQL only
+            return Splitter.on(":").splitToList(split.get(1)).get(0);
+        }
+        return "";
     }
 
-
-    @Override
     public long mgrValidate(String connectionString) {
-        String sql = "select COUNT_TRANSACTIONS_IN_QUEUE from performance_schema.replication_group_member_stats";
-
         try (Connection connection = locator.getConnection(connectionString);
              Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             ResultSet rs = stmt.executeQuery(TRANSACTIONS)) {
             while (rs.next()) {
                 //Retrieve by column name
                 long count = rs.getLong("COUNT_TRANSACTIONS_IN_QUEUE");
