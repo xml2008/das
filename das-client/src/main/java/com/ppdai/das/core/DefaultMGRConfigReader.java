@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DefaultMGRConfigReader implements MGRConfigReader {
 
-    // MGR-0 -> [ip, port,id...]
+    // MGR-0 -> [ip, port,id...] -> [Database1, Database-2 ...]
     private ConcurrentHashMap<String, List<DasConfigure.MGRInfo>> mgrConfig = new ConcurrentHashMap<>();
     private List<DatabaseSet> mgrDatabaseSet = new ArrayList<>();
     private ConnectionLocator locator;
@@ -90,4 +90,24 @@ public class DefaultMGRConfigReader implements MGRConfigReader {
     public Map<String, List<DasConfigure.MGRInfo>> readMGRConfig() {
         return mgrConfig;
     }
+
+
+    @Override
+    public long mgrValidate(String connectionString) {
+        String sql = "select COUNT_TRANSACTIONS_IN_QUEUE from performance_schema.replication_group_member_stats";
+
+        try (Connection connection = locator.getConnection(connectionString);
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                //Retrieve by column name
+                long count = rs.getLong("COUNT_TRANSACTIONS_IN_QUEUE");
+                return count;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return -1;
+    }
+
 }

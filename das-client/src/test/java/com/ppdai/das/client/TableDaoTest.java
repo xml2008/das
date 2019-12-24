@@ -46,9 +46,9 @@ public class TableDaoTest extends DataPreparer {
     @Parameters
     public static Collection data() {
         return Arrays.asList(new Object[][]{
-                {SqlServer, false},
+           //     {SqlServer, false},
                 {MySql, false},                
-                {SqlServer, true},
+              //  {SqlServer, true},
                 {MySql, true},
         });
     }
@@ -110,7 +110,7 @@ public class TableDaoTest extends DataPreparer {
             logicDelDao.clearDeletionFlag(entities);
     }
 
-   /* @Test
+    @Test
     public void testQueryById() throws Exception {
         for (int k = 0; k < TABLE_MODE; k++) {
             Person pk = new Person();
@@ -166,7 +166,7 @@ public class TableDaoTest extends DataPreparer {
             assertList(4, plist);
             assertOrder(plist, true);
         }
-    }*/
+    }
     
     private void assertList(int size, List<Person> plist) {
         assertNotNull(plist);
@@ -188,7 +188,7 @@ public class TableDaoTest extends DataPreparer {
         }
     }
 
- /*   @Test
+  @Test
     public void testCountBySample() throws Exception {
         Person pk = new Person();
         pk.setName("test");
@@ -205,7 +205,7 @@ public class TableDaoTest extends DataPreparer {
             assertEquals(1, dao.countBySample(pk));
         }
     }
-*/
+
     @Test
     public void testInsertOne() throws Exception {
         for(int k = 0; k < TABLE_MODE;k++) {
@@ -216,13 +216,13 @@ public class TableDaoTest extends DataPreparer {
             assertEquals(1, dao.insert(p));
             p.setCountryID(null);
             p.setCityID(null);
-            TimeUnit.MILLISECONDS.sleep(10);
-            List<Person> plist = dao.queryBySample(p);
+            //TimeUnit.MILLISECONDS.sleep(10);
+            List<Person> plist = dao.queryBySample(p, Hints.hints().masterOnly());
             assertNotNull(plist);
             assertEquals(k + 1, plist.size());
         }
     }
-/*
+
     @Test
     public void testInsertWithId() throws Exception {
         if(!allowInsertWithId())
@@ -503,7 +503,7 @@ public class TableDaoTest extends DataPreparer {
         });            
         
         assertEquals(4, plistx.size());
-    }*/
+    }
 
     private List<Person> doInTransaction(PersonDefinition p, boolean nestTrans) throws SQLException {
         List<Person> plist = super.dao.query(selectAll(p));

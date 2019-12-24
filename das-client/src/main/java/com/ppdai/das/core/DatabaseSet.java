@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ppdai.das.client.Hints;
 import com.ppdai.das.core.enums.DatabaseCategory;
 import com.ppdai.das.strategy.ShardingStrategy;
 
@@ -31,7 +32,8 @@ public class DatabaseSet {
 	private List<DataBase> slaveDbs = new ArrayList<DataBase>();
 	
 	private Set<String> readOnlyAllShards;
-	
+	private DasConfigure dasConfigure;
+
 	/**
 	 * The target DB set does not support shard
 	 * @param name
@@ -170,5 +172,15 @@ public class DatabaseSet {
 
 	public List<DataBase> getSlaveDbs(String shard) {
 	    return slaveDbByShard.containsKey(shard) ? new ArrayList<>(slaveDbByShard.get(shard)) : null;
+	}
+
+	public void mgrValidate(SelectionContext context) {
+		if(dasConfigure != null) {
+			dasConfigure.mgrValidate(this, context);
+		}
+	}
+
+	public void registerConfig(DasConfigure dasConfigure) {
+		this.dasConfigure = dasConfigure;
 	}
 }

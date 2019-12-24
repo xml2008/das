@@ -133,7 +133,8 @@ public class DalConnectionManager {
 	
 	private String select(String logicDbName, DatabaseSet dbSet, Hints hints, String shard, boolean isMaster, boolean isSelect, HaContext ha) throws DasException {
 	    SelectionContext context = new SelectionContext(config.getAppId(), logicDbName, hints, shard, isMaster, isSelect, ha);
-	    
+
+		dbSet.mgrValidate(context);
 	    if(shard == null) {
 	        context.setMasters(dbSet.getMasterDbs());
 	        context.setSlaves(dbSet.getSlaveDbs());

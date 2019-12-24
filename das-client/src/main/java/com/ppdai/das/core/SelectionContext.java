@@ -68,6 +68,11 @@ public class SelectionContext {
         return masterOnly;
     }
 
+    public SelectionContext setMasterOnly() {
+        this.masterOnly = true;
+        return this;
+    }
+
     public boolean isSelect() {
         return select;
     }

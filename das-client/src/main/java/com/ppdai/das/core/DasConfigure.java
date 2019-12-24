@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.ppdai.das.core.configure.DataSourceConfigure;
 import com.ppdai.das.core.configure.DataSourceConfigureProvider;
 import com.ppdai.das.core.task.TaskFactory;
@@ -25,8 +26,6 @@ public class DasConfigure {
     private ConnectionLocator locator;
     private TaskFactory facory;
     private DatabaseSelector selector;
-
-
     private MGRConfigReader mgrConfigReader;
 
     public DasConfigure(String appId, Map<String, DatabaseSet> databaseSets, DasLogger dalLogger,
@@ -43,24 +42,25 @@ public class DasConfigure {
             Map<String, List<MGRInfo>> mgrConfig = mgrConfigReader.readMGRConfig();
             registerMGR(mgrConfig);
             checkMaster(mgrConfig);
+
+            if(!mgrConfig.isEmpty()) {
+                ScheduledExecutorService executer = Executors.newScheduledThreadPool(3, r -> {
+                    Thread thread = new Thread(r, "Das-MGRDatabaseConfig@start: " + new Date());
+                    thread.setDaemon(true);
+                    return thread;
+                });
+                executer.scheduleWithFixedDelay(() -> {
+                    try {
+                        Map<String, List<MGRInfo>> mgrConfigCheck = mgrConfigReader.readMGRConfig();
+                        checkMaster(mgrConfigCheck);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }, 5, 5, TimeUnit.SECONDS);
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
-
-        ScheduledExecutorService executer = Executors.newScheduledThreadPool(3, r -> {
-            Thread thread = new Thread(r, "Das-MGRDatabaseConfig@start: " + new Date());
-            thread.setDaemon(true);
-            return thread;
-        });
-        executer.scheduleWithFixedDelay(() -> {
-            try {
-                Map<String, List<MGRInfo>> mgrConfig = mgrConfigReader.readMGRConfig();
-                checkMaster(mgrConfig);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, 5, 5, TimeUnit.SECONDS);
-
     }
 
     private List<DatabaseSet> mgrDatabaseSet() {
@@ -110,6 +110,7 @@ public class DasConfigure {
 
     private void registerMGR(Map<String, List<MGRInfo>> mgrConfig) {
         for (DatabaseSet set : nonMGRMySQLDatabaseSet()) {
+            set.registerConfig(this);
             for (Map.Entry<String, DataBase> db : set.getDatabases().entrySet()) {
                 String hostURL = locator.getProvider().getDataSourceConfigure(db.getKey()).getConnectionUrl();
                 if (Strings.isNullOrEmpty(hostURL)) {//TODO:
@@ -120,12 +121,40 @@ public class DasConfigure {
                     List<String> host = Splitter.on(":").splitToList(split.get(1));
                     MGRInfo mgr = findMgrIdByHost(mgrConfig, host.get(0));
                     if (mgr != null) {
-                        db.getValue().setMrgId(mgr.id);
-                        db.getValue().setMrgNamed(mgr.name);
-                        db.getValue().setHost(mgr.host);
+                        DataBase dataBase = db.getValue();
+                        dataBase.setMrgId(mgr.id);
+                        dataBase.setMrgNamed(mgr.name);
+                        dataBase.setHost(mgr.host);
+
+                        mgr.addDataBase(dataBase);
                     }
                 }
             }
+        }
+    }
+
+    public void mgrValidate(DatabaseSet dbSet, SelectionContext context) {
+
+        long transactionsInQueue = -1;
+        String shard = context.getShard();
+        if(shard == null) {
+            for(DataBase dataBase : dbSet.getDatabases().values()){
+                transactionsInQueue = mgrConfigReader.mgrValidate(dataBase.getConnectionString());
+                if(transactionsInQueue != -1) {
+                    break;
+                }
+            }
+        } else {
+            for(DataBase dataBase :  Iterables.concat(dbSet.getMasterDbs(shard), dbSet.getSlaveDbs(shard))){
+                transactionsInQueue = mgrConfigReader.mgrValidate(dataBase.getConnectionString());
+                if(transactionsInQueue != -1) {
+                    break;
+                }
+            }
+        }
+
+       if (transactionsInQueue > 0) {//Use master, because data is not sync to slave yet
+            context.setMasterOnly();
         }
     }
 
@@ -136,6 +165,7 @@ public class DasConfigure {
         int port;
         String state;
         boolean isMaster;
+        List<DataBase> dataBases = new ArrayList<>();
 
         public MGRInfo(String name, String id, String host, int port, String state, boolean isMaster) {
             this.name = name;
@@ -144,6 +174,14 @@ public class DasConfigure {
             this.port = port;
             this.state = state;
             this.isMaster = isMaster;
+        }
+
+        public void addDataBases(List<DataBase> dbs) {
+             dataBases.addAll(dbs);
+        }
+
+        public void addDataBase(DataBase db) {
+            dataBases.add(db);
         }
 
         @Override
