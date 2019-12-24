@@ -11,8 +11,8 @@ public class DataBase {
 	private String sharding;
 	private String connectionString;
 
-	private String host = "";
-	private String mgrId= "";
+	private String host;
+	private String mgrId;
 	private String mgrState;
 	private String mgrRole;
 

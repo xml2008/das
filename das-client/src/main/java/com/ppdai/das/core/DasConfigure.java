@@ -64,19 +64,18 @@ public class DasConfigure {
     public void mgrValidate(DatabaseSet dbSet, SelectionContext context) {
         long transactionsInQueue = -1;
         String shard = context.getShard();
+        Iterable<DataBase> it = null;
         if(shard == null) {
-            for(DataBase dataBase : dbSet.getDatabases().values()){
-                transactionsInQueue = mgrConfigReader.mgrValidate(dataBase.getConnectionString());
-                if(transactionsInQueue != -1) {
-                    break;
-                }
-            }
+            it = dbSet.getDatabases().values().stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
         } else {
-            for(DataBase dataBase :  Iterables.concat(dbSet.getMasterDbs(shard), dbSet.getSlaveDbs(shard))){
-                transactionsInQueue = mgrConfigReader.mgrValidate(dataBase.getConnectionString());
-                if(transactionsInQueue != -1) {
-                    break;
-                }
+            Iterable<DataBase> master = dbSet.getMasterDbs(shard).stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
+            Iterable<DataBase> slaves = dbSet.getSlaveDbs(shard).stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
+            it = Iterables.concat(master, slaves);
+        }
+        for(DataBase dataBase : it){
+            transactionsInQueue = mgrConfigReader.mgrValidate(dataBase.getConnectionString());
+            if(transactionsInQueue != -1) {
+                break;
             }
         }
 
