@@ -82,6 +82,12 @@ public class DasConfigure {
         if (transactionsInQueue > 0) {//Use master, because data is not sync to slave yet
             context.setMasterOnly();
         }
+
+     /*   try {
+            TimeUnit.MILLISECONDS.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
     }
 
     public static class DatabaseSetChangeEvent {

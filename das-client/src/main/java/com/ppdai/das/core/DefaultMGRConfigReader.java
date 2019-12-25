@@ -80,21 +80,27 @@ public class DefaultMGRConfigReader {
                     }
                     MGRInfo info = infos.get(connectHost);
                     if(info != null) {
+                        if(db.isMaster()) {
+                            if(!"PRIMARY".equals(info.role) || !"ONLINE".equals(info.state) ) {
+                                db.setSlave();
+                                isChanged.set(true);
+                            }
+                        }
+                        if(!db.isMaster()) {
+                            if("PRIMARY".equals(info.role) && "ONLINE".equals(info.state) ) {
+                                db.setMaster();
+                                isChanged.set(true);
+                            }
+                        }
                         db.setMgrId(info.id)
                                 .setHost(info.host)
                                 .setMgrState(info.state)
                                 .setMgrRole(info.role);
-                        if ("PRIMARY".equals(info.role) && "ONLINE".equals(info.state) && !db.isMaster()) {
-                            db.setMaster();
-                            isChanged.set(true);
-                        }
-                        if ("SECONDARY".equals(info.role) && "ONLINE".equals(info.state) && db.isMaster()) {
-                            db.setSlave();
-                            isChanged.set(true);
-                        }
                     }
                 } catch (MySQLSyntaxErrorException ex) {
                     exceptionalSet.add(set);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             if(isChanged.get()) {

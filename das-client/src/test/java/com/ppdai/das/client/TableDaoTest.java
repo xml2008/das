@@ -15,6 +15,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +46,13 @@ public class TableDaoTest extends DataPreparer {
 
     @Parameters
     public static Collection data() {
-        return Arrays.asList(new Object[][]{
+       /*  Object[][] tests = new  Object[10000][2];
+         for(int i=0;i<10000;i++) {
+             tests[i]= new Object[] {MySql, true};
+         }
+
+         return Arrays.asList(tests);*/
+      return Arrays.asList(new Object[][]{
            //     {SqlServer, false},
                 {MySql, false},                
               //  {SqlServer, true},
@@ -110,7 +117,7 @@ public class TableDaoTest extends DataPreparer {
             logicDelDao.clearDeletionFlag(entities);
     }
 
-    @Test
+  /*  @Test
     public void testQueryById() throws Exception {
         for (int k = 0; k < TABLE_MODE; k++) {
             Person pk = new Person();
@@ -205,23 +212,44 @@ public class TableDaoTest extends DataPreparer {
             assertEquals(1, dao.countBySample(pk));
         }
     }
-
+*/
     @Test
     public void testInsertOne() throws Exception {
-        for(int k = 0; k < TABLE_MODE;k++) {
-            Person p = new Person();
-            p.setName("jerry");
-            p.setCountryID(k);
-            p.setCityID(k);
-            assertEquals(1, dao.insert(p));
-            p.setCountryID(null);
-            p.setCityID(null);
-            //TimeUnit.MILLISECONDS.sleep(10);
-            List<Person> plist = dao.queryBySample(p, Hints.hints().masterOnly());
-            assertNotNull(plist);
-            assertEquals(k + 1, plist.size());
+
+        for(long t =0;t<99999999;t++) {
+            try {
+              //  for (int k = 0; k < TABLE_MODE; k++) {
+                    System.out.println(new Date());
+                    Person p = new Person();
+                    p.setName("jerry");
+                    p.setCountryID(0);
+                    p.setCityID(0);
+                    Hints hints = Hints.hints().diagnose();
+                    assertEquals(1, dao.insert(p, hints));
+                    String s= "jdbc:mysql://";
+                    int ps = hints.getDiagnose().toString().indexOf(s);
+                    int ps2 = hints.getDiagnose().toString().indexOf("3406");
+                    System.out.println("insert:" + hints.getDiagnose().toString().substring(ps, ps2));
+
+                    p.setCountryID(null);
+                    p.setCityID(null);
+                    //TimeUnit.MILLISECONDS.sleep(10);
+                     Hints hints2 = Hints.hints().diagnose();
+                    List<Person> plist = dao.queryBySample(p, hints2);
+                    ps = hints2.getDiagnose().toString().indexOf(s);
+                    ps2 = hints2.getDiagnose().toString().indexOf("3406");
+                    System.out.println("query:" + hints2.getDiagnose().toString().substring(ps, ps2));
+                    assertNotNull(plist);
+//                    assertEquals(k + 1, plist.size());
+
+            }catch (Throwable tt) {
+                tt.printStackTrace();
+            }
+            TimeUnit.MILLISECONDS.sleep(1000);
         }
+
     }
+/*
 
     @Test
     public void testInsertWithId() throws Exception {
@@ -504,6 +532,7 @@ public class TableDaoTest extends DataPreparer {
         
         assertEquals(4, plistx.size());
     }
+*/
 
     private List<Person> doInTransaction(PersonDefinition p, boolean nestTrans) throws SQLException {
         List<Person> plist = super.dao.query(selectAll(p));
