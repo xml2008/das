@@ -20,7 +20,7 @@ import com.ppdai.das.util.ConvertUtilsTest;
   /*  AllSqlBuilderTests.class,
     AllStrategyTests.class,*/
     AllTableDaoTests.class,
-
+/*
     BatchCallBuilderTest.class,
     CallBuilderTest.class,
 
@@ -45,7 +45,7 @@ import com.ppdai.das.util.ConvertUtilsTest;
     ShardingManagerTest.class,
     RefreshableDataSourceTest.class,
     SqlBuilderSerializeTest.class,
-    SlaveFreshnessScannerMysqlTest.class,
+    SlaveFreshnessScannerMysqlTest.class,*/
 })
 public class AllDasClientTests {
 }

@@ -70,7 +70,7 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
             
             Set<String> allShards = new HashSet<>();
             for(int i = 0; i < mod; i++)
-                allShards.add(String.valueOf(i));
+                allShards.add(String.format(tableSuffixLengthFormat, i));
             
             setAllTableShards(allShards);
         }

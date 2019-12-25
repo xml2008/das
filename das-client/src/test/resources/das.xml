@@ -28,9 +28,9 @@
     </databaseSet>
 
     <!-- MySqlConditionDbTableShard -->
-    <databaseSet name="MySqlConditionDbTableShard" provider="mysqlProvider"  shardingStrategy="class=com.ppdai.das.strategy.AdvancedModStrategy;columns=CountryID;mod=2;tableColumns=CityID;tableMod=4;separator=_;shardedTables=person;tableSuffixLength=1;suffixLength=1">
-      <add  name="dal_shard_0" databaseType="Master" sharding="0" connectionString="dal_shard_0"/>
-      <add  name="dal_shard_1" databaseType="Master" sharding="1" connectionString="dal_shard_1"/>
+    <databaseSet name="MySqlConditionDbTableShard" provider="mysqlProvider"  shardingStrategy="class=com.ppdai.das.strategy.AdvancedModStrategy;columns=CountryID;mod=2;tableColumns=CityID;tableMod=4;separator=_;shardedTables=person;tableSuffixLength=2;suffixLength=2">
+      <add  name="dal_shard_0" databaseType="Master" sharding="00" connectionString="dal_shard_0"/>
+      <add  name="dal_shard_1" databaseType="Master" sharding="01" connectionString="dal_shard_1"/>
     </databaseSet>
 
     <!-- MySqlConditionDbShard -->

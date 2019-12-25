@@ -47,16 +47,16 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
     @Parameters
     public static Collection data() {
         return Arrays.asList(new Object[][]{
-                {SqlServer, new DefaultProvider(), false},
+             /*   {SqlServer, new DefaultProvider(), false},
                 {SqlServer, new ShardIdProvider(), false},
-                {SqlServer, new ShardValueProvider(), false},
+                {SqlServer, new ShardValueProvider(), false},*/
                 {MySql, new DefaultProvider(), false},
                 {MySql, new ShardIdProvider(), false},
                 {MySql, new ShardValueProvider(), false},
 
-                {SqlServer, new DefaultProvider(), true},
+              /*  {SqlServer, new DefaultProvider(), true},
                 {SqlServer, new ShardIdProvider(), true},
-                {SqlServer, new ShardValueProvider(), true},
+                {SqlServer, new ShardValueProvider(), true},*/
                 {MySql, new DefaultProvider(), true},
                 {MySql, new ShardIdProvider(), true},
                 {MySql, new ShardValueProvider(), true},
@@ -185,7 +185,7 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
     }
     
     public Hints hints(int i, int j) {
-        return new Hints().inShard(i).inTableShard(j);
+        return new Hints().inShard(String.format("%02d",i )).inTableShard(String.format("%02d",j ));
     }
 
 
@@ -201,14 +201,14 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
             for (int j = 0; j < TABLE_MODE; j++) {
                 String[] statements = new String[TABLE_MODE];
                 for (int k = 0; k < TABLE_MODE; k++) {
-                    statements[k] = String.format("INSERT INTO Person_%d(PeopleID, Name, CountryID, CityID, ProvinceID) VALUES(%d, 'test', %d, %d, 1)", j, k + 1, i, j);
+                    statements[k] = String.format("INSERT INTO Person_%02d(PeopleID, Name, CountryID, CityID, ProvinceID) VALUES(%d, 'test', %d, %d, 1)", j, k + 1, i, j);
                 }
                 
                 if(!allowInsertWithId())
                     statements = DbSetupUtil.handle(String.format("Person_%d", j), statements);
                 
                 BatchUpdateBuilder builder = new BatchUpdateBuilder(statements);
-                builder.hints().inShard(i);
+                builder.hints().inShard(String.format("%02d", i));
                 super.dao.batchUpdate(builder);
             }
         }
@@ -225,12 +225,12 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
         for (int i = 0; i < DB_MODE; i++) {
             String[] statements = new String[TABLE_MODE + 1];
             for (int j = 0; j < TABLE_MODE; j++) {
-                statements[j] = "DELETE FROM " + TABLE_NAME + "_" + j;
+                statements[j] = "DELETE FROM " + TABLE_NAME + "_" + String.format("%02d", j);
             }
             statements[4] = "DELETE FROM " + TABLE_NAME;
 
             BatchUpdateBuilder builder = new BatchUpdateBuilder(statements);
-            builder.hints().inShard(i);
+            builder.hints().inShard(String.format("%02d", i));
             super.dao.batchUpdate(builder);
         }
     }
@@ -407,14 +407,14 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
     }
     
     private long count(int i, int j) throws SQLException {
-        PersonDefinition p = Person.PERSON.inShard(String.valueOf(j));
+        PersonDefinition p = Person.PERSON.inShard(String.valueOf(String.format("%02d",j )));
         
         SqlBuilder sb = select("count(1)").from(p).intoObject();
         
         if(allowLogicDeletion)
             sb.where(logicDelDao.getActiveCondition(p));
 
-        sb.hints().inShard(i);
+        sb.hints().inShard(String.format("%02d",i ));
         return ((Number)super.dao.queryObject(sb)).longValue();
     }
 
@@ -426,7 +426,7 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
         if(allowLogicDeletion)
             sb.where(logicDelDao.getActiveCondition(p));
 
-        sb.hints().inShard(i);
+        sb.hints().inShard(String.format("%02d",i ));
         return super.dao.query(sb);
     }
 
