@@ -17,8 +17,8 @@ import com.ppdai.das.util.ConvertUtilsTest;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-    AllSqlBuilderTests.class,
-    AllStrategyTests.class,
+  /*  AllSqlBuilderTests.class,
+    AllStrategyTests.class,*/
     AllTableDaoTests.class,
 
     BatchCallBuilderTest.class,
