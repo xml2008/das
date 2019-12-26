@@ -22,24 +22,24 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
     public static final String TABLE_MOD = "tableMod";
 
     /**
-     * Key used to declared table shard suffixLength
+     * Key used to declared table shard table 0 padding
      */
-    public static final String TABLE_SUFFIX_LENGTH = "tableSuffixLength";
+    private static final String TABLE_ZERO_PADDING = "tableZeroPadding";
 
     /**
-     * Table shard suffix format, default 1.
+     * Table shard 0 padding format, default 1.
      */
-    private String tableSuffixLengthFormat = "%01d";
+    private String tableZeroPaddingFormat = "%01d";
 
     /**
-     * Key used to declared DB shard suffixLength
+     * Key used to declared DB shard 0 padding
      */
-    public static final String SUFFIX_LENGTH = "suffixLength";
+    private static final String ZERO_PADDING = "zeroPadding";
 
     /**
-     * DB shard suffix format, default 1.
+     * DB shard 0 padding format, default 1.
      */
-    private String suffixLengthFormat = "%01d";
+    private String zeroPaddingFormat = "%01d";
     
     private ModShardLocator<ConditionContext> dbLoactor;
     private ModShardLocator<TableConditionContext> tableLoactor;
@@ -52,8 +52,8 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
             if(!settings.containsKey(MOD))
                 throw new IllegalArgumentException("Property " + MOD + " is required for shard by database");
 
-            if(settings.containsKey(SUFFIX_LENGTH))
-                suffixLengthFormat = "%0" + Integer.parseInt(settings.get(SUFFIX_LENGTH)) + "d";
+            if(settings.containsKey(ZERO_PADDING))
+                zeroPaddingFormat = "%0" + Integer.parseInt(settings.get(ZERO_PADDING)) + "d";
 
             dbLoactor = new ModShardLocator<>(Integer.parseInt(settings.get(MOD)));
         }
@@ -62,15 +62,15 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
             if(!settings.containsKey(TABLE_MOD))
                 throw new IllegalArgumentException("Property " + TABLE_MOD + " is required for shard by table");
 
-            if(settings.containsKey(TABLE_SUFFIX_LENGTH))
-                tableSuffixLengthFormat = "%0" + Integer.parseInt(settings.get(TABLE_SUFFIX_LENGTH)) + "d";
+            if(settings.containsKey(TABLE_ZERO_PADDING))
+                tableZeroPaddingFormat = "%0" + Integer.parseInt(settings.get(TABLE_ZERO_PADDING)) + "d";
 
             Integer mod = Integer.parseInt(settings.get(TABLE_MOD));
             tableLoactor = new ModShardLocator<>(mod);
             
             Set<String> allShards = new HashSet<>();
             for(int i = 0; i < mod; i++)
-                allShards.add(String.format(tableSuffixLengthFormat, i));
+                allShards.add(String.format(tableZeroPaddingFormat, i));
             
             setAllTableShards(allShards);
         }
@@ -79,25 +79,25 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
     @Override
     public Set<String> locateDbShardsByValue(ShardingContext ctx, Object shardValue) {
         Set<String> original = dbLoactor.locateByValue(shardValue);
-        return applySuffix(original, suffixLengthFormat);
+        return applySuffix(original, zeroPaddingFormat);
     }
 
     @Override
     public Set<String> locateDbShards(ConditionContext ctx) {
         Set<String> original = dbLoactor.locateShards(ctx);
-        return applySuffix(original, suffixLengthFormat);
+        return applySuffix(original, zeroPaddingFormat);
     }
 
     @Override
     public Set<String> locateTableShardsByValue(TableShardingContext ctx, Object tableShardValue) {
         Set<String> original = tableLoactor.locateByValue(tableShardValue);
-        return applySuffix(original, tableSuffixLengthFormat);
+        return applySuffix(original, tableZeroPaddingFormat);
     }
 
     @Override
     public Set<String> locateTableShards(TableConditionContext ctx) {
         Set<String> original = tableLoactor.locateShards(ctx);
-        return applySuffix(original, tableSuffixLengthFormat);
+        return applySuffix(original, tableZeroPaddingFormat);
     }
 
     private Set<String> applySuffix(Set<String> original, String format) {
