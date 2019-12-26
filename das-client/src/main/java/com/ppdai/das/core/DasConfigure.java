@@ -57,37 +57,38 @@ public class DasConfigure {
         }
     }
 
+    public void updateMGRInfo() {
+        try {
+            mgrConfigReader.updateMGRInfo();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private List<DatabaseSet> mySQLDatabaseSet() {
         return databaseSets.values().stream().filter(e ->  e.getDatabaseCategory() == MySql).collect(Collectors.toList());
     }
 
     public void mgrValidate(DatabaseSet dbSet, SelectionContext context) {
+        if(dbSet.getDatabaseCategory() != MySql) {
+            return;
+        }
+
         long transactionsInQueue = -1;
         String shard = context.getShard();
         Iterable<DataBase> it = null;
         if(shard == null) {
-            it = dbSet.getDatabases().values().stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
+            it = dbSet.getSlaveDbs().stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
         } else {
-            Iterable<DataBase> master = dbSet.getMasterDbs(shard).stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
-            Iterable<DataBase> slaves = dbSet.getSlaveDbs(shard).stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
-            it = Iterables.concat(master, slaves);
+            it = dbSet.getSlaveDbs(shard).stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
         }
         for(DataBase dataBase : it){
             transactionsInQueue = mgrConfigReader.mgrValidate(dataBase.getConnectionString());
-            if(transactionsInQueue != -1) {
+            if(transactionsInQueue != -1 || transactionsInQueue > 0) {
+                context.setMasterOnly();
                 break;
             }
         }
-
-        if (transactionsInQueue > 0) {//Use master, because data is not sync to slave yet
-            context.setMasterOnly();
-        }
-
-     /*   try {
-            TimeUnit.MILLISECONDS.sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
     }
 
     public static class DatabaseSetChangeEvent {

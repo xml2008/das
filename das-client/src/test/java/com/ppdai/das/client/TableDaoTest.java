@@ -222,6 +222,7 @@ public class TableDaoTest extends DataPreparer {
             try {
               //  for (int k = 0; k < TABLE_MODE; k++) {
                     System.out.println(new Date());
+                    long s1 = System.currentTimeMillis();
                     Person p = new Person();
                     p.setName("jerry");
                     p.setCountryID(0);
@@ -235,13 +236,15 @@ public class TableDaoTest extends DataPreparer {
 
                     p.setCountryID(null);
                     p.setCityID(null);
-                    TimeUnit.MILLISECONDS.sleep(80);
+                 //   TimeUnit.MILLISECONDS.sleep(80);
                      Hints hints2 = Hints.hints().diagnose();
                     List<Person> plist = dao.queryBySample(p, hints2);
                     ps = hints2.getDiagnose().toString().indexOf(s);
                     ps2 = hints2.getDiagnose().toString().indexOf("3406");
                     System.out.println("query:" + hints2.getDiagnose().toString().substring(ps, ps2));
+                   long s2 = System.currentTimeMillis() -s1;
                     assertNotNull(plist);
+
 //                    assertEquals(k + 1, plist.size());
 
             }catch (Throwable tt) {

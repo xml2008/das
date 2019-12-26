@@ -126,6 +126,7 @@ public class DalConnectionManager {
 			DbMeta meta = DbMeta.createIfAbsent(allInOneKey, dbSet.getDatabaseCategory(), conn);
 			return new DalConnection(conn, isMaster, shardId, meta);
 		} catch (Throwable e) {
+			config.updateMGRInfo();
 			throw new DasException(ErrorCode.CantGetConnection, e, allInOneKey);
 		}
 	}
