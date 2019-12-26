@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import com.ppdai.das.core.DasDiagnose;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -117,7 +118,7 @@ public class TableDaoTest extends DataPreparer {
             logicDelDao.clearDeletionFlag(entities);
     }
 
-  /*  @Test
+ /* @Test
     public void testQueryById() throws Exception {
         for (int k = 0; k < TABLE_MODE; k++) {
             Person pk = new Person();
@@ -211,9 +212,10 @@ public class TableDaoTest extends DataPreparer {
             pk.setCityID(j);
             assertEquals(1, dao.countBySample(pk));
         }
-    }
-*/
+    }*/
+
     @Test
+    //@Ignore
     public void testInsertOne() throws Exception {
 
         for(long t =0;t<99999999;t++) {
@@ -233,7 +235,7 @@ public class TableDaoTest extends DataPreparer {
 
                     p.setCountryID(null);
                     p.setCityID(null);
-                    //TimeUnit.MILLISECONDS.sleep(10);
+                    TimeUnit.MILLISECONDS.sleep(80);
                      Hints hints2 = Hints.hints().diagnose();
                     List<Person> plist = dao.queryBySample(p, hints2);
                     ps = hints2.getDiagnose().toString().indexOf(s);
@@ -249,6 +251,7 @@ public class TableDaoTest extends DataPreparer {
         }
 
     }
+
 /*
 
     @Test
@@ -533,6 +536,7 @@ public class TableDaoTest extends DataPreparer {
         assertEquals(4, plistx.size());
     }
 */
+
 
     private List<Person> doInTransaction(PersonDefinition p, boolean nestTrans) throws SQLException {
         List<Person> plist = super.dao.query(selectAll(p));

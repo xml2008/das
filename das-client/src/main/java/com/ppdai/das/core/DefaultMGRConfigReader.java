@@ -31,6 +31,10 @@ public class DefaultMGRConfigReader {
             "SELECT COUNT_TRANSACTIONS_IN_QUEUE " +
             "FROM performance_schema.replication_group_member_stats";
 
+    private static final String TRANSACTIONS_BEHIND =
+            "SELECT transactions_behind " +
+            "FROM sys.gr_member_routing_candidate_status";
+
     private List<DatabaseSet> mgrDatabaseSet = new ArrayList<>();
     private ConnectionLocator locator;
 
@@ -126,7 +130,6 @@ public class DefaultMGRConfigReader {
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(TRANSACTIONS)) {
             while (rs.next()) {
-                //Retrieve by column name
                 long count = rs.getLong("COUNT_TRANSACTIONS_IN_QUEUE");
                 return count;
             }
