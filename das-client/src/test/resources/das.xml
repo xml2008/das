@@ -28,11 +28,18 @@
     </databaseSet>
 
     <!-- MySqlConditionDbTableShard -->
-    <databaseSet name="MySqlConditionDbTableShard" provider="mysqlProvider"  shardingStrategy="class=com.ppdai.das.strategy.AdvancedModStrategy;columns=CountryID;mod=2;tableColumns=CityID;tableMod=4;separator=_;shardedTables=person;
-                                                                                              tableZeroPadding=2;zeroPadding=2">
-      <add  name="dal_shard_0" databaseType="Master" sharding="00" connectionString="dal_shard_0"/>
-      <add  name="dal_shard_1" databaseType="Master" sharding="01" connectionString="dal_shard_1"/>
+    <databaseSet name="MySqlConditionDbTableShard" provider="mysqlProvider"  shardingStrategy="class=com.ppdai.das.strategy.AdvancedModStrategy;columns=CountryID;mod=2;tableColumns=CityID;tableMod=4;separator=_;shardedTables=person">
+      <add  name="dal_shard_0" databaseType="Master" sharding="0" connectionString="dal_shard_0"/>
+      <add  name="dal_shard_1" databaseType="Master" sharding="1" connectionString="dal_shard_1"/>
     </databaseSet>
+
+      <!-- MySqlConditionDbTableShard 2Zero -->
+    <databaseSet name="MySqlConditionDbTableShard2Zero" provider="mysqlProvider"  shardingStrategy="class=com.ppdai.das.strategy.AdvancedModStrategy;columns=CountryID;mod=2;tableColumns=CityID;tableMod=4;separator=_;shardedTables=person;
+                                                                                                  tableZeroPadding=2;zeroPadding=2">
+          <add  name="dal_shard_0" databaseType="Master" sharding="00" connectionString="dal_shard_0"/>
+          <add  name="dal_shard_1" databaseType="Master" sharding="01" connectionString="dal_shard_1"/>
+    </databaseSet>
+
 
     <!-- MySqlConditionDbShard -->
     <databaseSet name="MySqlConditionDbShard" provider="mysqlProvider"  shardingStrategy="class=com.ppdai.das.strategy.AdvancedModStrategy;columns=CountryID;mod=2;">
@@ -49,6 +56,13 @@
     <databaseSet name="SqlSvrConditionDbTableShard" provider="sqlProvider"  shardingStrategy="class=com.ppdai.das.strategy.AdvancedModStrategy;columns=CountryID;mod=2;tableColumns=CityID;tableMod=4;separator=_;shardedTables=person">
       <add  name="sql_shard_0" databaseType="Master" sharding="0" connectionString="sql_shard_0"/>
       <add  name="sql_shard_1" databaseType="Master" sharding="1" connectionString="sql_shard_1"/>
+    </databaseSet>
+
+    <!-- SqlSvrConditionDbTableShard 2 zero -->
+    <databaseSet name="SqlSvrConditionDbTableShard2Zero" provider="sqlProvider"  shardingStrategy="class=com.ppdai.das.strategy.AdvancedModStrategy;columns=CountryID;mod=2;tableColumns=CityID;tableMod=4;separator=_;shardedTables=person;
+                                                                                                  tableZeroPadding=2;zeroPadding=2">
+          <add  name="sql_shard_0" databaseType="Master" sharding="00" connectionString="sql_shard_0"/>
+          <add  name="sql_shard_1" databaseType="Master" sharding="01" connectionString="sql_shard_1"/>
     </databaseSet>
 
     <!-- SqlSvrConditionDbShard -->

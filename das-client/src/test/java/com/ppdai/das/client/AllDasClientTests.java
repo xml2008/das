@@ -17,10 +17,10 @@ import com.ppdai.das.util.ConvertUtilsTest;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-  /*  AllSqlBuilderTests.class,
-    AllStrategyTests.class,*/
+AllSqlBuilderTests.class,
+    AllStrategyTests.class,
     AllTableDaoTests.class,
-/*
+
     BatchCallBuilderTest.class,
     CallBuilderTest.class,
 
@@ -28,7 +28,7 @@ import com.ppdai.das.util.ConvertUtilsTest;
     DasClientDBTest.class,
     DasClientTableTest.class,
     DasClientDbTableTest.class,
-
+    DasClientDbTableZeroTest.class,
     DasClientDiagnoseTest.class,
 
     SqlBuilderDBShardTest.class,
@@ -45,7 +45,7 @@ import com.ppdai.das.util.ConvertUtilsTest;
     ShardingManagerTest.class,
     RefreshableDataSourceTest.class,
     SqlBuilderSerializeTest.class,
-    SlaveFreshnessScannerMysqlTest.class,*/
+    SlaveFreshnessScannerMysqlTest.class,
 })
 public class AllDasClientTests {
 }

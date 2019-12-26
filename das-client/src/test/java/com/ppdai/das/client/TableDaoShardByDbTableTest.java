@@ -47,16 +47,16 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
     @Parameters
     public static Collection data() {
         return Arrays.asList(new Object[][]{
-             /*   {SqlServer, new DefaultProvider(), false},
+                {SqlServer, new DefaultProvider(), false},
                 {SqlServer, new ShardIdProvider(), false},
-                {SqlServer, new ShardValueProvider(), false},*/
+                {SqlServer, new ShardValueProvider(), false},
                 {MySql, new DefaultProvider(), false},
                 {MySql, new ShardIdProvider(), false},
                 {MySql, new ShardValueProvider(), false},
 
-              /*  {SqlServer, new DefaultProvider(), true},
+                {SqlServer, new DefaultProvider(), true},
                 {SqlServer, new ShardIdProvider(), true},
-                {SqlServer, new ShardValueProvider(), true},*/
+                {SqlServer, new ShardValueProvider(), true},
                 {MySql, new DefaultProvider(), true},
                 {MySql, new ShardIdProvider(), true},
                 {MySql, new ShardValueProvider(), true},
@@ -73,7 +73,7 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
         else
             dao = new TableDao<>(getDbName(dbCategory), Person.class);
     }
-    
+
     private TableDao<Person> buildDao() throws Exception {
         DeletionFieldSupport<Person> support = new DeletionFieldSupport<>(Person.class, Person.PERSON.ProvinceID, DELETED, ACTIVE);
         logicDelDao = new LogicDeletionDao<>(getDbName(dbCategory), Person.class, support);
@@ -94,7 +94,7 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
     public String getDbName(DatabaseCategory dbCategory) {
         return dbCategory.equals(MySql) ? DATABASE_LOGIC_NAME_MYSQL : DATABASE_LOGIC_NAME_SQLSVR;
     }
-    
+
     public static interface ShardInfoProvider {
         void process(Person p, Hints hints, int dbShard, int tableShard);
         void where(SqlBuilder sb, int dbShard, int tableShard);
@@ -102,7 +102,7 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
         SqlBuilder update(int dbShard, int tableShard);
         void inShard(Hints hints, int dbShard);
     }
-    
+
     private static class DefaultProvider implements ShardInfoProvider {
         public void process(Person p, Hints hints, int dbShard, int tableShard) {
             p.setCountryID(dbShard);
@@ -112,59 +112,59 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
         public void where(SqlBuilder sb, int dbShard, int tableShard) {
             sb.and(p.CountryID.eq(dbShard)).and(p.CityID.eq(tableShard));
         }
-        
+
         public SqlBuilder insert(int dbShard, int tableShard) {
             return insertInto(p, p.Name, p.CountryID, p.CityID).values(p.Name.of("Jerry"), p.CountryID.of(dbShard), p.CityID.of(tableShard));
         }
-        
+
         public SqlBuilder update(int dbShard, int tableShard) {
             return SqlBuilder.update(Person.PERSON).set(p.Name.eq("Tom"), p.CountryID.eq(dbShard), p.CityID.eq(tableShard)).where(p.PeopleID.eq(tableShard+1));
         }
-        
+
         public void inShard(Hints hints, int dbShard) {}
     }
-    
+
     private static class ShardIdProvider implements ShardInfoProvider {
         public void process(Person p, Hints hints, int dbShard, int tableShard) {
-            hints.inShard(String.format("%02d",dbShard)).inTableShard(String.format("%02d",tableShard));
+            hints.inShard(dbShard).inTableShard(tableShard);
         }
 
         public void where(SqlBuilder sb, int dbShard, int tableShard) {
             sb.hints().inShard(dbShard).inTableShard(tableShard);
         }
-        
+
         public SqlBuilder insert(int dbShard, int tableShard) {
             SqlBuilder builder = insertInto(p, p.Name).values(p.Name.of("Jerry"));
             builder.hints().inShard(dbShard).inTableShard(tableShard);
             return builder;
         }
-        
+
         public SqlBuilder update(int dbShard, int tableShard) {
             SqlBuilder builder = SqlBuilder.update(Person.PERSON).set(p.Name.eq("Tom")).where(p.PeopleID.eq(tableShard+1));
             builder.hints().inShard(dbShard).inTableShard(tableShard);
             return builder;
         }
-        
+
         public void inShard(Hints hints, int dbShard) {
-            hints.inShard(String.format("%02d",dbShard));
+            hints.inShard(dbShard);
         }
     }
-    
+
     private static class ShardValueProvider implements ShardInfoProvider {
         public void process(Person p, Hints hints, int dbShard, int tableShard) {
-            hints.shardValue(String.format("%02d",dbShard)).tableShardValue(String.format("%02d",tableShard));
+            hints.shardValue(dbShard).tableShardValue(tableShard);
         }
 
         public void where(SqlBuilder sb, int dbShard, int tableShard) {
             sb.hints().shardValue(dbShard).tableShardValue(tableShard);
         }
-        
+
         public SqlBuilder insert(int dbShard, int tableShard) {
             SqlBuilder builder = insertInto(p, p.Name).values(p.Name.of("Jerry"));
             builder.hints().shardValue(dbShard).tableShardValue(tableShard);
             return builder;
         }
-        
+
         public SqlBuilder update(int dbShard, int tableShard) {
             SqlBuilder builder = SqlBuilder.update(Person.PERSON).set(p.Name.eq("Tom")).where(p.PeopleID.eq(tableShard+1));
             builder.hints().shardValue(dbShard).tableShardValue(tableShard);
@@ -175,7 +175,7 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
             hints.shardValue(dbShard);
         }
     }
-    
+
     public void process(Person p, Hints hints, int i, int j) {
         provider.process(p, hints, i, j);
     }
@@ -183,9 +183,9 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
     public void where(SqlBuilder sb, int i, int j) {
         provider.where(sb, i, j);
     }
-    
+
     public Hints hints(int i, int j) {
-        return new Hints().inShard(String.format("%02d",i )).inTableShard(String.format("%02d",j ));
+        return new Hints().inShard(i).inTableShard(j);
     }
 
 
@@ -196,19 +196,19 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
     @Before
     public void setup() throws Exception {
         tearDown();
-        
+
         for (int i = 0; i < DB_MODE; i++) {
             for (int j = 0; j < TABLE_MODE; j++) {
                 String[] statements = new String[TABLE_MODE];
                 for (int k = 0; k < TABLE_MODE; k++) {
-                    statements[k] = String.format("INSERT INTO Person_%02d(PeopleID, Name, CountryID, CityID, ProvinceID) VALUES(%d, 'test', %d, %d, 1)", j, k + 1, i, j);
+                    statements[k] = String.format("INSERT INTO Person_%d(PeopleID, Name, CountryID, CityID, ProvinceID) VALUES(%d, 'test', %d, %d, 1)", j, k + 1, i, j);
                 }
-                
+
                 if(!allowInsertWithId())
                     statements = DbSetupUtil.handle(String.format("Person_%d", j), statements);
-                
+
                 BatchUpdateBuilder builder = new BatchUpdateBuilder(statements);
-                builder.hints().inShard(String.format("%02d", i));
+                builder.hints().inShard(i);
                 super.dao.batchUpdate(builder);
             }
         }
@@ -225,12 +225,12 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
         for (int i = 0; i < DB_MODE; i++) {
             String[] statements = new String[TABLE_MODE + 1];
             for (int j = 0; j < TABLE_MODE; j++) {
-                statements[j] = "DELETE FROM " + TABLE_NAME + "_" + String.format("%02d", j);
+                statements[j] = "DELETE FROM " + TABLE_NAME + "_" + j;
             }
             statements[4] = "DELETE FROM " + TABLE_NAME;
 
             BatchUpdateBuilder builder = new BatchUpdateBuilder(statements);
-            builder.hints().inShard(String.format("%02d", i));
+            builder.hints().inShard(i);
             super.dao.batchUpdate(builder);
         }
     }
@@ -277,45 +277,45 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
                 Hints hints = new Hints();
                 Person pk = new Person();
                 pk.setName("test");
-    
-                
+
+
                 process(pk, hints, i, j);
                 plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID), hints);
                 assertList(4, plist);
-                
+
                 plist = dao.queryBySample(pk, PageRange.atPage(2, 2, p.CityID, p.CountryID), hints);
                 assertList(2, plist);
-                
+
                 if(dbCategory == DatabaseCategory.MySql) {
                     plist = dao.queryBySample(pk, PageRange.atPage(3, 2), hints);
                     assertList(0, plist);
                 }
-            
+
                 plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID.asc()), hints);
                 assertList(4, plist);
                 assertOrder(plist, true);
-                
+
                 plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID.desc()), hints);
                 assertList(4, plist);
                 assertOrder(plist, false);
-                
+
                 plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID.asc(), p.CityID.desc()), hints);
                 assertList(4, plist);
                 assertOrder(plist, true);
             }
         }
     }
-    
+
     private void assertList(int size, List<Person> plist) {
         assertNotNull(plist);
         assertEquals(size, plist.size());
-        
+
         int id = -1;
         for(Person p: plist) {
             assertEquals("test", p.getName());
         }
     }
-    
+
     private void assertOrder(List<Person> plist, boolean asc) {
         int id = asc ? -1 : 10000;
         for(Person p: plist) {
@@ -325,7 +325,7 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
                 assertTrue(p.getPeopleID() < id);
         }
     }
-    
+
     @Test
     public void testInsertOne() throws Exception {
         for(int i = 0; i < DB_MODE;i++) {
@@ -400,33 +400,33 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
                 Hints hints = new Hints();
                 process(new Person(), hints, i, j);
                 assertEquals(TABLE_MODE, dao.insert(pl, hints));
-                
-                assertEquals(TABLE_MODE * 2, count(i, j));                
+
+                assertEquals(TABLE_MODE * 2, count(i, j));
             }
         }
     }
-    
+
     private long count(int i, int j) throws SQLException {
-        PersonDefinition p = Person.PERSON.inShard(String.valueOf(String.format("%02d",j )));
-        
+        PersonDefinition p = Person.PERSON.inShard(String.valueOf(j));
+
         SqlBuilder sb = select("count(1)").from(p).intoObject();
-        
+
         if(allowLogicDeletion)
             sb.where(logicDelDao.getActiveCondition(p));
 
-        sb.hints().inShard(String.format("%02d",i ));
+        sb.hints().inShard(i);
         return ((Number)super.dao.queryObject(sb)).longValue();
     }
 
     private List<Person> getAll(int i, int j) throws SQLException {
-        PersonDefinition p = Person.PERSON.inShard(String.format("%02d",j ));
-        
-        SqlBuilder sb = select("*").from(p.inShard(String.format("%02d",j ))).into(Person.class);
-        
+        PersonDefinition p = Person.PERSON.inShard(String.valueOf(j));
+
+        SqlBuilder sb = select("*").from(p.inShard(String.valueOf(j))).into(Person.class);
+
         if(allowLogicDeletion)
             sb.where(logicDelDao.getActiveCondition(p));
 
-        sb.hints().inShard(String.format("%02d",i ));
+        sb.hints().inShard(i);
         return super.dao.query(sb);
     }
 

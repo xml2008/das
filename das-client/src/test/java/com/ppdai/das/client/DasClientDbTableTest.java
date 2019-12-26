@@ -98,7 +98,7 @@ public class DasClientDbTableTest extends DataPreparer {
         
         public void inShard(Hints hints, int dbShard) {}
     }
-    
+
     private static class ShardIdProvider implements ShardInfoProvider {
         public void process(Person p, Hints hints, int dbShard, int tableShard) {
             hints.inShard(dbShard).inTableShard(tableShard);
