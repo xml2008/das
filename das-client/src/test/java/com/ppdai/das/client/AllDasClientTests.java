@@ -16,7 +16,6 @@ import com.ppdai.das.util.ConvertUtilsTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-
     AllSqlBuilderTests.class,
     AllStrategyTests.class,
     AllTableDaoTests.class,
@@ -28,7 +27,7 @@ import com.ppdai.das.util.ConvertUtilsTest;
     DasClientDBTest.class,
     DasClientTableTest.class,
     DasClientDbTableTest.class,
-
+    DasClientDbTableZeroTest.class,
     DasClientDiagnoseTest.class,
 
     SqlBuilderDBShardTest.class,
