@@ -126,7 +126,7 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
     
     private static class ShardIdProvider implements ShardInfoProvider {
         public void process(Person p, Hints hints, int dbShard, int tableShard) {
-            hints.inShard(dbShard).inTableShard(tableShard);
+            hints.inShard(String.format("%02d",dbShard)).inTableShard(String.format("%02d",tableShard));
         }
 
         public void where(SqlBuilder sb, int dbShard, int tableShard) {
@@ -146,13 +146,13 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
         }
         
         public void inShard(Hints hints, int dbShard) {
-            hints.inShard(dbShard);
+            hints.inShard(String.format("%02d",dbShard));
         }
     }
     
     private static class ShardValueProvider implements ShardInfoProvider {
         public void process(Person p, Hints hints, int dbShard, int tableShard) {
-            hints.shardValue(dbShard).tableShardValue(tableShard);
+            hints.shardValue(String.format("%02d",dbShard)).tableShardValue(String.format("%02d",tableShard));
         }
 
         public void where(SqlBuilder sb, int dbShard, int tableShard) {
@@ -419,9 +419,9 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
     }
 
     private List<Person> getAll(int i, int j) throws SQLException {
-        PersonDefinition p = Person.PERSON.inShard(String.valueOf(j));
+        PersonDefinition p = Person.PERSON.inShard(String.format("%02d",j ));
         
-        SqlBuilder sb = select("*").from(p.inShard(String.valueOf(j))).into(Person.class);
+        SqlBuilder sb = select("*").from(p.inShard(String.format("%02d",j ))).into(Person.class);
         
         if(allowLogicDeletion)
             sb.where(logicDelDao.getActiveCondition(p));
