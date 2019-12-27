@@ -4,12 +4,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.ppdai.das.client.Hints;
 import com.ppdai.das.core.enums.DatabaseCategory;
 import com.ppdai.das.strategy.ShardingStrategy;
 
@@ -32,7 +30,10 @@ public class DatabaseSet {
 	private List<DataBase> slaveDbs = new ArrayList<DataBase>();
 	
 	private Set<String> readOnlyAllShards;
-	private DasConfigure dasConfigure;
+
+	public DatabaseSet copy(Map<String, DataBase> newDbs) throws Exception {
+		return new DatabaseSet(this.name, this.provider, null, this.strategy, newDbs);
+	}
 
 	/**
 	 * The target DB set does not support shard
@@ -65,6 +66,8 @@ public class DatabaseSet {
 		initStrategy(shardStrategy);
 		initShards();
 	}
+
+
 
 	private void initStrategy(String shardStrategy) throws Exception {
 		if(shardStrategy == null || shardStrategy.length() == 0)
@@ -174,13 +177,4 @@ public class DatabaseSet {
 	    return slaveDbByShard.containsKey(shard) ? new ArrayList<>(slaveDbByShard.get(shard)) : null;
 	}
 
-	public void mgrValidate(SelectionContext context) {
-		if(dasConfigure != null) {
-			dasConfigure.mgrValidate(this, context);
-		}
-	}
-
-	public void registerConfig(DasConfigure dasConfigure) {
-		this.dasConfigure = dasConfigure;
-	}
 }

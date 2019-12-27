@@ -11,10 +11,22 @@ public class DataBase {
 	private String sharding;
 	private String connectionString;
 
-	private String host;
-	private String mgrId;
-	private String mgrState;
-	private String mgrRole;
+	private MGRInfo mgrInfo = new MGRInfo();
+
+	static public class MGRInfo {
+		String id;
+		String host;
+		String state;
+		String role;
+
+		public MGRInfo(String id, String host, String state, String role) {
+			this.id = id;
+			this.host = host;
+			this.state = state;
+			this.role = role;
+		}
+		public MGRInfo() {}
+	}
 
 	public DataBase(String name, 
 			boolean master, 
@@ -27,38 +39,38 @@ public class DataBase {
 	}
 
 	public DataBase setHost(String host) {
-		this.host = host;
+		this.mgrInfo.host = host;
 		return this;
 	}
 
 	public String getHost() {
-		return host;
+		return this.mgrInfo.host;
 	}
 
 	public String getMgrId() {
-		return mgrId;
+		return this.mgrInfo.id;
 	}
 
 	public DataBase setMgrId(String mgrId) {
-		this.mgrId = mgrId;
+		this.mgrInfo.id = mgrId;
 		return this;
 	}
 
 	public String getMgrState() {
-		return mgrState;
+		return this.mgrInfo.state;
 	}
 
 	public DataBase setMgrState(String mgrState) {
-		this.mgrState = mgrState;
+		this.mgrInfo.state = mgrState;
 		return this;
 	}
 
 	public String getMgrRole() {
-		return mgrRole;
+		return this.mgrInfo.role;
 	}
 
 	public DataBase setMgrRole(String mgrRole) {
-		this.mgrRole = mgrRole;
+		this.mgrInfo.role = mgrRole;
 		return this;
 	}
 

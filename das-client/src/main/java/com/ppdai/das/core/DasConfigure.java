@@ -3,17 +3,11 @@ package com.ppdai.das.core;
 import java.sql.Connection;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import com.ppdai.das.core.configure.DataSourceConfigure;
 import com.ppdai.das.core.configure.DataSourceConfigureProvider;
 import com.ppdai.das.core.task.TaskFactory;
 
-import static com.ppdai.das.core.enums.DatabaseCategory.MySql;
 
 public class DasConfigure {
     private String appId;
@@ -32,29 +26,8 @@ public class DasConfigure {
         this.locator = locator;
         this.facory = facory;
         this.selector = selector;
-        this.mgrConfigReader = new DefaultMGRConfigReader(mySQLDatabaseSet(), locator);
-
-        try {
-            mgrConfigReader.updateMGRInfo();
-
-            if(!mgrConfigReader.getMgrDatabaseSet().isEmpty()) {
-                mgrConfigReader.getMgrDatabaseSet().forEach(db -> db.registerConfig(this));
-                ScheduledExecutorService executer = Executors.newScheduledThreadPool(3, r -> {
-                    Thread thread = new Thread(r, "Das-MGRDatabaseConfig@start: " + new Date());
-                    thread.setDaemon(true);
-                    return thread;
-                });
-                executer.scheduleWithFixedDelay(() -> {
-                    try {
-                        mgrConfigReader.updateMGRInfo();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }, 3, 3, TimeUnit.SECONDS);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        this.mgrConfigReader = new DefaultMGRConfigReader(this.databaseSets, locator);
+        this.mgrConfigReader.start();
     }
 
     public void updateMGRInfo() {
@@ -65,30 +38,8 @@ public class DasConfigure {
         }
     }
 
-    private List<DatabaseSet> mySQLDatabaseSet() {
-        return databaseSets.values().stream().filter(e ->  e.getDatabaseCategory() == MySql).collect(Collectors.toList());
-    }
-
     public void mgrValidate(DatabaseSet dbSet, SelectionContext context) {
-        if(dbSet.getDatabaseCategory() != MySql) {
-            return;
-        }
-
-        long transactionsInQueue = -1;
-        String shard = context.getShard();
-        Iterable<DataBase> it = null;
-        if(shard == null) {
-            it = dbSet.getSlaveDbs().stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
-        } else {
-            it = dbSet.getSlaveDbs(shard).stream().filter(d -> d.getMgrId() != null).collect(Collectors.toList());
-        }
-        for(DataBase dataBase : it){
-            transactionsInQueue = mgrConfigReader.mgrValidate(dataBase.getConnectionString());
-            if(transactionsInQueue == -1 || transactionsInQueue > 0) {
-                context.setMasterOnly();
-                break;
-            }
-        }
+        mgrConfigReader.mgrValidate(dbSet, context);
     }
 
     public static class DatabaseSetChangeEvent {
