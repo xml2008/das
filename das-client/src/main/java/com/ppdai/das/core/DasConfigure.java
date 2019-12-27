@@ -84,7 +84,7 @@ public class DasConfigure {
         }
         for(DataBase dataBase : it){
             transactionsInQueue = mgrConfigReader.mgrValidate(dataBase.getConnectionString());
-            if(transactionsInQueue != -1 || transactionsInQueue > 0) {
+            if(transactionsInQueue == -1 || transactionsInQueue > 0) {
                 context.setMasterOnly();
                 break;
             }
