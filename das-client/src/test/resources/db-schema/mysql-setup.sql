@@ -1,19 +1,19 @@
 /*
-The MySQL scripts creates 2 databases and 10 tables as follows:
+The MySQL scripts creates 2 databases and 18 tables as follows:
 
 database: dal_shard_0
      tables: person,
-             person_0,
-             person_1,
-             person_2,
-             person_3,
+             person_0,person_00
+             person_1,person_01
+             person_2,person_02
+             person_3,person_03
 
 database: dal_shard_1
      tables: person,
-             person_0,
-             person_1,
-             person_2,
-             person_3,
+             person_0,person_00
+             person_1,person_01
+             person_2,person_02
+             person_3,person_03
 */
 drop database if exists dal_shard_0;
 create database dal_shard_0;
@@ -82,6 +82,62 @@ CREATE TABLE `person_2` (
 -- ----------------------------
 DROP TABLE IF EXISTS `person_3`;
 CREATE TABLE `person_3` (
+  `PeopleID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `CityID` int(11) DEFAULT NULL,
+  `ProvinceID` int(11) DEFAULT NULL,
+  `CountryID` int(11) DEFAULT NULL,
+  `DataChange_LastTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`PeopleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9811 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for person_00
+-- ----------------------------
+DROP TABLE IF EXISTS `person_00`;
+CREATE TABLE `person_00` (
+  `PeopleID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `CityID` int(11) DEFAULT NULL,
+  `ProvinceID` int(11) DEFAULT NULL,
+  `CountryID` int(11) DEFAULT NULL,
+  `DataChange_LastTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`PeopleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10861 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for person_01
+-- ----------------------------
+DROP TABLE IF EXISTS `person_01`;
+CREATE TABLE `person_01` (
+  `PeopleID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `CityID` int(11) DEFAULT NULL,
+  `ProvinceID` int(11) DEFAULT NULL,
+  `CountryID` int(11) DEFAULT NULL,
+  `DataChange_LastTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`PeopleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9685 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for person_02
+-- ----------------------------
+DROP TABLE IF EXISTS `person_02`;
+CREATE TABLE `person_02` (
+  `PeopleID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `CityID` int(11) DEFAULT NULL,
+  `ProvinceID` int(11) DEFAULT NULL,
+  `CountryID` int(11) DEFAULT NULL,
+  `DataChange_LastTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`PeopleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9748 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for person_03
+-- ----------------------------
+DROP TABLE IF EXISTS `person_03`;
+CREATE TABLE `person_03` (
   `PeopleID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(45) DEFAULT NULL,
   `CityID` int(11) DEFAULT NULL,
@@ -204,6 +260,63 @@ CREATE TABLE `person_3` (
   `DataChange_LastTime` datetime DEFAULT NULL,
   PRIMARY KEY (`PeopleID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=295 DEFAULT CHARSET=latin1;
+
+
+-- ----------------------------
+-- Table structure for person_00
+-- ----------------------------
+DROP TABLE IF EXISTS `person_00`;
+CREATE TABLE `person_00` (
+  `PeopleID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `CityID` int(11) DEFAULT NULL,
+  `ProvinceID` int(11) DEFAULT NULL,
+  `CountryID` int(11) DEFAULT NULL,
+  `DataChange_LastTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`PeopleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10861 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for person_01
+-- ----------------------------
+DROP TABLE IF EXISTS `person_01`;
+CREATE TABLE `person_01` (
+  `PeopleID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `CityID` int(11) DEFAULT NULL,
+  `ProvinceID` int(11) DEFAULT NULL,
+  `CountryID` int(11) DEFAULT NULL,
+  `DataChange_LastTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`PeopleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9685 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for person_02
+-- ----------------------------
+DROP TABLE IF EXISTS `person_02`;
+CREATE TABLE `person_02` (
+  `PeopleID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `CityID` int(11) DEFAULT NULL,
+  `ProvinceID` int(11) DEFAULT NULL,
+  `CountryID` int(11) DEFAULT NULL,
+  `DataChange_LastTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`PeopleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9748 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for person_03
+-- ----------------------------
+DROP TABLE IF EXISTS `person_03`;
+CREATE TABLE `person_03` (
+  `PeopleID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `CityID` int(11) DEFAULT NULL,
+  `ProvinceID` int(11) DEFAULT NULL,
+  `CountryID` int(11) DEFAULT NULL,
+  `DataChange_LastTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`PeopleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9811 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Procedure structure for SP_WITHOUT_OUT_PARAM
