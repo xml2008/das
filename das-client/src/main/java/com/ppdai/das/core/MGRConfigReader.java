@@ -31,6 +31,7 @@ public class MGRConfigReader {
     private static final String PRIMARY = "PRIMARY";
     private static final String SECONDARY = "SECONDARY";
     private static final String ONLINE = "ONLINE";
+    private static final String ERROR = "ERROR";
     private static final String MGR_INFO =
             "SELECT  MEMBER_ID, MEMBER_HOST, MEMBER_PORT, MEMBER_STATE, " +
             "IF(global_status.VARIABLE_NAME IS NOT NULL, " +
@@ -82,7 +83,7 @@ public class MGRConfigReader {
             if(set.getValue().getDatabaseCategory() != DatabaseCategory.MySql) {
                 continue;
             }
-            boolean isMGR = set.getValue().getDatabases().values().stream().allMatch(db -> mgrInfo(db.getConnectionString()) != null);
+            boolean isMGR = set.getValue().getDatabases().values().stream().allMatch(db -> !ERROR.equals(mgrInfo(db.getConnectionString()).state));
             if(isMGR) {
                 mrgSet.add(set.getKey());
             }
@@ -108,7 +109,7 @@ public class MGRConfigReader {
         } catch (Exception e) {
             logger.error("Exception occurs when query MGR info.", e);
         }
-        return null;
+        return new DataBase.MGRInfo(ERROR, connectionString, ERROR, ERROR);
     }
 
     private String url2Host(String url) {
