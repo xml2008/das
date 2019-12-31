@@ -52,6 +52,7 @@ public class DasConfigureFactory {
                 
                 LogEntry.init();
 
+                MGRConfigReader.init(configContext);
                 configContextRef.set(configContext);
                 initialzed.set(true);
             } catch (Throwable e) {

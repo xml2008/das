@@ -16,7 +16,6 @@ public class DasConfigure {
     private ConnectionLocator locator;
     private TaskFactory facory;
     private DatabaseSelector selector;
-    private DefaultMGRConfigReader mgrConfigReader;
 
     public DasConfigure(String appId, Map<String, DatabaseSet> databaseSets, DasLogger dalLogger,
             ConnectionLocator locator, TaskFactory facory, DatabaseSelector selector) {
@@ -26,20 +25,6 @@ public class DasConfigure {
         this.locator = locator;
         this.facory = facory;
         this.selector = selector;
-        this.mgrConfigReader = new DefaultMGRConfigReader(this.databaseSets, locator);
-        this.mgrConfigReader.start();
-    }
-
-    public void updateMGRInfo() {
-        try {
-            mgrConfigReader.updateMGRInfo();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void mgrValidate(DatabaseSet dbSet, SelectionContext context) {
-        mgrConfigReader.mgrValidate(dbSet, context);
     }
 
     public static class DatabaseSetChangeEvent {
@@ -154,5 +139,9 @@ public class DasConfigure {
 
     public DatabaseSelector getDatabaseSelector() {
         return selector;
+    }
+
+    Map<String, DatabaseSet> getDatabaseSets() {
+        return databaseSets;
     }
 }
