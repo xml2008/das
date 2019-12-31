@@ -914,7 +914,39 @@ public class DasClientTest extends DataPreparer {
         
         assertEquals(4, plistx.size());
     }
-    
+
+    @Test
+    public void testExceptionType() {
+        Person p = new Person();
+        p.setPeopleID(1);
+        List<Person> pl = new ArrayList<>();
+        pl.add(p);
+        pl.add(p);
+        try {
+            dao.insert(pl, hints().insertWithId());
+            fail();
+        }catch (Exception e) {
+            assertTrue(e instanceof SQLException);
+        }
+    }
+
+    @Test
+    public void testExceptionTypeInTransaction() {
+        Person p = new Person();
+        p.setPeopleID(1);
+        List<Person> pl = new ArrayList<>();
+        pl.add(p);
+        pl.add(p);
+        try {
+            dao.execute(() -> {
+                dao.insert(pl, hints().insertWithId());
+            });
+            fail();
+        }catch (Exception e) {
+            assertTrue(e instanceof SQLException);
+        }
+    }
+
     private void testTransactionNestBatchDelete(List<Person> plist) throws SQLException {
         PersonDefinition p = Person.PERSON;
         dao.execute(() -> {

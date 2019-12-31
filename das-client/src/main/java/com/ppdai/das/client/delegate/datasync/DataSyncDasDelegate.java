@@ -3,6 +3,7 @@ package com.ppdai.das.client.delegate.datasync;
 import com.ppdai.das.client.*;
 import com.ppdai.das.client.delegate.DasDelegate;
 
+import com.ppdai.das.core.DasException;
 import com.ppdai.das.service.DasOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,15 +34,15 @@ public class DataSyncDasDelegate implements DasDelegate {
         return delegate.getLogicDbName();
     }
 
-    private <T> T syncTemplate(Callable callable, Object entity, Hints hints, DasOperation dasOperation) {
+    private <T> T syncTemplate(Callable callable, Object entity, Hints hints, DasOperation dasOperation) throws SQLException{
         Object result = null;
         Exception exception = null;
         try {
             result = callable.call();
             return result == null ? null :(T) result;
-        } catch (Exception e) {
-            exception = e;
-            throw new RuntimeException(e);
+        } catch (Throwable e) {
+            DasException.handleError(e.getMessage(), e);
+            return null;
         } finally {
             DataSyncConfiguration dataSyncConfiguration = DataSyncConfiguration.getInstance();
             if(dataSyncConfiguration.isEnableSyncMode()) {
