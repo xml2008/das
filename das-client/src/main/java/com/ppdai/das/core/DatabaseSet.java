@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,9 +29,9 @@ public class DatabaseSet {
 
 	private List<DataBase> masterDbs = new ArrayList<DataBase>();
 	private List<DataBase> slaveDbs = new ArrayList<DataBase>();
-	
+	private Set<String> candidateDbs = new HashSet<>();
 	private Set<String> readOnlyAllShards;
-	
+
 	/**
 	 * The target DB set does not support shard
 	 * @param name
@@ -63,6 +64,11 @@ public class DatabaseSet {
 		initShards();
 	}
 
+
+	public Set<String> getCandidateDbs() {
+		return candidateDbs;
+	}
+
 	private void initStrategy(String shardStrategy) throws Exception {
 		if(shardStrategy == null || shardStrategy.length() == 0)
 			return;
@@ -83,10 +89,16 @@ public class DatabaseSet {
 		strategy.initialize(settings);
 	}
 
-	private void initShards() throws Exception {
+	public void initShards() throws Exception {
+		masterDbs.clear();
+		slaveDbs.clear();
+
 		if(strategy == null || strategy.isShardByDb() == false){
 			// Init with no shard support
 			for(DataBase db: databases.values()) {
+				if(candidateDbs.contains(db.getName())){
+					continue;
+				}
 				if(db.isMaster())
 					masterDbs.add(db);
 				else
@@ -95,6 +107,9 @@ public class DatabaseSet {
 		}else{
 			// Init map by shard
 			for(DataBase db: databases.values()) {
+				if(candidateDbs.contains(db.getName())){
+					continue;
+				}
 				Map<String, List<DataBase>> dbByShard = db.isMaster() ?
 						masterDbByShard : slaveDbByShard;
 					
@@ -167,4 +182,5 @@ public class DatabaseSet {
 	public List<DataBase> getSlaveDbs(String shard) {
 	    return slaveDbByShard.containsKey(shard) ? new ArrayList<>(slaveDbByShard.get(shard)) : null;
 	}
+
 }

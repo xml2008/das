@@ -8,10 +8,10 @@ public class DataBase {
 	private boolean master;
 	private String sharding;
 	private String connectionString;
-	
-	public DataBase(String name, 
-			boolean master, 
-			String sharding, 
+
+	public DataBase(String name,
+			boolean master,
+			String sharding,
 			String connectionString) {
 		this.name = name;
 		this.master = master;
@@ -42,6 +42,14 @@ public class DataBase {
 
 	public boolean isMaster() {
 		return master;
+	}
+
+	public void setMaster() {
+		master = true;
+	}
+
+	public void setSlave() {
+		master = false;
 	}
 
 	public String getSharding() {
