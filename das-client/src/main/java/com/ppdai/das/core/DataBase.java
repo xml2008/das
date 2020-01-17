@@ -19,6 +19,10 @@ public class DataBase {
 		this.connectionString = connectionString;
 	}
 
+	public DataBase deepCopy() {
+		return new DataBase(name, master, sharding,connectionString);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -59,4 +63,6 @@ public class DataBase {
 	public String getConnectionString() {
 		return connectionString;
 	}
+
+
 }

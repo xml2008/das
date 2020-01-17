@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.ppdai.das.core.DefaultClientConfigLoader;
-import com.ppdai.das.core.MGRConfigReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,27 +24,19 @@ import com.ppdai.das.core.helper.ServiceLoaderHelper;
 
 public class DasClientFactory {
     private static final Logger logger = LoggerFactory.getLogger(DasClientVersion.getLoggerName());
-    
+
     private static final AtomicReference<String> customerClientVersionRef = new AtomicReference<>();
     private static final AtomicReference<String> appIdRef = new AtomicReference<>();
 
     private static final AtomicBoolean initialzed = new AtomicBoolean(false);
     private static AtomicReference<ClientConfigureLoader> clientLoaderRef = new AtomicReference<>();
     private static final AtomicBoolean proxyModeRef = new AtomicBoolean(false);
-    
-    
+
+
 	public static DasClient getClient(String logicDbName) throws SQLException {
 	    initClientFactory();
 		return new DasClient(create(appIdRef.get(), logicDbName, customerClientVersionRef.get()));
 	}
-
-    /**
-     * Enable read/write splitting, if the datasource is MGR enabled.
-     * It is disabled by default.
-     */
-	public static void enableMGRReadWriteSplitting() {
-        MGRConfigReader.enableMGRReadWriteSplitting();
-    }
 
     private static DasDelegate create(String appId, String logicDbName, String customerClientVersion) {
         try {

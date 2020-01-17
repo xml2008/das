@@ -5,18 +5,15 @@ import com.google.common.base.Strings;
 import com.ppdai.das.core.enums.DatabaseCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -39,8 +36,8 @@ public class MGRConfigReader {
 
     private static final Logger logger = LoggerFactory.getLogger(MGRConfigReader.class);
 
-    private Map<String, DatabaseSet> mgrDatabaseSet;
-    private Set<String> mrgSet = new HashSet<>();
+    private Map<String, DatabaseSet> databaseSet;
+    private Map<String, DatabaseSet> mgrDatabaseSetSnapshot = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, String> connectionString2Host = new ConcurrentHashMap<>();
     private ConnectionLocator locator;
     private static AtomicBoolean readWriteSplitting = new AtomicBoolean(false);
@@ -58,34 +55,33 @@ public class MGRConfigReader {
             "LEFT JOIN performance_schema.global_status ON global_status.VARIABLE_NAME = 'group_replication_primary_member' " +
             "AND global_status.VARIABLE_VALUE = replication_group_members.MEMBER_ID;";
 
-    private static ScheduledExecutorService executer;
-
-    public static void init(DasConfigureContext configContext) {
-        executer = Executors.newScheduledThreadPool(configContext.getAppIds().size(), r -> {
-            Thread thread = new Thread(r, "MGRConfigReader@start: " + new Date());
-            thread.setDaemon(true);
-            return thread;
-        });
-        for(String appId: configContext.getAppIds()) {
-            DasConfigure dasConfigure = configContext.getConfigure(appId);
-            new MGRConfigReader(dasConfigure.getDatabaseSets(), dasConfigure.getConnectionLocator()).start();
-        }
-    }
+    private ScheduledExecutorService executer;
 
     public static void enableMGRReadWriteSplitting() {
         readWriteSplitting.set(true);
     }
 
-    MGRConfigReader(Map<String, DatabaseSet> mgrDatabaseSet, ConnectionLocator locator) {
-        this.mgrDatabaseSet = mgrDatabaseSet;
+    public MGRConfigReader(Map<String, DatabaseSet> mgrDatabaseSet, ConnectionLocator locator) {
+        this.databaseSet = mgrDatabaseSet;
         this.locator = locator;
+        createExecutor(mgrDatabaseSet.size());
     }
 
-    void start() {
+    private void createExecutor(int size) {
+        if(executer == null) {
+            executer = Executors.newScheduledThreadPool(size, r -> {
+                Thread thread = new Thread(r, "MGRConfigReader@start: " + new Date());
+                thread.setDaemon(true);
+                return thread;
+            });
+        }
+    }
+
+    public void start() {
         try {
             filterMGR();
             updateMGRInfo();
-            if(!mrgSet.isEmpty()) {
+            if(!mgrDatabaseSetSnapshot.isEmpty()) {
                 executer.scheduleWithFixedDelay(() -> {
                     try {
                         updateMGRInfo();
@@ -130,14 +126,14 @@ public class MGRConfigReader {
         }
     }
     
-    private void filterMGR() {
-        for(Map.Entry<String, DatabaseSet> set : mgrDatabaseSet.entrySet()) {
+    private void filterMGR() throws Exception {
+        for(Map.Entry<String, DatabaseSet> set : databaseSet.entrySet()) {
             if(set.getValue().getDatabaseCategory() != DatabaseCategory.MySql) {
                 continue;
             }
             boolean isMGR = set.getValue().getDatabases().values().stream().allMatch(db -> !mgrInfoDB(db.getConnectionString()).isEmpty());
             if(isMGR) {
-                mrgSet.add(set.getKey());
+                mgrDatabaseSetSnapshot.put(set.getKey(), set.getValue().deepCopy());
             }
         }
     }
@@ -148,9 +144,9 @@ public class MGRConfigReader {
             List<MGRInfo> mgrs = mgrInfoDB(db.getConnectionString());
             list.addAll(mgrs);
         }
-        Map<String, List<MGRInfo>> m = list.stream().collect(Collectors.groupingBy(MGRInfo::getHost));
+        Map<String, List<MGRInfo>> group = list.stream().collect(Collectors.groupingBy(MGRInfo::getHost));
         Map<String, MGRInfo> result = new HashMap<>();
-        for (Map.Entry<String, List<MGRInfo>> en : m.entrySet()) {
+        for (Map.Entry<String, List<MGRInfo>> en : group.entrySet()) {
             Optional<Map.Entry<String, String>> op = connectionString2Host.entrySet().stream().filter(e -> e.getValue().equals(en.getKey())).findFirst();
             if (op.isPresent()) {
                 result.put(op.get().getKey(), en.getValue().stream().findFirst().get());
@@ -199,7 +195,7 @@ public class MGRConfigReader {
             return isReadWriteSplitting ? new ReadWriteSplittingHandler() : new NonReadWriteSplittingHandler();
         }
 
-        abstract boolean handle(DatabaseSet set, MGRInfo info, DataBase db);
+        abstract void handle(DatabaseSet set, MGRInfo info, DataBase db);
     }
 
     /**
@@ -207,20 +203,12 @@ public class MGRConfigReader {
      */
     private static class NonReadWriteSplittingHandler extends MGRStatusHandler {
         @Override
-        boolean handle(DatabaseSet set, MGRInfo info, DataBase db) {
+        void handle(DatabaseSet set, MGRInfo info, DataBase db) {
             if(info != null && info.isOnlineMaster()) {
-                boolean isRecovered = set.getCandidateDbs().removeIf(dName -> dName.equals(db.getName()));
-                if(isRecovered) {//recovery master nodes
-                    db.setMaster();
-                    return true;
-                }
+                db.setMaster();
             } else {
-                if(!set.getCandidateDbs().contains(db.getName())){ //add candidates
-                    set.getCandidateDbs().add(db.getName());
-                    return true;
-                }
+                set.remove(db.getName());
             }
-            return false;
         }
     }
 
@@ -229,54 +217,38 @@ public class MGRConfigReader {
      */
     private static class ReadWriteSplittingHandler extends MGRStatusHandler {
         @Override
-        boolean handle(DatabaseSet set, MGRInfo info, DataBase db) {
+        void handle(DatabaseSet set, MGRInfo info, DataBase db) {
             if (info == null || !info.isOnline()) { //Exceptional node
-                set.getCandidateDbs().add(db.getName());
-                return true;
-
+                set.remove(db.getName());
             } else {
-                boolean isChanged = false;
-                if (db.isMaster()) {
-                    if (!info.isMaster()) {//master -> slave
-                        db.setSlave();
-                        isChanged = true;
-                    }
+                if(info.isMaster()) {
+                    db.setMaster();
                 } else {
-                    if (info.isMaster()) { //slave -> master
-                        db.setMaster();
-                        isChanged = true;
-                    }
+                    db.setSlave();
                 }
-                boolean isRecovered = set.getCandidateDbs().removeIf(dName -> dName.equals(db.getName()));
-                if(isRecovered) {//recovery nodes
-                    isChanged = true;
-                }
-                return isChanged;
             }
         }
     }
 
     void updateMGRInfo() throws Exception {
-        for (String setName : mgrDatabaseSet.keySet()) {
-            if (!mrgSet.contains(setName)) {
-                continue;
-            }
+        for (Map.Entry<String, DatabaseSet> ent : mgrDatabaseSetSnapshot.entrySet()) {
+            String setName = ent.getKey();
+            DatabaseSet set = ent.getValue();
+            DatabaseSet newSet = set.deepCopy();
+            Map<String, MGRInfo> infos = mgrInfoMerged(newSet);
 
-            DatabaseSet set = mgrDatabaseSet.get(setName);
-            Map<String, DataBase> dbSnapshot = new HashMap<>(set.getDatabases());
-            boolean isChanged = false;
-            Map<String, MGRInfo> infos = mgrInfoMerged(set);
-
-            for (DataBase db : dbSnapshot.values()) {
+            for (DataBase db : newSet.getDatabases().values()) {
                 MGRInfo info = infos.get(db.getConnectionString());
                 MGRStatusHandler handler = MGRStatusHandler.create(readWriteSplitting.get());
-                boolean isDBChanged = handler.handle(set, info, db);
-                if(isDBChanged) {
-                    isChanged = true;
-                }
+                handler.handle(newSet, info, db);
             }
-            if (isChanged) {
-                set.initShards();
+
+            newSet.initShards();
+            DatabaseSet current = databaseSet.get(setName);
+            //Replace databaseSet atomically if changed
+            if(!current.equals(newSet)){
+                databaseSet.replace(setName, newSet);
+                logger.info("Database changes for MGR: " + setName);
             }
         }
     }
