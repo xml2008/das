@@ -2,6 +2,7 @@ package com.ppdai.das.core;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import com.ppdai.das.core.enums.DatabaseCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
  * Two read/write modes:
  * 1: Disable read/write splitting mode
  *    All read/write requests will be routed the single master, no slaves.
- * 2: Disable read/write splitting mode
+ * 2: Enable read/write splitting mode
  *    Write requests will routed to single master, read ones will be routed to slaves.
  *
  */
@@ -36,10 +37,9 @@ public class MGRConfigReader {
 
     private static final Logger logger = LoggerFactory.getLogger(MGRConfigReader.class);
 
-    private Map<String, DatabaseSet> databaseSet;
+    private DasConfigure dasConfigure;
     private Map<String, DatabaseSet> mgrDatabaseSetSnapshot = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, String> connectionString2Host = new ConcurrentHashMap<>();
-    private ConnectionLocator locator;
     private static AtomicBoolean readWriteSplitting = new AtomicBoolean(false);
 
     private static final String PRIMARY = "PRIMARY";
@@ -61,10 +61,9 @@ public class MGRConfigReader {
         readWriteSplitting.set(true);
     }
 
-    public MGRConfigReader(Map<String, DatabaseSet> mgrDatabaseSet, ConnectionLocator locator) {
-        this.databaseSet = mgrDatabaseSet;
-        this.locator = locator;
-        createExecutor(mgrDatabaseSet.size());
+    public MGRConfigReader(DasConfigure dasConfigure) {
+        this.dasConfigure = dasConfigure;
+        createExecutor(dasConfigure.getDatabaseSets().size());
     }
 
     private void createExecutor(int size) {
@@ -127,13 +126,14 @@ public class MGRConfigReader {
     }
     
     private void filterMGR() throws Exception {
-        for(Map.Entry<String, DatabaseSet> set : databaseSet.entrySet()) {
-            if(set.getValue().getDatabaseCategory() != DatabaseCategory.MySql) {
+        for(Map.Entry<String, DatabaseSet> setEnt : dasConfigure.getDatabaseSets().entrySet()) {
+            DatabaseSet set = setEnt.getValue();
+            if(set.getDatabaseCategory() != DatabaseCategory.MySql) {
                 continue;
             }
-            boolean isMGR = set.getValue().getDatabases().values().stream().allMatch(db -> !mgrInfoDB(db.getConnectionString()).isEmpty());
+            boolean isMGR = set.getDatabases().values().stream().allMatch(db -> !mgrInfoDB(db.getConnectionString()).isEmpty());
             if(isMGR) {
-                mgrDatabaseSetSnapshot.put(set.getKey(), set.getValue().deepCopy());
+                mgrDatabaseSetSnapshot.put(setEnt.getKey(), set.deepCopy(set.getDatabases()));
             }
         }
     }
@@ -158,7 +158,7 @@ public class MGRConfigReader {
 
     private List<MGRInfo> mgrInfoDB(String connectionString) {
         List<MGRInfo> list = new ArrayList<>();
-        try (Connection connection = locator.getConnection(connectionString);
+        try (Connection connection = dasConfigure.getConnectionLocator().getConnection(connectionString);
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(MGR_INFO)) {
             String url = connection.getMetaData().getURL();
@@ -195,7 +195,7 @@ public class MGRConfigReader {
             return isReadWriteSplitting ? new ReadWriteSplittingHandler() : new NonReadWriteSplittingHandler();
         }
 
-        abstract void handle(DatabaseSet set, MGRInfo info, DataBase db);
+        abstract DatabaseSet createDatabaseSet(DatabaseSet set, Map<String, MGRInfo> infos) throws Exception;
     }
 
     /**
@@ -203,12 +203,16 @@ public class MGRConfigReader {
      */
     private static class NonReadWriteSplittingHandler extends MGRStatusHandler {
         @Override
-        void handle(DatabaseSet set, MGRInfo info, DataBase db) {
-            if(info != null && info.isOnlineMaster()) {
-                db.setMaster();
-            } else {
-                set.remove(db.getName());
+        DatabaseSet createDatabaseSet(DatabaseSet set, Map<String, MGRInfo> infos) throws Exception {
+            Map<String, DataBase> newDBs = new HashMap<>();
+            for(Map.Entry<String, DataBase> dbEnt : set.getDatabases().entrySet()) {
+                DataBase db = dbEnt.getValue();
+                MGRInfo info = infos.get(db.getConnectionString());
+                if(info != null && info.isOnlineMaster()) {
+                    newDBs.put(dbEnt.getKey(), db.deepCopy(true));
+                }
             }
+            return set.deepCopy(newDBs);
         }
     }
 
@@ -217,16 +221,16 @@ public class MGRConfigReader {
      */
     private static class ReadWriteSplittingHandler extends MGRStatusHandler {
         @Override
-        void handle(DatabaseSet set, MGRInfo info, DataBase db) {
-            if (info == null || !info.isOnline()) { //Exceptional node
-                set.remove(db.getName());
-            } else {
-                if(info.isMaster()) {
-                    db.setMaster();
-                } else {
-                    db.setSlave();
+        DatabaseSet createDatabaseSet(DatabaseSet set, Map<String, MGRInfo> infos) throws Exception {
+            Map<String, DataBase> newDBs = new HashMap<>();
+            for(Map.Entry<String, DataBase> dbEnt : set.getDatabases().entrySet()) {
+                DataBase db = dbEnt.getValue();
+                MGRInfo info = infos.get(db.getConnectionString());
+                if(info != null && info.isOnline()){
+                    newDBs.put(dbEnt.getKey(), db.deepCopy(info.isMaster()));
                 }
             }
+            return set.deepCopy(newDBs);
         }
     }
 
@@ -234,20 +238,14 @@ public class MGRConfigReader {
         for (Map.Entry<String, DatabaseSet> ent : mgrDatabaseSetSnapshot.entrySet()) {
             String setName = ent.getKey();
             DatabaseSet set = ent.getValue();
-            DatabaseSet newSet = set.deepCopy();
-            Map<String, MGRInfo> infos = mgrInfoMerged(newSet);
 
-            for (DataBase db : newSet.getDatabases().values()) {
-                MGRInfo info = infos.get(db.getConnectionString());
-                MGRStatusHandler handler = MGRStatusHandler.create(readWriteSplitting.get());
-                handler.handle(newSet, info, db);
-            }
-
-            newSet.initShards();
-            DatabaseSet current = databaseSet.get(setName);
+            Map<String, MGRInfo> infos = mgrInfoMerged(set);
+            MGRStatusHandler handler = MGRStatusHandler.create(readWriteSplitting.get());
+            DatabaseSet newSet = handler.createDatabaseSet(set, infos);
+            DatabaseSet current = dasConfigure.getDatabaseSets().get(setName);
             //Replace databaseSet atomically if changed
             if(!current.equals(newSet)){
-                databaseSet.replace(setName, newSet);
+                dasConfigure.onDatabaseSetChanged(new DasConfigure.DatabaseSetChangeEvent(ImmutableMap.of(setName, newSet)));
                 logger.info("Database changes for MGR: " + setName);
             }
         }

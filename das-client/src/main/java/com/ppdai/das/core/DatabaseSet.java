@@ -71,19 +71,16 @@ public class DatabaseSet {
 	 * @return DatabaseSet
 	 * @throws Exception
 	 */
-	public DatabaseSet deepCopy() throws Exception {
+	public DatabaseSet deepCopy(Map<String, DataBase> newDBs) throws Exception {
 		DatabaseSet newDataSet = new DatabaseSet();
 		newDataSet.name = this.name;
 		newDataSet.provider = this.provider;
 		newDataSet.dbCategory = this.dbCategory;
 		newDataSet.strategy = this.strategy;
 		newDataSet.databases = new HashMap<>();
+        newDataSet.databases.putAll(newDBs);
 
-		for(Map.Entry<String, DataBase> ent : this.databases.entrySet()) {
-			newDataSet.databases.put(ent.getKey(), ent.getValue().deepCopy());
-		}
-
-		initShards();
+		newDataSet.initShards();
 		return newDataSet;
 	}
 

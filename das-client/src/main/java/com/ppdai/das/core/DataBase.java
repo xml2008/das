@@ -19,8 +19,8 @@ public class DataBase {
 		this.connectionString = connectionString;
 	}
 
-	public DataBase deepCopy() {
-		return new DataBase(name, master, sharding,connectionString);
+	public DataBase deepCopy(boolean master) {
+		return new DataBase(this.name, master, this.sharding, this.connectionString);
 	}
 
 	@Override
