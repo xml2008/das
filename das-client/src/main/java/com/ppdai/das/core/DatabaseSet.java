@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.ppdai.das.core.enums.DatabaseCategory;
@@ -28,9 +29,8 @@ public class DatabaseSet {
 
 	private List<DataBase> masterDbs = new ArrayList<DataBase>();
 	private List<DataBase> slaveDbs = new ArrayList<DataBase>();
-	
 	private Set<String> readOnlyAllShards;
-	
+
 	/**
 	 * The target DB set does not support shard
 	 * @param name
@@ -63,6 +63,30 @@ public class DatabaseSet {
 		initShards();
 	}
 
+	private DatabaseSet() {}
+
+	/**
+	 *  Deep copy this DatabaseSet, including DataBase instances.
+	 *
+	 * @return DatabaseSet
+	 * @throws Exception
+	 */
+	public DatabaseSet deepCopy(Map<String, DataBase> newDBs) throws Exception {
+		DatabaseSet newDataSet = new DatabaseSet();
+		newDataSet.name = this.name;
+		newDataSet.provider = this.provider;
+		newDataSet.dbCategory = this.dbCategory;
+		newDataSet.strategy = this.strategy;
+		newDataSet.databases = new HashMap<>();
+        newDataSet.databases.putAll(newDBs);
+
+		newDataSet.initShards();
+		return newDataSet;
+	}
+
+	public void remove(String dbName) {
+		databases.remove(dbName);
+	}
 	private void initStrategy(String shardStrategy) throws Exception {
 		if(shardStrategy == null || shardStrategy.length() == 0)
 			return;
@@ -83,7 +107,10 @@ public class DatabaseSet {
 		strategy.initialize(settings);
 	}
 
-	private void initShards() throws Exception {
+	public void initShards() throws Exception {
+		masterDbs.clear();
+		slaveDbs.clear();
+
 		if(strategy == null || strategy.isShardByDb() == false){
 			// Init with no shard support
 			for(DataBase db: databases.values()) {
@@ -166,5 +193,26 @@ public class DatabaseSet {
 
 	public List<DataBase> getSlaveDbs(String shard) {
 	    return slaveDbByShard.containsKey(shard) ? new ArrayList<>(slaveDbByShard.get(shard)) : null;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof DatabaseSet)) return false;
+		DatabaseSet that = (DatabaseSet) o;
+		return Objects.equals(getName(), that.getName()) &&
+				Objects.equals(getProvider(), that.getProvider()) &&
+				dbCategory == that.dbCategory &&
+				Objects.equals(getDatabases(), that.getDatabases()) &&
+				Objects.equals(masterDbByShard, that.masterDbByShard) &&
+				Objects.equals(slaveDbByShard, that.slaveDbByShard) &&
+				Objects.equals(getMasterDbs(), that.getMasterDbs()) &&
+				Objects.equals(getSlaveDbs(), that.getSlaveDbs()) &&
+				Objects.equals(readOnlyAllShards, that.readOnlyAllShards);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getName(), getProvider(), dbCategory, getDatabases(), masterDbByShard, slaveDbByShard, getMasterDbs(), getSlaveDbs(), readOnlyAllShards);
 	}
 }
