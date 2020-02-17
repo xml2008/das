@@ -76,21 +76,17 @@ public class MGRConfigReader {
         }
     }
 
-    public void start() {
-        try {
-            filterMGR();
-            updateMGRInfo();
-            if(!mgrDatabaseSetSnapshot.isEmpty()) {
-                executer.scheduleWithFixedDelay(() -> {
-                    try {
-                        updateMGRInfo();
-                    } catch (Exception e) {
-                        logger.error("Exception occurs when updateMGRInfo", e);
-                    }
-                }, 3, 3, TimeUnit.SECONDS);
-            }
-        } catch (Exception e) {
-            logger.error("Exception occurs when start MGRConfigReader.", e);
+    public void start() throws Exception {
+        filterMGR();
+        updateMGRInfo();
+        if (!mgrDatabaseSetSnapshot.isEmpty()) {
+            executer.scheduleWithFixedDelay(() -> {
+                try {
+                    updateMGRInfo();
+                } catch (Exception e) {
+                    logger.error("Exception occurs when updateMGRInfo", e);
+                }
+            }, 3, 3, TimeUnit.SECONDS);
         }
     }
 
@@ -150,6 +146,8 @@ public class MGRConfigReader {
             Optional<Map.Entry<String, String>> op = connectionString2Host.entrySet().stream().filter(e -> e.getValue().equals(en.getKey())).findFirst();
             if (op.isPresent()) {
                 result.put(op.get().getKey(), en.getValue().stream().findFirst().get());
+            } else {
+                throw new IllegalArgumentException("MGR checking fail. [" + en.getKey() + "] is missing in MGR cluster,");
             }
         }
 
