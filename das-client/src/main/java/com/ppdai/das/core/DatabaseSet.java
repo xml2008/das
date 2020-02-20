@@ -215,4 +215,20 @@ public class DatabaseSet {
 	public int hashCode() {
 		return Objects.hash(getName(), getProvider(), dbCategory, getDatabases(), masterDbByShard, slaveDbByShard, getMasterDbs(), getSlaveDbs(), readOnlyAllShards);
 	}
+
+	@Override
+	public String toString() {
+		return "DatabaseSet{" +
+				"name='" + name + '\'' +
+				", provider='" + provider + '\'' +
+				", dbCategory=" + dbCategory +
+				", strategy=" + strategy +
+				", databases=" + databases +
+				", masterDbByShard=" + masterDbByShard +
+				", slaveDbByShard=" + slaveDbByShard +
+				", masterDbs=" + masterDbs +
+				", slaveDbs=" + slaveDbs +
+				", readOnlyAllShards=" + readOnlyAllShards +
+				'}';
+	}
 }

@@ -4,6 +4,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.ppdai.das.core.enums.DatabaseCategory;
+import com.ppdai.das.core.status.StatusManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;
@@ -14,7 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -78,11 +78,14 @@ public class MGRConfigReader {
 
     public void start() throws Exception {
         filterMGR();
-        updateMGRInfo();
+        updateMGRInfo(true);
+        logger.info("MGR mode: " + (!readWriteSplitting.get() ?  "non-" : "") + "Read/Write splitting");
+        logger.info("MGR database sets: " + mgrDatabaseSetSnapshot.keySet());
+        logger.info("Databases init status after MGR check: " + dasConfigure.getDatabaseSets());
         if (!mgrDatabaseSetSnapshot.isEmpty()) {
             executer.scheduleWithFixedDelay(() -> {
                 try {
-                    updateMGRInfo();
+                    updateMGRInfo(false);
                 } catch (Exception e) {
                     logger.error("Exception occurs when updateMGRInfo", e);
                 }
@@ -127,14 +130,14 @@ public class MGRConfigReader {
             if(set.getDatabaseCategory() != DatabaseCategory.MySql) {
                 continue;
             }
-            boolean isMGR = set.getDatabases().values().stream().allMatch(db -> !mgrInfoDB(db.getConnectionString()).isEmpty());
+            boolean isMGR = set.getDatabases().values().stream().anyMatch(db -> !mgrInfoDB(db.getConnectionString()).isEmpty());
             if(isMGR) {
                 mgrDatabaseSetSnapshot.put(setEnt.getKey(), set.deepCopy(set.getDatabases()));
             }
         }
     }
 
-    private Map<String, MGRInfo> mgrInfoMerged(DatabaseSet set) {
+    private Map<String, MGRInfo> mgrInfoMerged(DatabaseSet set, boolean isInit) {
         List<MGRInfo> list = new ArrayList<>();
         for (DataBase db : set.getDatabases().values()) {
             List<MGRInfo> mgrs = mgrInfoDB(db.getConnectionString());
@@ -143,11 +146,13 @@ public class MGRConfigReader {
         Map<String, List<MGRInfo>> group = list.stream().collect(Collectors.groupingBy(MGRInfo::getHost));
         Map<String, MGRInfo> result = new HashMap<>();
         for (Map.Entry<String, List<MGRInfo>> en : group.entrySet()) {
-            Optional<Map.Entry<String, String>> op = connectionString2Host.entrySet().stream().filter(e -> e.getValue().equals(en.getKey())).findFirst();
-            if (op.isPresent()) {
-                result.put(op.get().getKey(), en.getValue().stream().findFirst().get());
-            } else {
+            List<Map.Entry<String, String>> physicals = connectionString2Host.entrySet().stream().filter(e -> e.getValue().equals(en.getKey())).collect(Collectors.toList());
+            if(physicals.isEmpty() && isInit) {
                 throw new IllegalArgumentException("MGR checking fail. [" + en.getKey() + "] is missing in MGR cluster,");
+            } else {
+                for(Map.Entry<String, String> e : physicals) {
+                    result.put(e.getKey(), en.getValue().stream().findFirst().get());
+                }
             }
         }
 
@@ -232,18 +237,23 @@ public class MGRConfigReader {
         }
     }
 
-    void updateMGRInfo() throws Exception {
+    void updateMGRInfo(boolean isInit) throws Exception {
         for (Map.Entry<String, DatabaseSet> ent : mgrDatabaseSetSnapshot.entrySet()) {
             String setName = ent.getKey();
             DatabaseSet set = ent.getValue();
 
-            Map<String, MGRInfo> infos = mgrInfoMerged(set);
+            Map<String, MGRInfo> infos = mgrInfoMerged(set, isInit);
             MGRStatusHandler handler = MGRStatusHandler.create(readWriteSplitting.get());
             DatabaseSet newSet = handler.createDatabaseSet(set, infos);
             DatabaseSet current = dasConfigure.getDatabaseSets().get(setName);
             //Replace databaseSet atomically if changed
             if(!current.equals(newSet)){
                 dasConfigure.onDatabaseSetChanged(new DasConfigure.DatabaseSetChangeEvent(ImmutableMap.of(setName, newSet)));
+                if(!isInit) {
+                    for(String appId : DasConfigureFactory.getAppIds()) {
+                        StatusManager.registerApplication(appId, dasConfigure);
+                    }
+                }
                 logger.info("Database changes for MGR: " + setName);
             }
         }

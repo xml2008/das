@@ -64,5 +64,13 @@ public class DataBase {
 		return connectionString;
 	}
 
-
+	@Override
+	public String toString() {
+		return "DataBase{" +
+				"name='" + name + '\'' +
+				", master=" + master +
+				", sharding='" + sharding + '\'' +
+				", connectionString='" + connectionString + '\'' +
+				'}';
+	}
 }
