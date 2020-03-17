@@ -6,7 +6,7 @@ import org.apache.tomcat.jdbc.pool.PoolConfiguration;
 
 import java.sql.SQLException;
 
-public class DalTomcatDataSource extends DataSource {
+public class DalTomcatDataSource extends DataSource implements DalTomcatDataSourceMBean {
 
     public DalTomcatDataSource(PoolConfiguration poolProperties) {
         super(poolProperties);

@@ -1,9 +1,17 @@
 package com.ppdai.das.core.datasource;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
 import javax.sql.DataSource;
 
 import org.apache.tomcat.jdbc.pool.PoolProperties;
@@ -35,6 +43,7 @@ public class SingleDataSource implements DataSourceConfigureConstants {
     private static ConnectionPhantomReferenceCleaner connectionPhantomReferenceCleaner = new DefaultConnectionPhantomReferenceCleaner();
     private static AtomicBoolean containsMySQL=new AtomicBoolean(false);
     private static final String MYSQL_URL_PREFIX = "jdbc:mysql://";
+    public static final String JMX_TOMCAT_DATASOURCE = "TomcatDataSource";
 
     public String getName() {
         return name;
@@ -69,6 +78,7 @@ public class SingleDataSource implements DataSourceConfigureConstants {
                     dataSource.createPool();
                 }
             });
+            registerDataSource();
 
             LOGGER.info(message);
         } catch (Throwable e) {
@@ -85,6 +95,14 @@ public class SingleDataSource implements DataSourceConfigureConstants {
         } catch (Throwable e) {
             LOGGER.error(String.format("Error starting pool connectionPhantomReferenceCleaner"), e);
         }
+    }
+
+    private void registerDataSource() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException, InstanceNotFoundException {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName objectName = new ObjectName(JMX_TOMCAT_DATASOURCE, "type", name);
+        if(mbs.isRegistered(objectName))
+            mbs.unregisterMBean(objectName);
+        mbs.registerMBean(dataSource, objectName) ;
     }
 
     private void testConnection(org.apache.tomcat.jdbc.pool.DataSource dataSource) throws SQLException {
