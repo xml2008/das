@@ -8,6 +8,7 @@ import static com.ppdai.das.core.enums.DatabaseCategory.MySql;
 import static com.ppdai.das.core.enums.DatabaseCategory.SqlServer;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -744,7 +745,12 @@ public class DasClientTest extends DataPreparer {
             pks.add(k+1);
 
         SqlBuilder builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks)).orderBy(p.PeopleID.asc()).into(Person.class);
+        Hints hints = builder.hints().diagnose();
         List<Person> plist = dao.query(builder);
+
+        if(this.dbCategory == SqlServer) { //"WITH (NOLOCK)" is applied for SqlServer automatically
+            assertTrue(hints.getDiagnose().toString().contains(SegmentConstants.WITH_NO_LOCK.getText()));
+        }
 
         assertEquals(4, plist.size());
         for (int k = 0; k < TABLE_MODE; k++) {
@@ -753,6 +759,20 @@ public class DasClientTest extends DataPreparer {
             assertEquals(k+1,  pk.getPeopleID().intValue());
             assertEquals("test",  pk.getName());
         }
+    }
+
+    @Test
+    public void testQueryWithLock() throws Exception {
+        PersonDefinition p = Person.PERSON;
+
+        SqlBuilder builder = selectAllFrom(p).withLock().into(Person.class);
+        Hints hints = builder.hints().diagnose();
+        List<Person> plist = dao.query(builder);
+
+        if(this.dbCategory == SqlServer) { //check withLock()
+            assertFalse(hints.getDiagnose().toString().contains(SegmentConstants.WITH_NO_LOCK.getText()));
+        }
+        assertFalse(plist.isEmpty());//withLock() will be ignored for MySQL
     }
 
     @Test
@@ -815,7 +835,11 @@ public class DasClientTest extends DataPreparer {
         for (int k = 0; k < TABLE_MODE; k++) {
             batchBuilder.addBatch(selectAllFrom(p).where().allOf(p.PeopleID.eq(k+1)).orderBy(p.PeopleID.asc()).into(Person.class));
         }
+        Hints hints = batchBuilder.hints().diagnose();
         List<List<Person>> plist = (List<List<Person>>)dao.batchQuery(batchBuilder);
+        if(this.dbCategory == SqlServer) { //"WITH (NOLOCK)" is applied for SqlServer automatically
+            assertTrue(hints.getDiagnose().toString().contains(SegmentConstants.WITH_NO_LOCK.getText()));
+        }
         assertEquals(TABLE_MODE, plist.size());
         for (int k = 0; k < TABLE_MODE; k++) {
             List<Person> list = plist.get(k);
