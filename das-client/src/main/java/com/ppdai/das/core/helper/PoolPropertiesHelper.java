@@ -18,6 +18,44 @@ public class PoolPropertiesHelper implements DataSourceConfigureConstants {
         return helper;
     }
 
+    public PoolProperties copy(PoolProperties from) {
+        PoolProperties properties = new PoolProperties();
+        properties.setUrl(from.getUrl());
+        properties.setUsername(from.getUsername());
+        properties.setPassword(from.getPassword());
+        properties.setDriverClassName(from.getDriverClassName());
+
+        properties.setTestWhileIdle(from.isTestWhileIdle());
+        properties.setTestOnBorrow(from.isTestOnBorrow());
+        properties.setTestOnReturn(from.isTestOnReturn());
+
+        properties.setValidationQuery(from.getValidationQuery());
+        properties.setValidationQueryTimeout(from.getValidationQueryTimeout());
+        properties.setValidationInterval(from.getValidationInterval());
+
+        properties.setTimeBetweenEvictionRunsMillis(from.getTimeBetweenEvictionRunsMillis());
+        properties.setMinEvictableIdleTimeMillis(from.getMinEvictableIdleTimeMillis());
+
+        properties.setMaxAge(from.getMaxAge());
+        properties.setMaxActive(from.getMaxActive());
+        properties.setMinIdle(from.getMinIdle());
+        properties.setMaxWait(from.getMaxWait());
+        properties.setInitialSize(from.getInitialSize());
+
+        properties.setRemoveAbandonedTimeout(from.getRemoveAbandonedTimeout());
+        properties.setRemoveAbandoned(from.isRemoveAbandoned());
+        properties.setLogAbandoned(from.isLogAbandoned());
+
+        properties.setConnectionProperties(from.getConnectionProperties());
+        properties.setValidatorClassName(from.getValidatorClassName());
+
+        properties.setInitSQL(from.getInitSQL());
+        properties.setJmxEnabled(from.isJmxEnabled());
+        properties.setJdbcInterceptors(from.getJdbcInterceptors());
+
+        return properties;
+    }
+
     public PoolProperties convert(DataSourceConfigure config) {
         PoolProperties properties = new PoolProperties();
 
