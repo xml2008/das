@@ -104,7 +104,7 @@ public class MGRConfigReader {
                 ConnectionLocator locator = dasConfigure.getConnectionLocator();
                 try (Connection conn =locator.getConnection(db.getConnectionString())){
                     PoolProperties properties = PoolPropertiesHolder.getInstance().getPoolProperties(conn.getMetaData().getURL(), conn.getMetaData().getUserName());
-                    PoolProperties poolPropertie = mergePoolProperties(properties);
+                    PoolProperties poolProperties = mergePoolProperties(properties);
                     DalTomcatDataSource dataSource = new DalTomcatDataSource(poolProperties);
                     connectionString2DS.put(db.getConnectionString(), dataSource);
                 } catch (Exception e) {
