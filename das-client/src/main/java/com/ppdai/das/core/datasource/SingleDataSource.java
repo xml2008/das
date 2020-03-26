@@ -14,6 +14,7 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.sql.DataSource;
 
+import com.ppdai.das.core.datasource.tomcat.DasTomcatDataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +103,8 @@ public class SingleDataSource implements DataSourceConfigureConstants {
         ObjectName objectName = new ObjectName(JMX_TOMCAT_DATASOURCE, "type", name);
         if(mbs.isRegistered(objectName))
             mbs.unregisterMBean(objectName);
-        mbs.registerMBean(dataSource, objectName) ;
+        DasTomcatDataSource dasTomcatDataSource = new DasTomcatDataSource((DalTomcatDataSource)dataSource);
+        mbs.registerMBean(dasTomcatDataSource, objectName) ;
     }
 
     private void testConnection(org.apache.tomcat.jdbc.pool.DataSource dataSource) throws SQLException {
