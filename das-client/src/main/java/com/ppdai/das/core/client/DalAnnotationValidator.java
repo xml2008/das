@@ -2,6 +2,7 @@ package com.ppdai.das.core.client;
 
 import java.lang.reflect.Method;
 
+import com.ppdai.das.client.transaction.TransactionalIntercepted;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
