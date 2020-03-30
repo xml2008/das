@@ -74,13 +74,12 @@ public class BaseTransactionAnnoClass {
         return DONE;
     }
 
-    //TODO:
-  /*  public String performNest3() throws InstantiationException, IllegalAccessException {
+   public String performNest3() throws InstantiationException, IllegalAccessException {
         assertTrue(!DalTransactionManager.isInTransaction());
         TransactionAnnoClassSqlServer target = DalTransactionManager.create(TransactionAnnoClassSqlServer.class);
         target.perform();
         return DONE;
-    }*/
+    }
 
     public String performNestDistributedTransaction() {
         assertTrue(DalTransactionManager.isInTransaction());
