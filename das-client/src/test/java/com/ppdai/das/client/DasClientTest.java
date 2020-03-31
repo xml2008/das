@@ -408,6 +408,25 @@ public class DasClientTest extends DataPreparer {
         }
     }
 
+    @Test
+    public void testUpdateNullField() throws Exception {
+        for (int k = 0; k < TABLE_MODE; k++) {
+            Person pk = new Person();
+            pk.setPeopleID(k + 1);
+            pk.setName(null);
+            pk.setDataChange_LastTime(null);
+            pk.setCountryID(100);
+            pk.setCityID(200);
+            assertEquals(1, dao.update(pk, new Hints().setUpdateNullField()));
+            pk = dao.queryByPk(pk);
+
+            assertNull(pk.getName());
+            assertNull(pk.getDataChange_LastTime());
+            assertEquals(100, pk.getCountryID().intValue());
+            assertEquals(200, pk.getCityID().intValue());
+        }
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateOverloading() throws Exception {
         dao.update(SqlBuilder.selectCount(), Hints.hints());

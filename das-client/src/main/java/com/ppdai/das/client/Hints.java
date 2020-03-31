@@ -517,6 +517,15 @@ public class Hints {
     }
 
     /**
+     * Enable update null fields in pojo.
+     *
+     * @return this {@code Hints}
+     */
+    public Hints setUpdateNullField() {
+        return set(HintEnum.updateNullField);
+    }
+
+    /**
      * Returns if set the update field can be unchanged value after select from DB or not
      *
      * @return if set the update field can be unchanged value after select from DB or not
