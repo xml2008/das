@@ -7,9 +7,7 @@ import com.ppdai.das.client.SqlBuilder;
 import com.ppdai.das.client.Transaction;
 import com.ppdai.das.core.client.DalTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.sql.SQLException;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -226,12 +224,15 @@ public class BaseTransactionAnnoClass {
     private void testQuery(String db) {
         try {
          //   new DalQueryDao(db).query(query, new StatementParameters(), new Hints(), Integer.class);
-            DasClientFactory.getClient(db).query(new SqlBuilder().appendTemplate(query).intoMap());
+            SqlBuilder sb = new SqlBuilder().appendTemplate(query).intoMap();//setHints(hints);
+            DasClientFactory.getClient(db).query(sb);
         } catch (SQLException e) {
             e.printStackTrace();
             fail();
         }
     }
+
+
     //TODO:
     private void testQueryFail(String db) {
         try {

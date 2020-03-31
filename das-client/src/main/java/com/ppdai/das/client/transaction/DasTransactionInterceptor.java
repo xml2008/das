@@ -3,12 +3,10 @@ package com.ppdai.das.client.transaction;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.ppdai.das.client.DasClientFactory;
 import com.ppdai.das.client.Hints;
-import com.ppdai.das.client.Transaction;
 import com.ppdai.das.client.transaction.annotation.DasTransactional;
 import com.ppdai.das.client.transaction.annotation.Shard;
 import com.ppdai.das.core.DasException;
@@ -48,17 +46,13 @@ public class DasTransactionInterceptor implements MethodInterceptor {
 
         final AtomicReference<Object> result = new AtomicReference<>();
 
-        DasClientFactory.getClient(getLogicDbName(method)).execute(new Transaction() {
-
-            @Override
-            public void execute() throws SQLException {
-                try {
-                    result.set(proxy.invokeSuper(obj, args));
-                } catch (Throwable e) {
-                    throw DasException.wrap(e);
-                }
+        DasClientFactory.getClient(getLogicDbName(method)).execute(() -> {
+            try {
+                result.set(proxy.invokeSuper(obj, args));
+            } catch (Throwable e) {
+                throw DasException.wrap(e);
             }
-        });
+        }, hints);
         return result.get();
     }
 

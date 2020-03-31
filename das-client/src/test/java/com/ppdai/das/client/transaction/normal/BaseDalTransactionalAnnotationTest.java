@@ -13,7 +13,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-//import test.com.ctrip.platform.dal.dao.unitbase.SqlServerDatabaseInitializer;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -45,9 +44,9 @@ public class BaseDalTransactionalAnnotationTest {
                 {1, TransactionAnnoClassSqlServer.class, TransactionTestSqlServerUser.class},
                 {2, TransactionAnnoClassSqlServer.class, TransactionTestSqlServerUser.class},
                 {3, TransactionAnnoClassSqlServer.class, TransactionTestSqlServerUser.class},
-                /*  {1, TransactionAnnoClassSqlServerNew.class, TransactionTestSqlServerUserNew.class},
+                {1, TransactionAnnoClassSqlServerNew.class, TransactionTestSqlServerUserNew.class},
                 {2, TransactionAnnoClassSqlServerNew.class, TransactionTestSqlServerUserNew.class},
-                {3, TransactionAnnoClassSqlServerNew.class, TransactionTestSqlServerUserNew.class},*/
+                {3, TransactionAnnoClassSqlServerNew.class, TransactionTestSqlServerUserNew.class},
                 }
         );
     }
