@@ -1,10 +1,16 @@
 package com.ppdai.das.core;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.ppdai.das.core.configure.DataSourceConfigureConstants;
+import com.ppdai.das.core.datasource.PoolPropertiesHolder;
+import com.ppdai.das.core.datasource.tomcat.DalTomcatDataSource;
 import com.ppdai.das.core.enums.DatabaseCategory;
+import com.ppdai.das.core.helper.PoolPropertiesHelper;
 import com.ppdai.das.core.status.StatusManager;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;
@@ -15,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -40,8 +47,10 @@ public class MGRConfigReader {
     private DasConfigure dasConfigure;
     private Map<String, DatabaseSet> mgrDatabaseSetSnapshot = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, String> connectionString2Host = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, DalTomcatDataSource> connectionString2DS = new ConcurrentHashMap<>();
     private static AtomicBoolean readWriteSplitting = new AtomicBoolean(false);
-
+    private static long HEATBEAT_INTERVAL = 3L;
+    private static Properties poolProperties;
     private static final String PRIMARY = "PRIMARY";
     private static final String SECONDARY = "SECONDARY";
     private static final String ONLINE = "ONLINE";
@@ -61,6 +70,15 @@ public class MGRConfigReader {
         readWriteSplitting.set(true);
     }
 
+    public static void setHeartbeatInterval(long intervalInSecond) {
+        Preconditions.checkArgument(intervalInSecond >= 3, "Please set MGR heart beat interval >= 3 seconds");
+        HEATBEAT_INTERVAL = intervalInSecond;
+    }
+
+    public static void setDataSourceConfiguration(Properties properties){
+        poolProperties = properties;
+    }
+
     public MGRConfigReader(DasConfigure dasConfigure) {
         this.dasConfigure = dasConfigure;
         createExecutor(dasConfigure.getDatabaseSets().size());
@@ -76,7 +94,80 @@ public class MGRConfigReader {
         }
     }
 
+    /**
+     * Independent data sources for MGR heart beat.
+     */
+    private void setUpDS(){
+        for (DatabaseSet dbSet : dasConfigure.getDatabaseSets().values()) {
+            Map<String, DataBase> dbs = dbSet.getDatabases();
+            for (DataBase db : dbs.values()) {
+                ConnectionLocator locator = dasConfigure.getConnectionLocator();
+                try (Connection conn =locator.getConnection(db.getConnectionString())){
+                    PoolProperties properties = PoolPropertiesHolder.getInstance().getPoolProperties(conn.getMetaData().getURL(), conn.getMetaData().getUserName());
+                    PoolProperties poolProperties = mergePoolProperties(properties);
+                    DalTomcatDataSource dataSource = new DalTomcatDataSource(poolProperties);
+                    connectionString2DS.put(db.getConnectionString(), dataSource);
+                } catch (Exception e) {
+                    logger.error("Exception occurs when setUpDS", e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Merge existing data source and special configurations for MGR
+     */
+    private PoolProperties mergePoolProperties(PoolProperties p) {
+        PoolProperties merged = PoolPropertiesHelper.getInstance().copy(p);
+        if(poolProperties == null) {//re-use data source configuration
+            return merged;
+        }
+
+        String testWhileIdle = poolProperties.getProperty(DataSourceConfigureConstants.TESTWHILEIDLE);
+        if(testWhileIdle != null){
+            merged.setTestWhileIdle(Boolean.valueOf(testWhileIdle));
+        }
+
+        String testOnBorrow = poolProperties.getProperty(DataSourceConfigureConstants.TESTONBORROW);
+        if(testOnBorrow != null){
+            merged.setTestOnBorrow(Boolean.valueOf(testOnBorrow));
+        }
+
+        String validationInterval = poolProperties.getProperty(DataSourceConfigureConstants.VALIDATIONINTERVAL);
+        if(validationInterval != null){
+            merged.setValidationInterval(Long.parseLong(validationInterval));
+        }
+
+        String timeBetweenEvictionRunsMillis = poolProperties.getProperty(DataSourceConfigureConstants.TIMEBETWEENEVICTIONRUNSMILLIS);
+        if(timeBetweenEvictionRunsMillis != null){
+            merged.setMinEvictableIdleTimeMillis(Integer.parseInt(timeBetweenEvictionRunsMillis));
+        }
+
+        String maxAge = poolProperties.getProperty(DataSourceConfigureConstants.MAX_AGE);
+        if(maxAge != null){
+            merged.setMaxAge(Long.parseLong(maxAge));
+        }
+
+        String minIdle = poolProperties.getProperty(DataSourceConfigureConstants.MINIDLE);
+        if(minIdle != null){
+            merged.setMinIdle(Integer.parseInt(minIdle));
+        }
+
+        String validationQueryTimeout = poolProperties.getProperty(DataSourceConfigureConstants.VALIDATIONQUERYTIMEOUT);
+        if(validationQueryTimeout != null){
+            merged.setValidationInterval(Long.parseLong(validationQueryTimeout));
+        }
+
+        String validationQuery = poolProperties.getProperty(DataSourceConfigureConstants.VALIDATIONQUERY);
+        if(validationQuery != null){
+            merged.setValidationQuery(validationQuery);
+        }
+
+        return merged;
+    }
+
     public void start() throws Exception {
+        setUpDS();
         filterMGR();
         updateMGRInfo(true);
         logger.info("MGR mode: " + (!readWriteSplitting.get() ?  "non-" : "") + "Read/Write splitting");
@@ -89,7 +180,7 @@ public class MGRConfigReader {
                 } catch (Exception e) {
                     logger.error("Exception occurs when updateMGRInfo", e);
                 }
-            }, 3, 3, TimeUnit.SECONDS);
+            }, 3, HEATBEAT_INTERVAL, TimeUnit.SECONDS);
         }
     }
 
@@ -161,7 +252,7 @@ public class MGRConfigReader {
 
     private List<MGRInfo> mgrInfoDB(String connectionString) {
         List<MGRInfo> list = new ArrayList<>();
-        try (Connection connection = dasConfigure.getConnectionLocator().getConnection(connectionString);
+        try (Connection connection = connectionString2DS.get(connectionString).getConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(MGR_INFO)) {
             String url = connection.getMetaData().getURL();
