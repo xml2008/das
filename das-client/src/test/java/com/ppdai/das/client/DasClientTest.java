@@ -417,7 +417,7 @@ public class DasClientTest extends DataPreparer {
             pk.setDataChange_LastTime(null);
             pk.setCountryID(100);
             pk.setCityID(200);
-            assertEquals(1, dao.update(pk, new Hints().setUpdateNullField()));
+            assertEquals(1, dao.update(pk, new Hints().updateNullField()));
             pk = dao.queryByPk(pk);
 
             assertNull(pk.getName());
@@ -533,7 +533,7 @@ public class DasClientTest extends DataPreparer {
             pl.add(pk);
         }
 
-        int[] ret = dao.batchUpdate(pl, Hints.hints().setUpdateNullField());
+        int[] ret = dao.batchUpdate(pl, Hints.hints().updateNullField());
         for(int i: ret)
             assertEquals(1, i);
 

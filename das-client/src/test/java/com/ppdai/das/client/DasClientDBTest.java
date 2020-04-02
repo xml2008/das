@@ -666,7 +666,7 @@ public class DasClientDBTest extends DataPreparer {
                 pk.setName(null);
                 Hints hints = new Hints();
                 process(pk, hints, i, j);
-                assertEquals(1, dao.update(pk, hints.setUpdateNullField()));
+                assertEquals(1, dao.update(pk, hints.updateNullField()));
                 assertNull(pk.getName(), dao.queryByPk(pk, hints).getName());
             }
         }

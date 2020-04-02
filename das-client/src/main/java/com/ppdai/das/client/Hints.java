@@ -521,7 +521,7 @@ public class Hints {
      *
      * @return this {@code Hints}
      */
-    public Hints setUpdateNullField() {
+    public Hints updateNullField() {
         return set(HintEnum.updateNullField);
     }
 
