@@ -522,6 +522,32 @@ public class DasClientTest extends DataPreparer {
     }
 
     @Test
+    public void testBatchUpdateNullField() throws Exception {
+        List<Person> pl = new ArrayList<>();
+        for (int k = 0; k < TABLE_MODE; k++) {
+            Person pk = new Person();
+            pk.setPeopleID(k + 1);
+            pk.setName(null);
+            pk.setCountryID(100);
+            pk.setCityID(200);
+            pl.add(pk);
+        }
+
+        int[] ret = dao.batchUpdate(pl, Hints.hints().setUpdateNullField());
+        for(int i: ret)
+            assertEquals(1, i);
+
+        assertEquals(4, ret.length);
+
+        for(Person pk: pl) {
+            pk = dao.queryByPk(pk);
+
+            assertNull(pk.getName());
+            assertEquals(100, pk.getCountryID().intValue());
+            assertEquals(200, pk.getCityID().intValue());
+        }
+    }
+    @Test
     public void testBatchUpdateBuillder() throws Exception {
         String[] statements = new String[]{
                 "INSERT INTO " + TABLE_NAME + "( Name, CityID, ProvinceID, CountryID)"

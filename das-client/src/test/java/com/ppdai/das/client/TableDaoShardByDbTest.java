@@ -633,6 +633,21 @@ public class TableDaoShardByDbTest extends DataPreparer {
     }
 
     @Test
+    public void testUpdateNullField() throws Exception {
+        for (int i = 0; i < DB_MODE; i++) {
+            for (int j = 0; j < TABLE_MODE; j++) {
+                Person pk = new Person();
+                pk.setPeopleID(j + 1);
+                pk.setName(null);
+                Hints hints = new Hints();
+                process(pk, hints, i, j);
+                assertEquals(1, dao.update(pk, hints.setUpdateNullField()));
+                assertNull(dao.queryByPk(pk, hints).getName());
+            }
+        }
+    }
+
+    @Test
     public void testBatchUpdate() throws Exception {
         List<Person> pl = new ArrayList<>();
         for (int i = 0; i < DB_MODE; i++) {

@@ -452,7 +452,7 @@ public class Hints {
      * @param value
      * @return this {@code Hints}
      */
-    private Hints set(HintEnum hint, Object value) {
+    Hints set(HintEnum hint, Object value) {
         hints.put(hint, value);
         return this;
     }

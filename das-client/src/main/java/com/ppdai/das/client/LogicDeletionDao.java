@@ -5,8 +5,9 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.ppdai.das.client.delegate.local.PPDaiDalParser;
-import com.ppdai.das.core.client.DalParser;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
+import com.ppdai.das.core.HintEnum;
 
 /**
  * Table DAO that supports logic delete.
@@ -127,13 +128,13 @@ public class LogicDeletionDao<T> extends TableDao<T>{
 
     public final int update(T entity, Hints...hints) throws SQLException {
         validateInput(entity);
-        clearDeletionFlag(entity);
+        clearDeletionFlag(entity, hints);
         return super.update(entity, hints);
     }
 
     public final int[] batchUpdate(List<T> entities, Hints...hints) throws SQLException {
         validateInput(entities);
-        clearDeletionFlag(entities);
+        clearDeletionFlag(entities, hints);
         return super.batchUpdate(entities, hints);
     }
     
@@ -230,12 +231,17 @@ public class LogicDeletionDao<T> extends TableDao<T>{
             setDeletionFlag(entity);
     }
 
-    protected final void clearDeletionFlag(T entity) {
+    protected final void clearDeletionFlag(T entity, Hints... hints) {
         deletionSupport.clearDeletionFlag(entity);
+
+        Preconditions.checkArgument(hints.length <= 1, "You should provide non or just one hints parameter.");
+        if(hints.length == 1 && hints[0] != null) {
+            hints[0].set(HintEnum.excludedColumns, Sets.newHashSet(deletionSupport.getDeletionColumnName()));
+        }
     }
 
-    protected final void clearDeletionFlag(List<T> entities) {
+    protected final void clearDeletionFlag(List<T> entities, Hints... hints) {
         for(T entity: entities)
-            clearDeletionFlag(entity);
+            clearDeletionFlag(entity, hints);
     }    
 }

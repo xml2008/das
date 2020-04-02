@@ -26,4 +26,6 @@ public interface LogicDeletionSupport<T> {
     Object[] getDeletionCondition(TableDefinition tableDef);
     
     Object[] setDeletionFlag(TableDefinition tableDef);
+
+    String getDeletionColumnName();
 }

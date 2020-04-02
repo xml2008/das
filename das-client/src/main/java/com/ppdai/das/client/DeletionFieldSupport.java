@@ -63,6 +63,11 @@ public class DeletionFieldSupport<T> implements LogicDeletionSupport<T>{
         return new Object[] {tableDef.getColumnDefinition(deletionColumnName).eq(deleted)};
     }
 
+    @Override
+    public String getDeletionColumnName() {
+        return deletionColumnName;
+    }
+
     private void setFlag(T entity, Object value) {
         try {
             deletionField.set(entity, value);
