@@ -111,14 +111,14 @@ public class BaseTransactionAnnoClass {
     public String perform(int id) {
         assertTrue(DalTransactionManager.isInTransaction());
         assertEquals(String.valueOf(id), DalTransactionManager.getCurrentShardId());
-        testQuery(shardDb);
+        testQuery(shardDb, Hints.hints().inShard(id));
         return DONE;
     }
 
     public String perform(String id,  Hints hints) {
         assertTrue(DalTransactionManager.isInTransaction());
         assertEquals(hints.getShard(), DalTransactionManager.getCurrentShardId());
-        testQuery(shardDb);
+        testQuery(shardDb, hints);
         return DONE;
     }
     
@@ -135,7 +135,7 @@ public class BaseTransactionAnnoClass {
             assertEquals(id, DalTransactionManager.getCurrentShardId());
         else
             assertEquals(hints.getShard(), DalTransactionManager.getCurrentShardId());
-        testQuery(shardDb);
+        testQuery(shardDb, hints);
         return DONE;
     }
     
@@ -174,12 +174,9 @@ public class BaseTransactionAnnoClass {
             public void execute() throws SQLException {
                 perform(id, new Hints().inShard(id));
                 perform(id, new Hints().inShard(id));
-                performWitShard(id, new Hints());
-                performWitShardNest(id, new Hints().inShard(id+id));
-               // return false;
             }
         }, new Hints().inShard(id));
-        testQuery(shardDb);
+        testQuery(shardDb, Hints.hints().inShard(id));
 
         return DONE;
     }
@@ -195,7 +192,6 @@ public class BaseTransactionAnnoClass {
                 performWitShardNest(id, new Hints().inShard(id));
                 performFail(id, new Hints().inShard(id));
                 fail();
-                //return false;
             }
         }, new Hints().inShard(id));
         
@@ -213,7 +209,6 @@ public class BaseTransactionAnnoClass {
                 performWitShardNest(id, new Hints().inShard(id));
                 performWitShardNest(id+id, new Hints());
                 fail();
-              //  return false;
             }
         }, new Hints().inShard(id));
         
@@ -221,17 +216,19 @@ public class BaseTransactionAnnoClass {
     }
 
     //TODO:
-    private void testQuery(String db) {
+    private void testQuery(String db, Hints... hints) {
         try {
          //   new DalQueryDao(db).query(query, new StatementParameters(), new Hints(), Integer.class);
             SqlBuilder sb = new SqlBuilder().appendTemplate(query).intoMap();//setHints(hints);
+            if(hints.length == 1) {
+                sb.setHints(hints[0]);
+            }
             DasClientFactory.getClient(db).query(sb);
         } catch (SQLException e) {
             e.printStackTrace();
             fail();
         }
     }
-
 
     //TODO:
     private void testQueryFail(String db) {

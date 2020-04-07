@@ -205,29 +205,31 @@ public class BaseDalTransactionalAnnotationTest {
         BaseTransactionAnnoClass test = create();
         Assert.assertEquals(DONE, test.performWitShard("1", new Hints().inShard(1)));
         Assert.assertEquals(DONE, test.performWitShard("1", new Hints().inShard("1")));
-        Assert.assertEquals(DONE, test.performWitShard("1", new Hints().inShard(0)));
-        Assert.assertEquals(DONE, test.performWitShard("1", new Hints().inShard("0")));
 
         Assert.assertEquals(DONE, test.performWitShard(null, new Hints().inShard(1)));
         Assert.assertEquals(DONE, test.performWitShard(null, new Hints().inShard("1")));
         Assert.assertEquals(DONE, test.performWitShard(null, new Hints().inShard(0)));
         Assert.assertEquals(DONE, test.performWitShard(null, new Hints().inShard("0")));
     }
-    
+
+    @Test(expected = java.sql.SQLException.class)
+    public void testWithShardAndHintsFail() throws InstantiationException, IllegalAccessException {
+        BaseTransactionAnnoClass test = create();
+        test.performWitShard("1", new Hints().inShard(0));
+    }
+
     @Test
     public void testWithShardAndHintsNest() throws InstantiationException, IllegalAccessException {
         BaseTransactionAnnoClass test = create();
         Assert.assertEquals(DONE, test.performWitShardNest("1", new Hints().inShard(1)));
         Assert.assertEquals(DONE, test.performWitShardNest("1", new Hints().inShard("1")));
-        Assert.assertEquals(DONE, test.performWitShardNest("1", new Hints().inShard(0)));
-        Assert.assertEquals(DONE, test.performWitShardNest("1", new Hints().inShard("0")));
 
         Assert.assertEquals(DONE, test.performWitShardNest(null, new Hints().inShard(1)));
         Assert.assertEquals(DONE, test.performWitShardNest(null, new Hints().inShard("1")));
         Assert.assertEquals(DONE, test.performWitShardNest(null, new Hints().inShard(0)));
         Assert.assertEquals(DONE, test.performWitShardNest(null, new Hints().inShard("0")));
     }
-    
+
     @Test
     public void testWithShardAndHintsNestConflict() throws InstantiationException, IllegalAccessException {
         BaseTransactionAnnoClass test = create();
@@ -257,14 +259,23 @@ public class BaseDalTransactionalAnnotationTest {
             public void execute() throws SQLException {
                 test.perform("1", new Hints().inShard("1"));
                 test.perform("1", new Hints().inShard(1));
-                test.performWitShard("1", new Hints());
-                test.performWitShard("1", new Hints().inShard(0));
-                test.performWitShardNest("1", new Hints());
-                return;
             }
         }, new Hints().inShard(1));
     }
-    
+
+
+    @Test(expected = java.sql.SQLException.class)
+    public void testSameShardWithCommandFail() throws SQLException, InstantiationException, IllegalAccessException {
+        final BaseTransactionAnnoClass test = create();
+        DasClientFactory.getClient(test.getShardDb()).execute(new Transaction() {
+
+            @Override
+            public void execute() throws SQLException {
+                test.performWitShard("1", new Hints());
+            }
+        }, new Hints().inShard(1));
+    }
+
     @Test
     public void testShardIdConfilictInCommand() throws SQLException, InstantiationException, IllegalAccessException {
         final BaseTransactionAnnoClass test = create();
