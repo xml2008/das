@@ -11,10 +11,12 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionValidationException;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.SmartClassLoader;
 import org.springframework.core.type.AnnotationMetadata;
 
 
@@ -56,7 +58,7 @@ public class DasTransactionalEnabler implements ImportBeanDefinitionRegistrar, B
             BeanDefinition beanDef = getBeanDefinition(beanName);
             String beanClassName = beanDef.getBeanClassName();
 
-            if(beanClassName == null || beanClassName.equals(BEAN_FACTORY_NAME))
+            if(beanClassName == null || beanClassName.equals(BEAN_FACTORY_NAME) || isSpringSmartClassLoader(beanDef))
                 continue;
 
             Class beanClass;
@@ -87,6 +89,13 @@ public class DasTransactionalEnabler implements ImportBeanDefinitionRegistrar, B
 
             cav.addGenericArgumentValue(beanClass.getName());
         }
+    }
+
+    //Check Spring's CGLIB proxy beans
+    private boolean isSpringSmartClassLoader(BeanDefinition beanDef) {
+        return beanDef instanceof AbstractBeanDefinition
+                && ((AbstractBeanDefinition)beanDef).hasBeanClass()
+                && ((AbstractBeanDefinition)beanDef).getBeanClass().getClassLoader() instanceof SmartClassLoader;
     }
 
     private boolean isTransactionAnnotated(Method method) {
