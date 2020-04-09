@@ -2,8 +2,8 @@ package com.ppdai.das.client.transaction.normal;
 
 
 import com.ppdai.das.client.Hints;
-import com.ppdai.das.client.transaction.annotation.DasTransactional;
-import com.ppdai.das.client.transaction.annotation.Shard;
+import com.ppdai.das.client.transaction.DasTransactional;
+import com.ppdai.das.client.transaction.Shard;
 
 
 import java.sql.SQLException;

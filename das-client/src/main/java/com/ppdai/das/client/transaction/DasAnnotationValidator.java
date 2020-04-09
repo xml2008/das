@@ -3,7 +3,6 @@ package com.ppdai.das.client.transaction;
 
 import java.lang.reflect.Method;
 
-import com.ppdai.das.client.transaction.annotation.DasTransactional;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;

@@ -4,7 +4,6 @@ package com.ppdai.das.client.transaction;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
-import com.ppdai.das.client.transaction.annotation.DasTransactional;
 import com.ppdai.das.core.client.DalTransactionManager;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;

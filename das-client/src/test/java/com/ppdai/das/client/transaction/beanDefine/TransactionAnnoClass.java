@@ -1,7 +1,7 @@
 package com.ppdai.das.client.transaction.beanDefine;
 
 
-import com.ppdai.das.client.transaction.annotation.DasTransactional;
+import com.ppdai.das.client.transaction.DasTransactional;
 import com.ppdai.das.core.client.DalTransactionManager;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;

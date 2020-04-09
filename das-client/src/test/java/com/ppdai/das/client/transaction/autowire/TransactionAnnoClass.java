@@ -1,7 +1,7 @@
 package com.ppdai.das.client.transaction.autowire;
 
 
-import com.ppdai.das.client.transaction.annotation.DasTransactional;
+import com.ppdai.das.client.transaction.DasTransactional;
 import org.springframework.stereotype.Component;
 
 

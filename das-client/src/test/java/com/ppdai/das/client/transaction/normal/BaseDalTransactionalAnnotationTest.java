@@ -4,7 +4,7 @@ package com.ppdai.das.client.transaction.normal;
 import com.ppdai.das.client.DasClientFactory;
 import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.Transaction;
-import com.ppdai.das.client.transaction.annotation.DasTransactional;
+import com.ppdai.das.client.transaction.DasTransactional;
 import com.ppdai.das.core.client.DalTransactionManager;
 import org.junit.Assert;
 import org.junit.Test;
