@@ -1,4 +1,4 @@
-package com.ppdai.das.client.transaction;
+package com.ppdai.das.client.annotation;
 
 import com.ppdai.das.client.transaction.DasTransactionalEnabler;
 import org.springframework.context.annotation.Import;

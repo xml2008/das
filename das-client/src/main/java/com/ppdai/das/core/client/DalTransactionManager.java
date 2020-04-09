@@ -8,7 +8,7 @@ import java.util.Objects;
 import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.transaction.DasTransactionInterceptor;
 import com.ppdai.das.client.transaction.TransactionalIntercepted;
-import com.ppdai.das.client.transaction.DasTransactional;
+import com.ppdai.das.client.annotation.DasTransactional;
 import com.ppdai.das.core.DasException;
 import com.ppdai.das.core.ErrorCode;
 import com.ppdai.das.core.EventEnum;

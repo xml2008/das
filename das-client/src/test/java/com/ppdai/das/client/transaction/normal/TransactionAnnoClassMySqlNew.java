@@ -2,8 +2,8 @@ package com.ppdai.das.client.transaction.normal;
 
  
 import com.ppdai.das.client.Hints;
-import com.ppdai.das.client.transaction.DasTransactional;
-import com.ppdai.das.client.transaction.Shard;
+import com.ppdai.das.client.annotation.DasTransactional;
+import com.ppdai.das.client.annotation.Shard;
 import org.springframework.stereotype.Component;
  
 

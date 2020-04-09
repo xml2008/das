@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.ppdai.das.client.DasClientFactory;
 import com.ppdai.das.client.Hints;
+import com.ppdai.das.client.annotation.DasTransactional;
+import com.ppdai.das.client.annotation.Shard;
 import com.ppdai.das.core.DasException;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

@@ -1,4 +1,4 @@
-package com.ppdai.das.client.transaction;
+package com.ppdai.das.client.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
