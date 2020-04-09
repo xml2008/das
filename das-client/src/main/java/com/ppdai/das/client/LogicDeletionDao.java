@@ -1,5 +1,7 @@
 package com.ppdai.das.client;
 
+import com.google.common.base.Preconditions;
+
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -227,7 +229,9 @@ public class LogicDeletionDao<T> extends TableDao<T>{
             setDeletionFlag(entity);
     }
 
-    protected final void clearDeletionFlag(T entity, Hints... hints) {
+    protected final void clearDeletionFlag(T entity, Hints... hintsList) {
+        Preconditions.checkArgument(hintsList.length <= 1, "You should provide non or just one hints parameter.");
+        Hints hints =  hintsList.length == 0 || hintsList[0] == null ? new Hints() : hintsList[0];
         deletionSupport.clearDeletionFlag(entity, hints);
     }
 

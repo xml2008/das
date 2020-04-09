@@ -36,10 +36,10 @@ public class DeletionFieldSupport<T> implements LogicDeletionSupport<T>{
     }
 
     @Override
-    public void clearDeletionFlag(T entity, Hints... hints) {
+    public void clearDeletionFlag(T entity, Hints hints) {
         setFlag(entity, null);
-        if(hints.length == 1 && hints[0] != null) {
-            hints[0].set(HintEnum.excludedColumns, Sets.newHashSet(getDeletionColumnName()));
+        if(hints != null) {
+            hints.set(HintEnum.excludedColumns, Sets.newHashSet(getDeletionColumnName()));
         }
     }
     
