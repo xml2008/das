@@ -5,10 +5,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
-import com.ppdai.das.core.HintEnum;
-
 /**
  * Table DAO that supports logic delete.
  * 
@@ -232,12 +228,7 @@ public class LogicDeletionDao<T> extends TableDao<T>{
     }
 
     protected final void clearDeletionFlag(T entity, Hints... hints) {
-        deletionSupport.clearDeletionFlag(entity);
-
-        Preconditions.checkArgument(hints.length <= 1, "You should provide non or just one hints parameter.");
-        if(hints.length == 1 && hints[0] != null) {
-            hints[0].set(HintEnum.excludedColumns, Sets.newHashSet(deletionSupport.getDeletionColumnName()));
-        }
+        deletionSupport.clearDeletionFlag(entity, hints);
     }
 
     protected final void clearDeletionFlag(List<T> entities, Hints... hints) {
