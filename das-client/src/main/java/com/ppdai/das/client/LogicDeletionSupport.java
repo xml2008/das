@@ -19,11 +19,13 @@ public interface LogicDeletionSupport<T> {
      * 
      * @param entity
      */
-    void clearDeletionFlag(T entity);
+    void clearDeletionFlag(T entity, Hints hints);
 
     Object[] getActiveCondition(TableDefinition tableDef);
 
     Object[] getDeletionCondition(TableDefinition tableDef);
     
     Object[] setDeletionFlag(TableDefinition tableDef);
+
+    String getDeletionColumnName();
 }

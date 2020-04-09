@@ -452,7 +452,7 @@ public class Hints {
      * @param value
      * @return this {@code Hints}
      */
-    private Hints set(HintEnum hint, Object value) {
+    Hints set(HintEnum hint, Object value) {
         hints.put(hint, value);
         return this;
     }
@@ -514,6 +514,15 @@ public class Hints {
      */
     public boolean isUpdateNullField() {
         return is(HintEnum.updateNullField);
+    }
+
+    /**
+     * Enable update null fields in pojo.
+     *
+     * @return this {@code Hints}
+     */
+    public Hints updateNullField() {
+        return set(HintEnum.updateNullField);
     }
 
     /**

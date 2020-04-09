@@ -2,7 +2,9 @@ package com.ppdai.das.client;
 
 import java.lang.reflect.Field;
 
+import com.google.common.collect.Sets;
 import com.ppdai.das.client.delegate.EntityMetaManager;
+import com.ppdai.das.core.HintEnum;
 
 public class DeletionFieldSupport<T> implements LogicDeletionSupport<T>{
     private final String deletionColumnName;
@@ -34,8 +36,11 @@ public class DeletionFieldSupport<T> implements LogicDeletionSupport<T>{
     }
 
     @Override
-    public void clearDeletionFlag(T entity) {
+    public void clearDeletionFlag(T entity, Hints hints) {
         setFlag(entity, null);
+        if(hints != null) {
+            hints.set(HintEnum.excludedColumns, Sets.newHashSet(getDeletionColumnName()));
+        }
     }
     
     @Override
@@ -61,6 +66,11 @@ public class DeletionFieldSupport<T> implements LogicDeletionSupport<T>{
     @Override
     public Object[] setDeletionFlag(TableDefinition tableDef) {
         return new Object[] {tableDef.getColumnDefinition(deletionColumnName).eq(deleted)};
+    }
+
+    @Override
+    public String getDeletionColumnName() {
+        return deletionColumnName;
     }
 
     private void setFlag(T entity, Object value) {
