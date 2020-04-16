@@ -181,12 +181,7 @@ public class ConditionBuilder {
         for(Segment entry: filtered) {
             //The table column expressions
             if(isProvider(entry)) {
-                Condition c = ((ConditionProvider)entry).build();
-                if(isNot(getTop(stack))) {
-                    stack.pop();//remove NOT
-                    c.reverse();
-                }
-                conditions.add(c);
+                conditions.add(((ConditionProvider)entry).build());
             }
             else if(isLeft(entry) || isNot(entry)){
                 stack.push(entry);
@@ -198,21 +193,19 @@ public class ConditionBuilder {
             } 
             else if(isAnd(entry)){
                 Segment top = getTop(stack);
-                if(top == null || isOr(top) || isLeft(top))
-                    stack.push(entry);
-                else {
+                while(!(top == null || isOr(top) || isLeft(top))) {
                     combine(stack.pop(), conditions);
-                    stack.push(entry);
+                    top = getTop(stack);
                 }
+                stack.push(entry);
             } 
             else if(isOr(entry)){
                 Segment top = getTop(stack);
-                if(top == null || isLeft(top))
-                    stack.push(entry);
-                else {
+                while(!(top == null || isLeft(top))){
                     combine(stack.pop(), conditions);
-                    stack.push(entry);
+                    top = getTop(stack);
                 }
+                stack.push(entry);
             }
         }
         
@@ -231,9 +224,15 @@ public class ConditionBuilder {
     
     private void combine(Segment entry, LinkedList<Condition> providers) {
         if(isNot(entry)) {
+            if(providers.size() <1)
+                throw new IllegalArgumentException("The expressions are not well formated, there is no operant to match 'NOT'");
+
             providers.getLast().reverse();
         }else {
             ConditionList temproviders = new ConditionList(isAnd(entry));
+            
+            if(providers.size() <2)
+                throw new IllegalArgumentException("The expressions are not well formated, please check if there is any missing ')' or dangling 'AND', 'OR' without operant");
             
             Condition rp2 = providers.removeLast();
             Condition rp1 = providers.removeLast();

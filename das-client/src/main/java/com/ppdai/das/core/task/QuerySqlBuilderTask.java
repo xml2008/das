@@ -25,7 +25,7 @@ public class QuerySqlBuilderTask<T> implements SqlBuilderTask<T>{
     @Override
     public T execute(DalClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
         SqlBuilder builder = provider.getRawRequest();
-        String sql = builder.build(new DasBuilderContext(appId, logicDbName, hints, parameters));
+        String sql = builder.build(new DasBuilderContext(appId, logicDbName, hints, parameters, builder));
         
         // If there is no in clause, just return
         if(Parameter.containsInParameter(parameters)) {

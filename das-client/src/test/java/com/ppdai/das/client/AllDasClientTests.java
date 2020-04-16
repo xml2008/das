@@ -1,5 +1,6 @@
 package com.ppdai.das.client;
 
+import com.ppdai.das.client.transaction.normal.BaseDalTransactionalAnnotationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -16,7 +17,6 @@ import com.ppdai.das.util.ConvertUtilsTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-
     AllSqlBuilderTests.class,
     AllStrategyTests.class,
     AllTableDaoTests.class,
@@ -28,7 +28,7 @@ import com.ppdai.das.util.ConvertUtilsTest;
     DasClientDBTest.class,
     DasClientTableTest.class,
     DasClientDbTableTest.class,
-
+    DasClientDbTableZeroTest.class,
     DasClientDiagnoseTest.class,
 
     SqlBuilderDBShardTest.class,
@@ -38,6 +38,7 @@ import com.ppdai.das.util.ConvertUtilsTest;
     DistributedTransactionDbTest.class,
     DistributedTransactionTableTest.class,
     NestedTransactionTest.class,
+    BaseDalTransactionalAnnotationTest.class,
 
     ConvertUtilsTest.class,
     DataSyncConfigurationTest.class,

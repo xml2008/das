@@ -3,6 +3,7 @@ package com.ppdai.das.client.sqlbuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static com.ppdai.das.client.SegmentConstants.*;
 
 import java.sql.SQLException;
@@ -118,15 +119,15 @@ public class ConditionBuilderTest {
         SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().includeAll().and().append(p.CityID.eq(1), OR, p.CountryID.eq(1), AND, p.Name.like("A"), OR, p.PeopleID.eq(1));
         ConditionList cl = builder.buildQueryConditions();
         cl = (ConditionList)cl.get(0);//get first
-        
+
         assertFalse(cl.isIntersected());
         assertEquals(3, cl.size());
-        
+
         ConditionList cl0;
         cl0 = (ConditionList)cl.get(0);
         assertTrue(cl0.isIntersected());
         assertEquals(2, cl0.size());
-        
+
         cl0 = (ConditionList)cl.get(1);
         assertTrue(cl0.isIntersected());
         assertEquals(2, cl0.size());
@@ -137,10 +138,10 @@ public class ConditionBuilderTest {
         SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().excludeAll().and().append(p.CityID.eq(1), OR, p.CountryID.eq(1), AND, p.Name.like("A"), OR, p.PeopleID.eq(1));
         ConditionList cl = builder.buildQueryConditions();
         cl = (ConditionList)cl.get(0);//get first
-        
+
         assertFalse(cl.isIntersected());
         assertEquals(4, cl.size());
-        
+
         assertTrue(cl.get(0) instanceof ColumnCondition);
 
         cl = (ConditionList)cl.get(2);
@@ -153,33 +154,95 @@ public class ConditionBuilderTest {
         SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().includeAll().and().excludeAll().and(SegmentConstants.TRUE).or(SegmentConstants.FALSE);
         ConditionList cl = builder.buildQueryConditions();
         cl = (ConditionList)cl.get(0);//get first
-        
+
         assertFalse(cl.isIntersected());
         assertEquals(3, cl.size());
-        
+
         assertTrue(cl.get(1) instanceof ColumnCondition);
         assertTrue(cl.get(2) instanceof ColumnCondition);
-        
+
         cl = (ConditionList)cl.get(0);
         assertTrue(cl.isIntersected());
         assertEquals(2, cl.size());
     }
 
     @Test
-    public void testSelectWhereNotAll() throws SQLException {
+    public void testSelectWhereSimple() throws SQLException {
+        SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().includeAll().append(SegmentConstants.TRUE).or(SegmentConstants.FALSE);
+        ConditionList cl = builder.buildQueryConditions();
+
+        cl = (ConditionList)cl.get(0);//get first
+
+        assertFalse(cl.isIntersected());
+        assertEquals(2, cl.size());
+
+        assertTrue(cl.get(1) instanceof ColumnCondition);
+
+        cl = (ConditionList)cl.get(0);
+        assertEquals(2, cl.size());
+    }
+
+    @Test
+    public void testSelectWhereNotSimple() throws SQLException {
+        SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().not().includeAll().and().append(SegmentConstants.TRUE);
+        ConditionList cl = builder.buildQueryConditions();
+
+        assertTrue(cl.isIntersected());
+        assertEquals(2, cl.size());
+
+        assertTrue(cl.get(0) instanceof ColumnCondition);
+    }
+
+    @Test
+    public void testSelectWhereNotOr() throws SQLException {
         SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().not().includeAll().and().not().excludeAll().and(SegmentConstants.TRUE).or(SegmentConstants.FALSE);
         ConditionList cl = builder.buildQueryConditions();
         cl = (ConditionList)cl.get(0);//get first
-        
+
         assertFalse(cl.isIntersected());
         assertEquals(3, cl.size());
-        
+
         assertTrue(cl.get(1) instanceof ColumnCondition);
         assertTrue(cl.get(2) instanceof ColumnCondition);
-        
+
         cl = (ConditionList)cl.get(0);
         assertTrue(cl.isIntersected());
         assertEquals(2, cl.size());
     }
 
+    @Test
+    public void testSelectWhereNotAnd() throws SQLException {
+        SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().not().excludeAll().and().not().includeAll().and(SegmentConstants.TRUE).and(SegmentConstants.FALSE);
+        ConditionList cl = builder.buildQueryConditions();
+        cl = (ConditionList)cl.get(0);//get first
+
+        assertFalse(cl.isIntersected());
+        assertEquals(2, cl.size());
+
+        assertTrue(cl.get(0) instanceof ColumnCondition);
+
+        cl = (ConditionList)cl.get(1);
+        assertTrue(cl.isIntersected());
+        assertEquals(3, cl.size());
+        assertTrue(cl.get(0) instanceof ColumnCondition);
+        assertTrue(cl.get(1) instanceof ColumnCondition);
+        assertTrue(cl.get(2) instanceof ColumnCondition);
+    }
+
+    @Test
+    public void testSelectWhereNotWellFormated() throws SQLException {
+        SqlBuilder builder = SqlBuilder.selectAllFrom(p).where().not();
+        try {
+            builder.buildQueryConditions();
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
+
+        builder = SqlBuilder.selectAllFrom(p).where().append(SegmentConstants.TRUE, SegmentConstants.AND);
+        try {
+            builder.buildQueryConditions();
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
+    }
 }

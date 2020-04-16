@@ -47,14 +47,16 @@ public class DasConfigure {
         Map<String, DatabaseSet> newLogicDatabaseSets = event.getNewDatabaseSets();
         for (String name : newLogicDatabaseSets.keySet()) {
             DatabaseSet newDatabaseSet = newLogicDatabaseSets.get(name);
-            DatabaseSet oldDatabaseSet = databaseSets.get(name);
-            if (!newDatabaseSet.equals(oldDatabaseSet)) {// Added/updated ones
-                databaseSets.put(name, newDatabaseSet);
-            }
+            onDatabaseSetChanged(new DatabaseSetChangeEvent(ImmutableMap.of(name, newDatabaseSet)));
         }
 
         //Removed ones
         databaseSets.entrySet().removeIf(entry -> !newLogicDatabaseSets.containsKey(entry.getKey()));
+    }
+
+    public void onDatabaseSetChanged(DatabaseSetChangeEvent event) {
+        Map.Entry<String, DatabaseSet> newLogicDatabaseSet = event.getNewDatabaseSets().entrySet().iterator().next();
+        databaseSets.replace(newLogicDatabaseSet.getKey(), newLogicDatabaseSet.getValue());
     }
 
     public static class DataSourceConfigureEvent {
@@ -139,5 +141,9 @@ public class DasConfigure {
 
     public DatabaseSelector getDatabaseSelector() {
         return selector;
+    }
+
+    Map<String, DatabaseSet> getDatabaseSets() {
+        return databaseSets;
     }
 }

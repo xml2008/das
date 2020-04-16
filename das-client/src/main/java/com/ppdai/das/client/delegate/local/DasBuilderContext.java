@@ -50,6 +50,11 @@ public class DasBuilderContext implements BuilderContext {
         this.conditions = conditions;
     }
 
+    public DasBuilderContext(String appId, String logicDbName, Hints ctripHints, List<Parameter> parameters, ConditionList conditions, SqlBuilder builder) {
+        this(appId, logicDbName, ctripHints, parameters, conditions);
+        this.builder = builder;
+    }
+
     public DasBuilderContext(String appId, String logicDbName, Hints ctripHints, List<Parameter> parameters, SqlBuilder builder) {
         this(appId, logicDbName, ctripHints, parameters);
         this.builder = builder;

@@ -1,7 +1,8 @@
 package com.ppdai.das.client;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,8 +36,6 @@ public class Hints {
     private DasVersionInfo versionInfo;
 
     private static final Object NULL = new Object();
-
-    private List<ColumnOrder> sorter = new ArrayList<>();
 
     private boolean crossShardsPageRoughly = false;
 
@@ -72,6 +71,20 @@ public class Hints {
      */
     public DasDiagnose getDiagnose() {
         return dasDiagnose;
+    }
+
+    /**
+     * Append diagnose info
+     *
+     * @param key
+     * @param info
+     * @return Hints
+     */
+    public Hints appendDiagnose(String key, Object info) {
+        if(isDiagnose()) {
+            dasDiagnose.append(key, info);
+        }
+        return this;
     }
 
     /**
@@ -338,6 +351,7 @@ public class Hints {
 
         setVersionInfo(versionInfo);
         allowPartial();
+        set(HintEnum.sortColumns, new LinkedList<ColumnOrder>());
     }
 
     /**
@@ -438,7 +452,7 @@ public class Hints {
      * @param value
      * @return this {@code Hints}
      */
-    private Hints set(HintEnum hint, Object value) {
+    Hints set(HintEnum hint, Object value) {
         hints.put(hint, value);
         return this;
     }
@@ -500,6 +514,15 @@ public class Hints {
      */
     public boolean isUpdateNullField() {
         return is(HintEnum.updateNullField);
+    }
+
+    /**
+     * Enable update null fields in pojo.
+     *
+     * @return this {@code Hints}
+     */
+    public Hints updateNullField() {
+        return set(HintEnum.updateNullField);
     }
 
     /**
@@ -672,15 +695,14 @@ public class Hints {
      * @param orders
      * @return
      */
-    public Hints setSorter(ColumnOrder... orders) {
-        for(Object order : orders) {
-            this.sorter.add((ColumnOrder) order);
-        }
+    public Hints sortBy(ColumnOrder... orders) {
+        Preconditions.checkArgument(orders != null && orders.length > 0);
+        ((List<ColumnOrder>) get(HintEnum.sortColumns)).addAll(Arrays.asList(orders));
         return this;
     }
 
     public List<ColumnOrder> getSorter() {
-        return sorter;
+        return (List<ColumnOrder>) get(HintEnum.sortColumns);
     }
 
     /**

@@ -8,15 +8,19 @@ public class DataBase {
 	private boolean master;
 	private String sharding;
 	private String connectionString;
-	
-	public DataBase(String name, 
-			boolean master, 
-			String sharding, 
+
+	public DataBase(String name,
+			boolean master,
+			String sharding,
 			String connectionString) {
 		this.name = name;
 		this.master = master;
 		this.sharding = sharding;
 		this.connectionString = connectionString;
+	}
+
+	public DataBase deepCopy(boolean master) {
+		return new DataBase(this.name, master, this.sharding, this.connectionString);
 	}
 
 	@Override
@@ -44,11 +48,29 @@ public class DataBase {
 		return master;
 	}
 
+	public void setMaster() {
+		master = true;
+	}
+
+	public void setSlave() {
+		master = false;
+	}
+
 	public String getSharding() {
 		return sharding;
 	}
 
 	public String getConnectionString() {
 		return connectionString;
+	}
+
+	@Override
+	public String toString() {
+		return "DataBase{" +
+				"name='" + name + '\'' +
+				", master=" + master +
+				", sharding='" + sharding + '\'' +
+				", connectionString='" + connectionString + '\'' +
+				'}';
 	}
 }

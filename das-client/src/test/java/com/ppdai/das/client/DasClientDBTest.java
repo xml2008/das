@@ -215,7 +215,7 @@ public class DasClientDBTest extends DataPreparer {
         for(int i = 0; i < DB_MODE;i++) {
             Person pk = new Person();
             pk.setName("test");
-            Hints hints = new Hints().setSorter(p.PeopleID.asc(), p.CountryID.desc());
+            Hints hints = new Hints().sortBy(p.PeopleID.asc(), p.CountryID.desc());
             List<Person> plist = dao.queryBySample(pk, hints);
             assertNotNull(plist);
             assertEquals(8, plist.size());
@@ -236,7 +236,7 @@ public class DasClientDBTest extends DataPreparer {
         for(int i = 0; i < DB_MODE;i++) {
             SqlBuilder sqlBuilder = SqlBuilder.selectAllFrom(p).where(p.Name.eq("test")).intoMap();
             sqlBuilder.hints()
-                    .setSorter(p.PeopleID.asc(), p.CountryID.desc())
+                    .sortBy(p.PeopleID.asc(), p.CountryID.desc())
                     .diagnose();
             List<Map> plist = dao.query(sqlBuilder);
             assertNotNull(plist);
@@ -653,6 +653,21 @@ public class DasClientDBTest extends DataPreparer {
                 process(pk, hints, i, j);
                 assertEquals(1, dao.update(pk, hints));
                 assertEquals("Tom", dao.queryByPk(pk, hints).getName());
+            }
+        }
+    }
+
+    @Test
+    public void testUpdateNullField() throws Exception {
+        for (int i = 0; i < DB_MODE; i++) {
+            for (int j = 0; j < TABLE_MODE; j++) {
+                Person pk = new Person();
+                pk.setPeopleID(j + 1);
+                pk.setName(null);
+                Hints hints = new Hints();
+                process(pk, hints, i, j);
+                assertEquals(1, dao.update(pk, hints.updateNullField()));
+                assertNull(pk.getName(), dao.queryByPk(pk, hints).getName());
             }
         }
     }

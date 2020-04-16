@@ -8,6 +8,7 @@ import static com.ppdai.das.core.enums.DatabaseCategory.MySql;
 import static com.ppdai.das.core.enums.DatabaseCategory.SqlServer;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -407,6 +408,25 @@ public class DasClientTest extends DataPreparer {
         }
     }
 
+    @Test
+    public void testUpdateNullField() throws Exception {
+        for (int k = 0; k < TABLE_MODE; k++) {
+            Person pk = new Person();
+            pk.setPeopleID(k + 1);
+            pk.setName(null);
+            pk.setDataChange_LastTime(null);
+            pk.setCountryID(100);
+            pk.setCityID(200);
+            assertEquals(1, dao.update(pk, new Hints().updateNullField()));
+            pk = dao.queryByPk(pk);
+
+            assertNull(pk.getName());
+            assertNull(pk.getDataChange_LastTime());
+            assertEquals(100, pk.getCountryID().intValue());
+            assertEquals(200, pk.getCityID().intValue());
+        }
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateOverloading() throws Exception {
         dao.update(SqlBuilder.selectCount(), Hints.hints());
@@ -501,6 +521,32 @@ public class DasClientTest extends DataPreparer {
         }
     }
 
+    @Test
+    public void testBatchUpdateNullField() throws Exception {
+        List<Person> pl = new ArrayList<>();
+        for (int k = 0; k < TABLE_MODE; k++) {
+            Person pk = new Person();
+            pk.setPeopleID(k + 1);
+            pk.setName(null);
+            pk.setCountryID(100);
+            pk.setCityID(200);
+            pl.add(pk);
+        }
+
+        int[] ret = dao.batchUpdate(pl, Hints.hints().updateNullField());
+        for(int i: ret)
+            assertEquals(1, i);
+
+        assertEquals(4, ret.length);
+
+        for(Person pk: pl) {
+            pk = dao.queryByPk(pk);
+
+            assertNull(pk.getName());
+            assertEquals(100, pk.getCountryID().intValue());
+            assertEquals(200, pk.getCityID().intValue());
+        }
+    }
     @Test
     public void testBatchUpdateBuillder() throws Exception {
         String[] statements = new String[]{
@@ -744,7 +790,12 @@ public class DasClientTest extends DataPreparer {
             pks.add(k+1);
 
         SqlBuilder builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks)).orderBy(p.PeopleID.asc()).into(Person.class);
+        Hints hints = builder.hints().diagnose();
         List<Person> plist = dao.query(builder);
+
+        if(this.dbCategory == SqlServer) { //"WITH (NOLOCK)" is applied for SqlServer automatically
+            assertTrue(hints.getDiagnose().toString().contains(SegmentConstants.WITH_NO_LOCK.getText()));
+        }
 
         assertEquals(4, plist.size());
         for (int k = 0; k < TABLE_MODE; k++) {
@@ -753,6 +804,20 @@ public class DasClientTest extends DataPreparer {
             assertEquals(k+1,  pk.getPeopleID().intValue());
             assertEquals("test",  pk.getName());
         }
+    }
+
+    @Test
+    public void testQueryWithLock() throws Exception {
+        PersonDefinition p = Person.PERSON;
+
+        SqlBuilder builder = selectAllFrom(p).withLock().into(Person.class);
+        Hints hints = builder.hints().diagnose();
+        List<Person> plist = dao.query(builder);
+
+        if(this.dbCategory == SqlServer) { //check withLock()
+            assertFalse(hints.getDiagnose().toString().contains(SegmentConstants.WITH_NO_LOCK.getText()));
+        }
+        assertFalse(plist.isEmpty());//withLock() will be ignored for MySQL
     }
 
     @Test
@@ -815,7 +880,11 @@ public class DasClientTest extends DataPreparer {
         for (int k = 0; k < TABLE_MODE; k++) {
             batchBuilder.addBatch(selectAllFrom(p).where().allOf(p.PeopleID.eq(k+1)).orderBy(p.PeopleID.asc()).into(Person.class));
         }
+        Hints hints = batchBuilder.hints().diagnose();
         List<List<Person>> plist = (List<List<Person>>)dao.batchQuery(batchBuilder);
+        if(this.dbCategory == SqlServer) { //"WITH (NOLOCK)" is applied for SqlServer automatically
+            assertTrue(hints.getDiagnose().toString().contains(SegmentConstants.WITH_NO_LOCK.getText()));
+        }
         assertEquals(TABLE_MODE, plist.size());
         for (int k = 0; k < TABLE_MODE; k++) {
             List<Person> list = plist.get(k);
@@ -914,7 +983,39 @@ public class DasClientTest extends DataPreparer {
         
         assertEquals(4, plistx.size());
     }
-    
+
+    @Test
+    public void testExceptionType() {
+        Person p = new Person();
+        p.setPeopleID(1);
+        List<Person> pl = new ArrayList<>();
+        pl.add(p);
+        pl.add(p);
+        try {
+            dao.insert(pl, hints().insertWithId());
+            fail();
+        }catch (Exception e) {
+            assertTrue(e instanceof SQLException);
+        }
+    }
+
+    @Test
+    public void testExceptionTypeInTransaction() {
+        Person p = new Person();
+        p.setPeopleID(1);
+        List<Person> pl = new ArrayList<>();
+        pl.add(p);
+        pl.add(p);
+        try {
+            dao.execute(() -> {
+                dao.insert(pl, hints().insertWithId());
+            });
+            fail();
+        }catch (Exception e) {
+            assertTrue(e instanceof SQLException);
+        }
+    }
+
     private void testTransactionNestBatchDelete(List<Person> plist) throws SQLException {
         PersonDefinition p = Person.PERSON;
         dao.execute(() -> {

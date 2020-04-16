@@ -680,6 +680,23 @@ public class DasClientDbTableTest extends DataPreparer {
     }
 
     @Test
+    public void testUpdateNullField() throws Exception {
+        for (int i = 0; i < DB_MODE; i++) {
+            for (int j = 0; j < TABLE_MODE; j++) {
+                for (int k = 0; k < TABLE_MODE; k++) {
+                    Person pk = new Person();
+                    pk.setPeopleID(k + 1);
+                    pk.setName(null);
+                    Hints hints = new Hints();
+                    process(pk, hints, i, j);
+                    assertEquals(1, dao.update(pk, hints.updateNullField()));
+                    assertNull(dao.queryByPk(pk, hints).getName());
+                }
+            }
+        }
+    }
+
+    @Test
     public void testBatchUpdateX() throws Exception {
         List<Person> pl = new ArrayList<>();
         for (int i = 0; i < DB_MODE; i++) {

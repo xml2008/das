@@ -172,4 +172,8 @@ public class StatusManager {
 	public static boolean containsDataSourceStatus(String dbName) {
 		return dataSources.containsKey(dbName);
 	}
+
+	public static Map<String, Map<String, DatabaseSetStatus>> getAppLogicDbs() {
+		return appLogicDbs;
+	}
 }

@@ -33,7 +33,7 @@ public class BatchQueryBuilderTask implements SqlBuilderTask<List<?>>{
         for(SqlBuilder entry: builder.getQueries()) {
             List<Parameter> tempParameters = entry.buildParameters();
             ConditionList conditions = entry.buildQueryConditions();
-            BuilderContext bc = new DasBuilderContext(appId, logicDbName, hints, tempParameters, conditions);
+            BuilderContext bc = new DasBuilderContext(appId, logicDbName, hints, tempParameters, conditions, entry);
             String sql = entry.build(bc);
             sb.append(sql);
             if(!sql.endsWith(";"))
