@@ -4,7 +4,7 @@
 import React from 'react'
 import Component from '../base/Component'
 import {Select} from 'antd'
-import {DataUtil} from '../../utils/util/Index'
+import {DataUtil} from '../util/Index'
 import _ from 'underscore'
 
 export default class SelectPlus extends Component {
@@ -211,19 +211,25 @@ export default class SelectPlus extends Component {
         if (null == this.defaultValue) {
             this.defaultValue = []
         }
+        const defaultValue = this.defaultValue
+        const _props = {defaultValue, size, disabled}
+
         if (mode != null) {
-            return (<Select defaultValue={this.defaultValue} size={size} disabled={disabled}
-                            value={selectedValues} style={{width: width}} mode={mode} filterOption={false}
+            if (selectedValues) {
+                _props.value = selectedValues
+            }
+            return (<Select {..._props} style={{width: width}} mode={mode} filterOption={false}
                             onDeselect={e => this.onDeselect(e)} placeholder={placeholder}
-                            onSelect={(e, o) => this.onSelect(e, o)}
-                            onSearch={e => this.filerItems(e)}
+                            onSelect={(e, o) => this.onSelect(e, o)} onSearch={e => this.filerItems(e)}
                             tokenSeparators={[',']}>
                 {this.createOptions(items)}
             </Select>)
         }
+        if (selectedValue) {
+            _props.value = defaultValue
+        }
         return (
-            <Select defaultValue={this.defaultValue} value={selectedValue} size={size} disabled={disabled}
-                    style={{width: width}} showSearch={true} placeholder={placeholder}
+            <Select {..._props} style={{width: width}} showSearch={true} placeholder={placeholder}
                     onChange={e => this.onChange(e)}
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                 {this.createOptions(items)}

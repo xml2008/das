@@ -2,7 +2,7 @@ import React from 'react'
 import DataUtil from './DataUtil'
 import {fetch} from 'ea-react-dm-v14'
 import _ from 'underscore'
-//import $ from 'jquery'
+import $ from 'jquery'
 
 let FrwkUtil = FrwkUtil || {}
 
@@ -95,6 +95,37 @@ FrwkUtil.ComponentUtils = {
             window.console.error(_this.props.valueLink, 'defaultId is null')
         }
         return defaultId
+    },
+    /**
+     * 初始化 数组或对象
+     * [{name:'tom', id:1}, {name:'jerry', id:2}] ==> {'1':'tom','2':'jerry'}
+     * {1:'tom',2:'jerry'} ==> {'1':'tom','2':'jerry'}
+     * @param _this
+     */
+    transform: function (props) {
+        let {list, param} = props, objs = {}
+        try {
+            if (DataUtil.is.Array(list)) {
+                for (let i in list) {
+                    const item = list[i]
+                    const id = String(item[param.id])
+                    if (item[param.id] == undefined || item[param.name] == undefined) {
+                        window.console.error(props.valueLink, 'transform: param.id or param.name is undefined')
+                    }
+                    objs[id] = String(item[param.name])
+                }
+            } else if (DataUtil.is.Object(list)) {
+                _.each(list, function (name, id) {
+                    objs[String(id)] = String(name)
+                })
+            }
+            if ($.isEmptyObject(objs)) {
+                window.console.error(props.valueLink, 'transform: objs is null!!!')
+            }
+        } catch (e) {
+            window.console.error(props.valueLink + '.initList', e, list)
+        }
+        return objs
     }
 }
 
