@@ -5,6 +5,7 @@ import com.ppdai.das.console.cloud.dao.ProjectCloudDao;
 import com.ppdai.das.console.cloud.dto.entry.ProjectEntry;
 import com.ppdai.das.console.cloud.dto.model.ProjectModel;
 import com.ppdai.das.console.cloud.dto.model.ServiceResult;
+import com.ppdai.das.console.cloud.dto.view.LoginUserItem;
 import com.ppdai.das.console.cloud.dto.view.ProjectCloudView;
 import com.ppdai.das.console.cloud.dto.view.ProjectItem;
 import com.ppdai.das.console.common.utils.StringUtil;
@@ -18,6 +19,7 @@ import com.ppdai.das.console.dto.view.ProjectView;
 import com.ppdai.das.console.service.GroupService;
 import com.ppdai.das.console.service.PermissionService;
 import com.ppdai.das.console.service.ProjectService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,10 +95,13 @@ public class ProjectCloudService {
         return loginUsers.stream().map(i -> i.getId()).collect(Collectors.toList());
     }
 
-
-    public ProjectModel getProjectByAppid(String appid) throws SQLException {
+    public ServiceResult<ProjectModel> getProjectByAppid(String appid) throws SQLException {
         ProjectView projectView = projectCloudDao.getProjectByAppId(appid);
-        return toProjectModel(projectView);
+        if (null != projectView) {
+            return ServiceResult.success(toProjectModel(projectView));
+        } else {
+            return ServiceResult.fail("AppId:" + appid + "未接入DAS");
+        }
     }
 
     private Project toProject(ProjectEntry projectEntry) throws SQLException {
@@ -123,6 +129,7 @@ public class ProjectCloudService {
                 .first_release_time(projectView.getFirst_release_time())
                 .pre_release_time(projectView.getPre_release_time())
                 .das_group_id(projectView.getDal_group_id())
+                .das_group_name(projectView.getGroupName())
                 .db_set_ids(StringUtil.toLongList(projectView.getDbsetIds()))
                 .user_noes(projectView.getUserNoes())
                 .build();
@@ -131,5 +138,27 @@ public class ProjectCloudService {
     public List<ProjectItem> getProjectList(Long group_id) throws SQLException {
         List<Project> list = projectDao.getProjectByGroupId(group_id);
         return list.stream().map(i -> new ProjectItem(i.getId(), i.getName())).collect(Collectors.toList());
+    }
+
+
+    public ServiceResult<List<LoginUserItem>> findUserListByUserNos(List<String> userNos) {
+        if (CollectionUtils.isEmpty(userNos)) {
+            return ServiceResult.fail("工号不能为空!!");
+        }
+        try {
+            List<LoginUserItem> list = new ArrayList<>();
+            List<LoginUser> loginUsers = loginUserCloudDao.getUserByNoes(userNos);
+            if (CollectionUtils.isEmpty(loginUsers)) {
+                return ServiceResult.fail("工号" + userNos + "没有注册DAS!");
+            }
+            for (LoginUser loginUser : loginUsers) {
+                list.add(LoginUserItem.builder().userNo(loginUser.getUserNo()).userRealName(loginUser.getUserRealName()).build());
+            }
+            return ServiceResult.success(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServiceResult.fail("传参格式错误!!");
+        }
+
     }
 }

@@ -31,7 +31,7 @@ public class ProjectCloudDao extends BaseDao {
     }
 
     public ProjectView getProjectByAppId(String appId) throws SQLException {
-        String sql = projectDao.getfindProjectSql() + "  WHERE t1.app_id = '" + appId + "' group by t1.id ";
+        String sql = projectDao.getfindProjectSql() + "  WHERE t1.app_id = '" + appId + "' group by t1.id limit 1";
         List<ProjectView> list = this.queryBySql(sql, ProjectView.class);
         return CollectionUtils.isNotEmpty(list) ? list.get(0) : null;
     }

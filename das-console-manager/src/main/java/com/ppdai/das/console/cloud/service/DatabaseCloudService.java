@@ -13,6 +13,7 @@ import com.ppdai.das.console.dao.LoginUserDao;
 import com.ppdai.das.console.dto.entry.das.DasGroup;
 import com.ppdai.das.console.dto.entry.das.DataBaseInfo;
 import com.ppdai.das.console.dto.entry.das.LoginUser;
+import com.ppdai.das.console.dto.model.ConnectionRequest;
 import com.ppdai.das.console.service.DatabaseService;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
@@ -70,10 +71,12 @@ public class DatabaseCloudService {
         }
         DataBaseInfo condtion = toCondtion(dataBaseInfo);
         dataBaseInfo.setUpdateUserNo(loginUser.getUserNo());
+        ConnectionRequest connectionRequest = ConnectionRequest.builder().db_type(dataBaseInfo.getDb_type()).db_address(dataBaseInfo.getDb_address()).db_port(dataBaseInfo.getDb_port()).db_user(dataBaseInfo.getDb_user()).db_password(dataBaseInfo.getDb_password()).build();
         ValidateResult validateRes = validatorChain
+                .addAssert(() -> databaseService.connectionTest(connectionRequest).getCode() == 200, "物理库信息连接不成功！请检查物理库连接信息！")
                 .addAssert(() -> groupCloudService.isWorkNameInGrroup(dataBaseInfo.getDal_group_id(), workName), "当前用户" + workName + "不在组内")
                 .addAssert(() -> dataBaseDao.getCountByName(dataBaseInfo.getDbname()) == 0, "物理库标识符" + dataBaseInfo.getDbname() + "已经存在!")
-                .addAssert(() -> dataBaseCloudDao.getDataBaseInfoByConditon(condtion) == null, dataBaseInfo.getDbname() + ", 在组" + dasGroup.getGroup_name() + "已经存在 !")
+                .addAssert(() -> dataBaseCloudDao.getDataBaseInfoByConditon(condtion) == null, "物理库" + dataBaseInfo.getDb_catalog() + ", 在组" + dasGroup.getGroup_name() + "已经存在!相同配置的物理库无需重复创建!")
                 .addAssert(() -> databaseService.addDataBaseInfo(loginUser, dataBaseInfo)).validate();
         if (!validateRes.isValid()) {
             return ServiceResult.fail(validateRes.getSummarize());

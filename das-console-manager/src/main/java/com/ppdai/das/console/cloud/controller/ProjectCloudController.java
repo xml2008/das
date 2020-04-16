@@ -1,6 +1,7 @@
 package com.ppdai.das.console.cloud.controller;
 
 import com.ppdai.das.console.cloud.dto.entry.ProjectEntry;
+import com.ppdai.das.console.cloud.dto.model.ProjectModel;
 import com.ppdai.das.console.cloud.dto.model.ServiceResult;
 import com.ppdai.das.console.cloud.dto.view.ProjectItem;
 import com.ppdai.das.console.cloud.service.ProjectCloudService;
@@ -23,8 +24,12 @@ public class ProjectCloudController {
     private ProjectCloudService projectCloudService;
 
     @RequestMapping(value = "/getProject")
-    public ServiceResult<List<ProjectEntry>> getProjectByAppid(@RequestParam(value = "appid", defaultValue = "") String appid) throws SQLException {
-        return ServiceResult.success(projectCloudService.getProjectByAppid(appid));
+    public ServiceResult<ProjectModel> getProjectByAppid(@RequestParam(value = "appid", defaultValue = "") String appid) {
+        try {
+            return projectCloudService.getProjectByAppid(appid);
+        } catch (Exception e) {
+            return ServiceResult.fail("AppId:" + appid + "未接入DAS");
+        }
     }
 
     @RequestMapping(value = "/getAppidList")

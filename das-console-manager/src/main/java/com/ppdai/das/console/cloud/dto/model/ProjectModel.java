@@ -28,6 +28,8 @@ public class ProjectModel {
      **/
     private Long das_group_id;
 
+    private String das_group_name;
+
     /**
      * 应用场景
      **/
