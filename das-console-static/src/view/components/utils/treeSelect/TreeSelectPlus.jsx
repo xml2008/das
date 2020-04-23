@@ -49,7 +49,7 @@ export default class TreeSelectPlus extends Component {
         if (extra.clear) {  //全不选
             if (extra.preValue[0].value == -1 && extra.triggerValue == -1) {
                 //cleanSelect()
-                window.console.log('全不选11 ', value)
+                //window.console.log('全不选11 ', value)
             } else {
                 onDeselect(extra.triggerValue)
             }
