@@ -3,6 +3,7 @@ package com.ppdai.das.client.transaction.normal;
 
 import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.annotation.DasTransactional;
+import com.ppdai.das.client.annotation.DefaultShard;
 import com.ppdai.das.client.annotation.Shard;
 import org.springframework.stereotype.Component;
 
@@ -79,12 +80,22 @@ public class TransactionAnnoClassSqlServerNew extends BaseTransactionAnnoClass {
     public String performWitShard(@Shard String id, Hints hints) {
         return super.performWitShard(id, hints);
     }
-    
+
+    @DasTransactional(logicDbName = DB_NAME_SHARD)
+    public String performWithDefaultShard(@DefaultShard String id, Hints hints) {
+        return super.performWithDefaultShard(id, hints);
+    }
+
     @DasTransactional(logicDbName = DB_NAME_SHARD)
     public String performWitShardNest(@Shard String id, Hints hints) {
         return super.performWitShardNest(id, hints);
     }
-    
+
+    @DasTransactional(logicDbName = DB_NAME_SHARD)
+    public String performWithDefaultShardNest(@DefaultShard String id, Hints hints) {
+        return super.performWithDefaultShardNest(id, hints);
+    }
+
     @DasTransactional(logicDbName = DB_NAME_SHARD)
     public String performWitShardNestConflict(@Shard String id, Hints hints) {
         return super.performWitShardNestConflict(id, hints);

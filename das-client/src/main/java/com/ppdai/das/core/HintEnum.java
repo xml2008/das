@@ -67,7 +67,14 @@ public enum HintEnum {
 	 * Value should be String
 	 */
 	tableShard,
-	
+
+	/*
+	 * Explicitly indicate in which shard the operation will be performed.
+	 * It is used in transaction annotation.
+	 * Value should be String
+	 */
+	defaultShard,
+
 	/*
 	 * Indicate that the query will be executed in all shards 
 	 */

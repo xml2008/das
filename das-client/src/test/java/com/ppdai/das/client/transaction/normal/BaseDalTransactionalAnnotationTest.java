@@ -168,7 +168,7 @@ public class BaseDalTransactionalAnnotationTest {
         Assert.assertEquals(DONE, test.perform(1));
         Assert.assertEquals(DONE, test.perform(new Integer(1)));
     }
-    
+
     @Test
     public void testWithHints() throws InstantiationException, IllegalAccessException {
         BaseTransactionAnnoClass test = create();
@@ -199,11 +199,11 @@ public class BaseDalTransactionalAnnotationTest {
         
         assertTrue(DalTransactionManager.isInTransaction() == false);
     }
-    
+
     @Test
     public void testWithShardAndHints() throws InstantiationException, IllegalAccessException {
         BaseTransactionAnnoClass test = create();
-        Assert.assertEquals(DONE, test.performWitShard("1", new Hints().inShard(1)));
+        Assert.assertEquals(DONE, test.performWithDefaultShard("1", new Hints().inShard(1)));
         Assert.assertEquals(DONE, test.performWitShard("1", new Hints().inShard("1")));
 
         Assert.assertEquals(DONE, test.performWitShard(null, new Hints().inShard(1)));
@@ -239,7 +239,19 @@ public class BaseDalTransactionalAnnotationTest {
         } catch (Exception e) {
         }
     }
-    
+
+    @Test
+    public void testWithDefaultShardAndHintsNestConflict() throws InstantiationException, IllegalAccessException {
+        BaseTransactionAnnoClass test = create();
+        test.performWithDefaultShard("1", new Hints().inShard(0));
+    }
+
+    @Test
+    public void testWithDefaultShardAndHintsNestNest() throws InstantiationException, IllegalAccessException {
+        BaseTransactionAnnoClass test = create();
+        Assert.assertEquals(DONE, test.performWithDefaultShardNest("1", new Hints().inShard("0")));
+    }
+
     @Test
     public void testWithShardAndHintsNestFail() throws InstantiationException, IllegalAccessException {
         BaseTransactionAnnoClass test = create();

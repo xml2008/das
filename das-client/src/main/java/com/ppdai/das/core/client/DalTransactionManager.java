@@ -13,6 +13,7 @@ import com.ppdai.das.core.DasException;
 import com.ppdai.das.core.ErrorCode;
 import com.ppdai.das.core.EventEnum;
 import com.ppdai.das.core.HaContext;
+import com.ppdai.das.core.HintEnum;
 import com.ppdai.das.core.markdown.MarkdownManager;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
@@ -38,7 +39,7 @@ public class DalTransactionManager {
 		if(transaction == null) {
 			transaction = new DalTransaction( 
 					getConnection(hints, true, action.operation, action.highAvalible), 
-					connManager.getLogicDbName());
+					connManager.getLogicDbName(), hints.is(HintEnum.defaultShard));
 			
 			transactionHolder.set(transaction);
 		}else{
@@ -103,6 +104,12 @@ public class DalTransactionManager {
         return isInTransaction() ?
                 transactionHolder.get().getConnection().getShardId() :
                     null;
+	}
+
+	public static boolean isDefaultShardId() {
+		return isInTransaction() ?
+				transactionHolder.get().isDefaultShard() :
+				false;
 	}
 
 	public static DbMeta getCurrentDbMeta() {
