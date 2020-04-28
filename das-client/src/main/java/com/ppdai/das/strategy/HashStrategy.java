@@ -26,26 +26,27 @@ public class HashStrategy extends ShardColModShardStrategy {
     @Override
     public String calculateDbShard(Object value) {
         Preconditions.checkNotNull(value);
-        long hashValue = hashValue(Objects.toString(value));
-        return (hashValue % getMod()) + "";
+        long hashValue = hashValue(Objects.toString(value), getMod());
+        return hashValue + "";
     }
 
     @Override
     public String calculateTableShard(String tableName, Object value) {
         Preconditions.checkNotNull(value);
-        long hashValue = hashValue(Objects.toString(value));
-        return (hashValue % getTableMod()) + "";
+        long hashValue = hashValue(Objects.toString(value), getTableMod());
+        return hashValue + "";
     }
 
-    long hashValue(String str) {
+    long hashValue(String str, int mod) {
         if (hash.equals("md5")) {
             String md5 = DigestUtils.md5Hex(str);
             BigInteger bigInteger = new BigInteger(md5, 16);
-            return bigInteger.longValue();
+            BigInteger result = bigInteger.mod(BigInteger.valueOf(mod));
+            return result.longValue();
         } else {
             CRC32 crc32 = new CRC32();
             crc32.update(str.getBytes());
-            return crc32.getValue();
+            return crc32.getValue() % mod;
         }
     }
 

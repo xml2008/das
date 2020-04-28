@@ -41,14 +41,6 @@ public class DateShardStrategy extends AbstractColumnShardStrategy {
 
     }
 
-    public static void main(String[] erwq) {
-
-        for(int id = 1; id<100;id++){
-            System.out.println(id +":"+  String.valueOf((int) ((id % 10) / 3)+1 ));
-           // System.out.println(id +":"+  String.valueOf((int) ((id  / 10)+1 )));
-        }
-
-    }
     String select(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
