@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLTimeoutException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -273,7 +274,10 @@ public class MGRConfigReader {
                      list.add(new MGRInfo(id, host, state, role));
                  }
              }
-        } catch (Exception e) {
+        } catch (SQLTimeoutException timeoutException){
+            //Timeout is NOT a failure
+            logger.error("MGR heartbeat timeout", timeoutException.getMessage());
+        }catch (Exception e) {
             exceptionalHosts.add(dbHost);
             logger.error("Exception occurs when query MGR info.", e.getMessage());
             if(exceptionalHosts.size() == 3){
@@ -339,7 +343,7 @@ public class MGRConfigReader {
                         e -> {
                             return e.getValue().stream().findFirst().get();
                         }));
-        recoverExceptionalNode(infos);
+       checkNodes(infos);
 
         for (Map.Entry<String, DatabaseSet> ent : mgrDatabaseSetSnapshot.entrySet()) {
             String setName = ent.getKey();
@@ -361,12 +365,18 @@ public class MGRConfigReader {
         }
     }
 
-    private void recoverExceptionalNode(Map<String, MGRInfo> infos) {
-        exceptionalHosts.removeIf(dbHost -> {
-            String host = connectionString2DS.get(dbHost).getHost();
-            MGRInfo info = infos.get(host);
-            return info != null && info.isOnline();
-        });
+    private void checkNodes(Map<String, MGRInfo> infos) {
+        for(MGRInfo info : infos.values()){
+            if (info.isOnline()){
+                if(exceptionalHosts.remove(info.getHost())){
+                    logger.info("MGR node: " + info.getHost() + " is back to ONLINE.");
+                }
+            }else {
+                if(exceptionalHosts.add(info.getHost())){
+                    logger.info("MGR node: " + info.getHost() + " is NOT ONLINE any more.");
+                }
+            }
+        }
     }
 
     static class DSEntity {
