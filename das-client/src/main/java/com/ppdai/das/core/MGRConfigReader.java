@@ -275,14 +275,9 @@ public class MGRConfigReader {
                  }
              }
         } catch (SQLTimeoutException timeoutException){
-            //Timeout is NOT a failure
-            logger.error("MGR heartbeat timeout", timeoutException.getMessage());
+            logger.error("MGR heartbeat timeout: " + timeoutException.getMessage());
         }catch (Exception e) {
-            exceptionalHosts.add(dbHost);
-            logger.error("Exception occurs when query MGR info.", e.getMessage());
-            if(exceptionalHosts.size() == 3){
-                logger.error("All MGR nodes are down!");
-            }
+            logger.error("MGR heartbeat exception:" + e.getMessage());
         }
         return list;
     }
@@ -343,7 +338,7 @@ public class MGRConfigReader {
                         e -> {
                             return e.getValue().stream().findFirst().get();
                         }));
-       checkNodes(infos);
+        updateNodeStatus(infos);
 
         for (Map.Entry<String, DatabaseSet> ent : mgrDatabaseSetSnapshot.entrySet()) {
             String setName = ent.getKey();
@@ -365,7 +360,7 @@ public class MGRConfigReader {
         }
     }
 
-    private void checkNodes(Map<String, MGRInfo> infos) {
+    private void updateNodeStatus(Map<String, MGRInfo> infos) {
         for(MGRInfo info : infos.values()){
             if (info.isOnline()){
                 if(exceptionalHosts.remove(info.getHost())){
@@ -373,7 +368,10 @@ public class MGRConfigReader {
                 }
             }else {
                 if(exceptionalHosts.add(info.getHost())){
-                    logger.info("MGR node: " + info.getHost() + " is NOT ONLINE any more.");
+                    logger.warn("MGR node: " + info.getHost() + " is NOT ONLINE any more.");
+                    if(exceptionalHosts.size() == 3){
+                        logger.error("All MGR nodes are down!");
+                    }
                 }
             }
         }
