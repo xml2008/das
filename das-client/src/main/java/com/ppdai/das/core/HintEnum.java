@@ -73,7 +73,7 @@ public enum HintEnum {
 	 * It is used in transaction annotation.
 	 * Value should be String
 	 */
-	defaultShard,
+	applyDefaultShard,
 
 	/*
 	 * Indicate that the query will be executed in all shards 

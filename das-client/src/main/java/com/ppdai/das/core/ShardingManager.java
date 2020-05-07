@@ -54,6 +54,9 @@ public class ShardingManager {
         DatabaseSet dbSet = getDatabaseSet(appId, logicDbName);
         
         String shardId = hints.getShard();
+        if(DalTransactionManager.isDefaultShardId()) {
+            shardId = DalTransactionManager.getCurrentShardId();
+        }
         if(shardId == null) {
             if(hints.is(HintEnum.shardValue)) {
                 Set<String> shards = dbSet.getStrategy().locateDbShards(new ShardingContext(appId, logicDbName, dbSet.getAllShards(), hints, ConditionList.andList()));

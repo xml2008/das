@@ -39,7 +39,7 @@ public class DalTransactionManager {
 		if(transaction == null) {
 			transaction = new DalTransaction( 
 					getConnection(hints, true, action.operation, action.highAvalible), 
-					connManager.getLogicDbName(), hints.is(HintEnum.defaultShard));
+					connManager.getLogicDbName(), hints.is(HintEnum.applyDefaultShard));
 			
 			transactionHolder.set(transaction);
 		}else{
@@ -108,7 +108,7 @@ public class DalTransactionManager {
 
 	public static boolean isDefaultShardId() {
 		return isInTransaction() ?
-				transactionHolder.get().isDefaultShard() :
+				transactionHolder.get().isDefaultShardApplied():
 				false;
 	}
 
