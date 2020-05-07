@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -51,6 +52,7 @@ public class MGRConfigReader {
 
     private DasConfigure dasConfigure;
     private Map<String, DatabaseSet> mgrDatabaseSetSnapshot = new ConcurrentHashMap<>();
+    private Set<String> enabledDatabaseSet = new HashSet<>();
     private Set<String> exceptionalHosts= Collections.newSetFromMap(new ConcurrentHashMap<>());
     private ConcurrentHashMap<String, DSEntity> connectionString2DS = new ConcurrentHashMap<>();
     private static AtomicBoolean readWriteSplitting = new AtomicBoolean(false);
@@ -75,6 +77,11 @@ public class MGRConfigReader {
         readWriteSplitting.set(true);
     }
 
+    public MGRConfigReader setEnabledDatabaseSet(Set<String> enabledDatabaseSet) {
+        this.enabledDatabaseSet.addAll(enabledDatabaseSet);
+        return this;
+    }
+
     public static void setHeartbeatInterval(long intervalInSecond) {
         Preconditions.checkArgument(intervalInSecond >= 3, "Please set MGR heart beat interval >= 3 seconds");
         HEATBEAT_INTERVAL = intervalInSecond;
@@ -86,17 +93,20 @@ public class MGRConfigReader {
 
     public MGRConfigReader(DasConfigure dasConfigure) {
         this.dasConfigure = dasConfigure;
-        createExecutor(dasConfigure.getDatabaseSets().size());
     }
 
     private void createExecutor(int size) {
-        if(executor == null) {
+        if(executor == null && size > 0) {
             executor = Executors.newScheduledThreadPool(size, r -> {
                 Thread thread = new Thread(r, "MGRConfigReader@start: " + new Date());
                 thread.setDaemon(true);
                 return thread;
             });
         }
+    }
+
+    private boolean isMGRCandidate(DatabaseSet dbSet) {
+        return dbSet.getDatabaseCategory() == DatabaseCategory.MySql && enabledDatabaseSet.contains(dbSet.getName());
     }
 
     /**
@@ -106,7 +116,7 @@ public class MGRConfigReader {
         Map<String, DalTomcatDataSource> uniq = Maps.newHashMap();
         final ConnectionLocator locator = dasConfigure.getConnectionLocator();
         for (DatabaseSet dbSet : dasConfigure.getDatabaseSets().values()) {
-            if(dbSet.getDatabaseCategory() != DatabaseCategory.MySql) {
+            if(!isMGRCandidate(dbSet)) {
                 continue;
             }
             Map<String, DataBase> dbs = dbSet.getDatabases();
@@ -195,7 +205,9 @@ public class MGRConfigReader {
         logger.info("MGR mode: " + (!readWriteSplitting.get() ?  "non-" : "") + "Read/Write splitting");
         logger.info("MGR database sets: " + mgrDatabaseSetSnapshot.keySet());
         logger.info("Databases init status after MGR check: " + dasConfigure.getDatabaseSets());
+
         if (!mgrDatabaseSetSnapshot.isEmpty()) {
+            createExecutor(connectionString2DS.size());
             executor.scheduleWithFixedDelay(() -> {
                 try {
                     updateMGRInfo(false);
@@ -240,7 +252,7 @@ public class MGRConfigReader {
     private void filterMGR() throws Exception {
         for(Map.Entry<String, DatabaseSet> setEnt : dasConfigure.getDatabaseSets().entrySet()) {
             DatabaseSet set = setEnt.getValue();
-            if(set.getDatabaseCategory() != DatabaseCategory.MySql) {
+            if(!isMGRCandidate(set)){
                 continue;
             }
             boolean isMGR = set.getDatabases().values().stream().anyMatch(db -> !mgrInfoDB(db.getConnectionString(), 5).isEmpty());
