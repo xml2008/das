@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -52,7 +51,6 @@ public class MGRConfigReader {
 
     private DasConfigure dasConfigure;
     private Map<String, DatabaseSet> mgrDatabaseSetSnapshot = new ConcurrentHashMap<>();
-    private Set<String> enabledDatabaseSet = new HashSet<>();
     private Set<String> exceptionalHosts= Collections.newSetFromMap(new ConcurrentHashMap<>());
     private ConcurrentHashMap<String, DSEntity> connectionString2DS = new ConcurrentHashMap<>();
     private static AtomicBoolean readWriteSplitting = new AtomicBoolean(false);
@@ -75,11 +73,6 @@ public class MGRConfigReader {
 
     public static void enableMGRReadWriteSplitting() {
         readWriteSplitting.set(true);
-    }
-
-    public MGRConfigReader setEnabledDatabaseSet(Set<String> enabledDatabaseSet) {
-        this.enabledDatabaseSet.addAll(enabledDatabaseSet);
-        return this;
     }
 
     public static void setHeartbeatInterval(long intervalInSecond) {
@@ -106,7 +99,7 @@ public class MGRConfigReader {
     }
 
     private boolean isMGRCandidate(DatabaseSet dbSet) {
-        return dbSet.getDatabaseCategory() == DatabaseCategory.MySql && enabledDatabaseSet.contains(dbSet.getName());
+        return dbSet.getDatabaseCategory() == DatabaseCategory.MySql && dbSet.isMgr();
     }
 
     /**
@@ -125,6 +118,7 @@ public class MGRConfigReader {
                     final String url = conn.getMetaData().getURL();
                     final String host = host(url);
                     DalTomcatDataSource ds = uniq.get(host);
+                    boolean duplicate = true;
                     if(ds == null){
                         PoolProperties properties = PoolPropertiesHolder.getInstance().getPoolProperties(url, conn.getMetaData().getUserName());
                         PoolProperties poolProperties = mergePoolProperties(properties);
@@ -132,8 +126,9 @@ public class MGRConfigReader {
 
                         ds = new DalTomcatDataSource(poolProperties);
                         uniq.put(host, ds);
+                        duplicate = false;
                     }
-                    connectionString2DS.put(db.getConnectionString(), new DSEntity(ds, host));
+                    connectionString2DS.put(db.getConnectionString(), new DSEntity(ds, host, duplicate));
                 } catch (Exception e) {
                     logger.error("Exception occurs when setUpDS");
                     throw e;
@@ -339,6 +334,9 @@ public class MGRConfigReader {
     void updateMGRInfo(boolean isInit) throws Exception {
         List<MGRInfo> list = new ArrayList<>();
         for(Map.Entry<String, DSEntity> ent : connectionString2DS.entrySet()) {
+            if(ent.getValue().isDuplicate()){
+                continue;
+            }
             List<MGRInfo> info = mgrInfoDB(ent.getKey(), 1);
             list.addAll(info);
         }
@@ -392,10 +390,16 @@ public class MGRConfigReader {
     static class DSEntity {
         DalTomcatDataSource ds;
         String host;
+        boolean duplicate = false;
 
-        DSEntity(DalTomcatDataSource ds, String host) {
+        DSEntity(DalTomcatDataSource ds, String host, boolean duplicate) {
             this.ds = ds;
             this.host = host;
+            this.duplicate = duplicate;
+        }
+
+        public boolean isDuplicate() {
+            return duplicate;
         }
 
         DalTomcatDataSource getDs() {

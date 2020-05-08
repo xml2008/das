@@ -30,7 +30,7 @@ public class DatabaseSet {
 	private List<DataBase> masterDbs = new ArrayList<DataBase>();
 	private List<DataBase> slaveDbs = new ArrayList<DataBase>();
 	private Set<String> readOnlyAllShards;
-
+	private boolean mgr = false;
 	/**
 	 * The target DB set does not support shard
 	 * @param name
@@ -41,7 +41,12 @@ public class DatabaseSet {
 	public DatabaseSet(String name, String provider, Map<String, DataBase> databases) throws Exception {
 		this(name, provider, null, databases);
 	}
-	
+
+	public DatabaseSet(String name, String provider, Map<String, DataBase> databases,boolean mgr) throws Exception {
+		this(name, provider, null, databases);
+		this.mgr = mgr;
+	}
+
 	public DatabaseSet(String name, String provider, String shardStrategy, Map<String, DataBase> databases) throws Exception {
 		this.name = name;
 		this.provider = provider;
@@ -50,6 +55,11 @@ public class DatabaseSet {
 
 		initStrategy(shardStrategy);
 		initShards();
+	}
+
+	public DatabaseSet(String name, String provider, String shardStrategy, Map<String, DataBase> databases, boolean mgr) throws Exception {
+		this(name, provider, shardStrategy, databases);
+		this.mgr = mgr;
 	}
 
 	public DatabaseSet(String name, String provider, String shardStrategy, ShardingStrategy strategy, Map<String, DataBase> databases) throws Exception {
@@ -61,6 +71,11 @@ public class DatabaseSet {
 
 		initStrategy(shardStrategy);
 		initShards();
+	}
+
+	public DatabaseSet(String name, String provider, String shardStrategy, ShardingStrategy strategy, Map<String, DataBase> databases, boolean mgr) throws Exception {
+		this(name, provider, shardStrategy, strategy, databases);
+		this.mgr = mgr;
 	}
 
 	private DatabaseSet() {}
@@ -195,6 +210,10 @@ public class DatabaseSet {
 	    return slaveDbByShard.containsKey(shard) ? new ArrayList<>(slaveDbByShard.get(shard)) : null;
 	}
 
+	public boolean isMgr() {
+		return mgr;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -208,12 +227,13 @@ public class DatabaseSet {
 				Objects.equals(slaveDbByShard, that.slaveDbByShard) &&
 				Objects.equals(getMasterDbs(), that.getMasterDbs()) &&
 				Objects.equals(getSlaveDbs(), that.getSlaveDbs()) &&
-				Objects.equals(readOnlyAllShards, that.readOnlyAllShards);
+				Objects.equals(readOnlyAllShards, that.readOnlyAllShards) &&
+				Objects.equals(isMgr(), that.isMgr());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getName(), getProvider(), dbCategory, getDatabases(), masterDbByShard, slaveDbByShard, getMasterDbs(), getSlaveDbs(), readOnlyAllShards);
+		return Objects.hash(getName(), getProvider(), dbCategory, getDatabases(), masterDbByShard, slaveDbByShard, getMasterDbs(), getSlaveDbs(), readOnlyAllShards, isMgr());
 	}
 
 	@Override
@@ -229,6 +249,7 @@ public class DatabaseSet {
 				", masterDbs=" + masterDbs +
 				", slaveDbs=" + slaveDbs +
 				", readOnlyAllShards=" + readOnlyAllShards +
+				", isMgr=" + isMgr() +
 				'}';
 	}
 }
