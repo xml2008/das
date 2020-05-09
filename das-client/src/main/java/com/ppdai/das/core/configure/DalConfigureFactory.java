@@ -179,14 +179,14 @@ public class DalConfigureFactory implements DalConfigConstants {
     }
 
     private DatabaseSet readDatabaseSet(Node databaseSetNode) throws Exception {
-        checkAttribte(databaseSetNode, NAME, PROVIDER, SHARD_STRATEGY, SHARDING_STRATEGY);
+        checkAttribte(databaseSetNode, NAME, PROVIDER, SHARD_STRATEGY, SHARDING_STRATEGY, MGR);
         String shardingStrategy = "";
         
         if(hasAttribute(databaseSetNode, SHARD_STRATEGY))
             shardingStrategy = getAttribute(databaseSetNode, SHARD_STRATEGY);
         else if(hasAttribute(databaseSetNode, SHARDING_STRATEGY))
                 shardingStrategy = getAttribute(databaseSetNode, SHARDING_STRATEGY);
-        
+
         shardingStrategy = shardingStrategy.trim();
         
         List<Node> databaseList = getChildNodes(databaseSetNode, ADD);
@@ -196,12 +196,14 @@ public class DalConfigureFactory implements DalConfigConstants {
             databases.put(database.getName(), database);
         }
 
+        //Check MGR
+        boolean mgr = hasAttribute(databaseSetNode, MGR) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR)) : false;
         if (shardingStrategy.isEmpty())
             return new DatabaseSet(getAttribute(databaseSetNode, NAME), getAttribute(databaseSetNode, PROVIDER),
-                    databases);
+                    databases, mgr);
         else
             return new DatabaseSet(getAttribute(databaseSetNode, NAME), getAttribute(databaseSetNode, PROVIDER),
-                    shardingStrategy, databases);
+                    shardingStrategy, databases, mgr);
     }
 
     private DataBase readDataBase(Node dataBaseNode, boolean isSharded) {
