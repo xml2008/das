@@ -92,6 +92,7 @@ public class DatabaseSet {
 		newDataSet.provider = this.provider;
 		newDataSet.dbCategory = this.dbCategory;
 		newDataSet.strategy = this.strategy;
+		newDataSet.mgr = this.mgr;
 		newDataSet.databases = new HashMap<>();
         newDataSet.databases.putAll(newDBs);
 
