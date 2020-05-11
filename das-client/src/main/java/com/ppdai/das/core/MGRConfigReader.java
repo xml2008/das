@@ -99,7 +99,7 @@ public class MGRConfigReader {
     }
 
     private boolean isMGRCandidate(DatabaseSet dbSet) {
-        return dbSet.getDatabaseCategory() == DatabaseCategory.MySql && dbSet.isMgr();
+        return dbSet.getDatabaseCategory() == DatabaseCategory.MySql && dbSet.isMgrEnabled();
     }
 
     /**

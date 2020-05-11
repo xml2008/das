@@ -2,7 +2,7 @@
   <databaseSets>
 
     <!-- MySqlSimple -->
-    <databaseSet name="MySqlSimple" provider="mysqlProvider">
+    <databaseSet name="MySqlSimple" provider="mysqlProvider" mgrEnabled = "false">
       <add  name="dal_shard_0" databaseType="Master" sharding="" connectionString="dal_shard_0"/>
     </databaseSet>
 

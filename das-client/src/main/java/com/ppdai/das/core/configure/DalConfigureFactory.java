@@ -179,7 +179,7 @@ public class DalConfigureFactory implements DalConfigConstants {
     }
 
     private DatabaseSet readDatabaseSet(Node databaseSetNode) throws Exception {
-        checkAttribte(databaseSetNode, NAME, PROVIDER, SHARD_STRATEGY, SHARDING_STRATEGY, MGR);
+        checkAttribte(databaseSetNode, NAME, PROVIDER, SHARD_STRATEGY, SHARDING_STRATEGY, MGR_ENABLED);
         String shardingStrategy = "";
         
         if(hasAttribute(databaseSetNode, SHARD_STRATEGY))
@@ -197,7 +197,7 @@ public class DalConfigureFactory implements DalConfigConstants {
         }
 
         //Check MGR
-        boolean mgr = hasAttribute(databaseSetNode, MGR) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR)) : false;
+        boolean mgr = hasAttribute(databaseSetNode, MGR_ENABLED) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_ENABLED)) : false;
         if (shardingStrategy.isEmpty())
             return new DatabaseSet(getAttribute(databaseSetNode, NAME), getAttribute(databaseSetNode, PROVIDER),
                     databases, mgr);
