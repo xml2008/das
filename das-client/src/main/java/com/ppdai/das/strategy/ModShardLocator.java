@@ -68,12 +68,12 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
         return shards;
     }
 
-    public static String mod(int mod, Object value) {
+    private String mod(int mod, Object value) {
         Long id = getLongValue(value);
         return String.valueOf(id%mod);
     }
 
-    public static Long getLongValue(Object value) {
+    private Long getLongValue(Object value) {
         if(value == null)
             throw new IllegalArgumentException("The shard column must not be null");
         
@@ -84,8 +84,12 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
             return ((Number)value).longValue();
         
         if(value instanceof String)
-            return new Long((String)value);
+            return string2Long((String)value);
         
         throw new IllegalArgumentException(String.format("Shard value: %s can not be recoganized as int value", value.toString()));
+    }
+
+    protected Long string2Long(String s) {
+        return new Long(s);
     }
 }

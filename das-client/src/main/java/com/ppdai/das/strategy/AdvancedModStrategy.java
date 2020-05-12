@@ -55,7 +55,7 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
             if(settings.containsKey(ZERO_PADDING))
                 zeroPaddingFormat = "%0" + Integer.parseInt(settings.get(ZERO_PADDING)) + "d";
 
-            dbLoactor = new ModShardLocator<>(Integer.parseInt(settings.get(MOD)));
+            dbLoactor = createLocator(Integer.parseInt(settings.get(MOD)));
         }
         
         if(isShardByTable()) {
@@ -66,7 +66,7 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
                 tableZeroPaddingFormat = "%0" + Integer.parseInt(settings.get(TABLE_ZERO_PADDING)) + "d";
 
             Integer mod = Integer.parseInt(settings.get(TABLE_MOD));
-            tableLoactor = new ModShardLocator<>(mod);
+            tableLoactor = createLocator(mod);
             
             Set<String> allShards = new HashSet<>();
             for(int i = 0; i < mod; i++)
@@ -74,6 +74,10 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
             
             setAllTableShards(allShards);
         }
+    }
+
+    protected ModShardLocator createLocator(int mod) {
+        return new ModShardLocator<>(mod);
     }
 
     @Override
