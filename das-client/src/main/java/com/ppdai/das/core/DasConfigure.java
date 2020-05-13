@@ -18,13 +18,15 @@ public class DasConfigure {
     private DatabaseSelector selector;
 
     public DasConfigure(String appId, Map<String, DatabaseSet> databaseSets, DasLogger dalLogger,
-            ConnectionLocator locator, TaskFactory facory, DatabaseSelector selector) {
+            ConnectionLocator locator, TaskFactory facory, DatabaseSelector selector) throws Exception {
         this.appId = appId;
         this.databaseSets.putAll(databaseSets);
         this.dalLogger = dalLogger;
         this.locator = locator;
         this.facory = facory;
         this.selector = selector;
+
+        new MGRConfigReader(this).start();
     }
 
     public static class DatabaseSetChangeEvent {
