@@ -179,7 +179,7 @@ public class DalConfigureFactory implements DalConfigConstants {
     }
 
     private DatabaseSet readDatabaseSet(Node databaseSetNode) throws Exception {
-        checkAttribte(databaseSetNode, NAME, PROVIDER, SHARD_STRATEGY, SHARDING_STRATEGY, MGR_ENABLED);
+        checkAttribte(databaseSetNode, NAME, PROVIDER, SHARD_STRATEGY, SHARDING_STRATEGY, MGR_ENABLED, MGR_RW_SPLITTING);
         String shardingStrategy = "";
         
         if(hasAttribute(databaseSetNode, SHARD_STRATEGY))
@@ -197,13 +197,21 @@ public class DalConfigureFactory implements DalConfigConstants {
         }
 
         //Check MGR
-        boolean mgr = hasAttribute(databaseSetNode, MGR_ENABLED) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_ENABLED)) : false;
-        if (shardingStrategy.isEmpty())
-            return new DatabaseSet(getAttribute(databaseSetNode, NAME), getAttribute(databaseSetNode, PROVIDER),
-                    databases, mgr);
-        else
-            return new DatabaseSet(getAttribute(databaseSetNode, NAME), getAttribute(databaseSetNode, PROVIDER),
-                    shardingStrategy, databases, mgr);
+        boolean mgrEnabled = hasAttribute(databaseSetNode, MGR_ENABLED) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_ENABLED)) : false;
+        boolean mgrReadWriteSplitting = false;
+        if(mgrEnabled) {
+            mgrReadWriteSplitting = hasAttribute(databaseSetNode, MGR_RW_SPLITTING) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_RW_SPLITTING)) : false;
+        }
+        DatabaseSet databaseSet = null;
+        if (shardingStrategy.isEmpty()){
+            databaseSet =  new DatabaseSet(getAttribute(databaseSetNode, NAME), getAttribute(databaseSetNode, PROVIDER),
+                    databases, mgrEnabled);
+        } else {
+            databaseSet =  new DatabaseSet(getAttribute(databaseSetNode, NAME), getAttribute(databaseSetNode, PROVIDER),
+                    shardingStrategy, databases, mgrEnabled);
+        }
+        databaseSet.setMgrReadWriteSplitting(mgrReadWriteSplitting);
+        return databaseSet;
     }
 
     private DataBase readDataBase(Node dataBaseNode, boolean isSharded) {

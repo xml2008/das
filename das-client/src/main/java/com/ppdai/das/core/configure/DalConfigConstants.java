@@ -12,6 +12,7 @@ public interface DalConfigConstants {
     String SHARD_STRATEGY = "shardStrategy";
     String SHARDING_STRATEGY = "shardingStrategy";
     String MGR_ENABLED = "mgrEnabled";
+    String MGR_RW_SPLITTING = "mgrReadWriteSplitting";
     String DATABASE_TYPE = "databaseType";
     String SHARDING = "sharding";
     String CONNECTION_STRING = "connectionString";

@@ -12,6 +12,7 @@ public class DefaultClientConfigLoader implements ClientConfigureLoader {
     public DefaultClientConfigLoader() throws Exception {
         try {
             dalConfigure = DalConfigureFactory.load();
+            new MGRConfigReader(dalConfigure).start();
         } catch (Exception e){
             e.printStackTrace();
         }

@@ -53,7 +53,6 @@ public class MGRConfigReader {
     private Map<String, DatabaseSet> mgrDatabaseSetSnapshot = new ConcurrentHashMap<>();
     private Set<String> exceptionalHosts= Collections.newSetFromMap(new ConcurrentHashMap<>());
     private ConcurrentHashMap<String, DSEntity> connectionString2DS = new ConcurrentHashMap<>();
-    private static AtomicBoolean readWriteSplitting = new AtomicBoolean(false);
     private static long HEATBEAT_INTERVAL = 3L;
     private static Properties poolProperties;
     private static final String PRIMARY = "PRIMARY";
@@ -70,19 +69,6 @@ public class MGRConfigReader {
             "AND global_status.VARIABLE_VALUE = replication_group_members.MEMBER_ID;";
 
     private ScheduledExecutorService executor;
-
-    public static void enableMGRReadWriteSplitting() {
-        readWriteSplitting.set(true);
-    }
-
-    public static void setHeartbeatInterval(long intervalInSecond) {
-        Preconditions.checkArgument(intervalInSecond >= 3, "Please set MGR heart beat interval >= 3 seconds");
-        HEATBEAT_INTERVAL = intervalInSecond;
-    }
-
-    public static void setDataSourceConfiguration(Properties properties){
-        poolProperties = properties;
-    }
 
     public MGRConfigReader(DasConfigure dasConfigure) {
         this.dasConfigure = dasConfigure;
@@ -197,7 +183,6 @@ public class MGRConfigReader {
         setUpDS();
         filterMGR();
         updateMGRInfo(true);
-        logger.info("MGR mode: " + (!readWriteSplitting.get() ?  "non-" : "") + "Read/Write splitting");
         logger.info("MGR database sets: " + mgrDatabaseSetSnapshot.keySet());
         logger.info("Databases init status after MGR check: " + dasConfigure.getDatabaseSets());
 
@@ -334,9 +319,6 @@ public class MGRConfigReader {
     void updateMGRInfo(boolean isInit) throws Exception {
         List<MGRInfo> list = new ArrayList<>();
         for(Map.Entry<String, DSEntity> ent : connectionString2DS.entrySet()) {
-            if(ent.getValue().isDuplicate()){
-                continue;
-            }
             List<MGRInfo> info = mgrInfoDB(ent.getKey(), 1);
             list.addAll(info);
         }
@@ -354,7 +336,7 @@ public class MGRConfigReader {
             String setName = ent.getKey();
             DatabaseSet set = ent.getValue();
 
-            MGRStatusHandler handler = readWriteSplitting.get() ? new ReadWriteSplittingHandler() : new NonReadWriteSplittingHandler();
+            MGRStatusHandler handler = set.isMgrReadWriteSplitting() ? new ReadWriteSplittingHandler() : new NonReadWriteSplittingHandler();
             DatabaseSet newSet = handler.createDatabaseSet(set, infos);
             DatabaseSet current = dasConfigure.getDatabaseSets().get(setName);
             //Replace databaseSet atomically if changed
