@@ -179,7 +179,7 @@ public class DalConfigureFactory implements DalConfigConstants {
     }
 
     private DatabaseSet readDatabaseSet(Node databaseSetNode) throws Exception {
-        checkAttribte(databaseSetNode, NAME, PROVIDER, SHARD_STRATEGY, SHARDING_STRATEGY, MGR_ENABLED, MGR_RW_SPLITTING);
+        checkAttribte(databaseSetNode, NAME, PROVIDER, SHARD_STRATEGY, SHARDING_STRATEGY, MGR_ENABLED, MGR_RW_SPLITTING_ENABLED);
         String shardingStrategy = "";
         
         if(hasAttribute(databaseSetNode, SHARD_STRATEGY))
@@ -198,9 +198,9 @@ public class DalConfigureFactory implements DalConfigConstants {
 
         //Check MGR
         boolean mgrEnabled = hasAttribute(databaseSetNode, MGR_ENABLED) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_ENABLED)) : false;
-        boolean mgrReadWriteSplitting = false;
+        boolean mgrReadWriteSplittingEnabled = false;
         if(mgrEnabled) {
-            mgrReadWriteSplitting = hasAttribute(databaseSetNode, MGR_RW_SPLITTING) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_RW_SPLITTING)) : false;
+            mgrReadWriteSplittingEnabled = hasAttribute(databaseSetNode, MGR_RW_SPLITTING_ENABLED) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_RW_SPLITTING_ENABLED)) : false;
         }
         DatabaseSet databaseSet = null;
         if (shardingStrategy.isEmpty()){
@@ -210,7 +210,7 @@ public class DalConfigureFactory implements DalConfigConstants {
             databaseSet =  new DatabaseSet(getAttribute(databaseSetNode, NAME), getAttribute(databaseSetNode, PROVIDER),
                     shardingStrategy, databases, mgrEnabled);
         }
-        databaseSet.setMgrReadWriteSplitting(mgrReadWriteSplitting);
+        databaseSet.setMgrReadWriteSplittingEnabled(mgrReadWriteSplittingEnabled);
         return databaseSet;
     }
 

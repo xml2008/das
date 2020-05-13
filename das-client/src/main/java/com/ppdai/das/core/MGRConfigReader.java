@@ -1,7 +1,6 @@
 package com.ppdai.das.core;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -31,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -336,7 +334,7 @@ public class MGRConfigReader {
             String setName = ent.getKey();
             DatabaseSet set = ent.getValue();
 
-            MGRStatusHandler handler = set.isMgrReadWriteSplitting() ? new ReadWriteSplittingHandler() : new NonReadWriteSplittingHandler();
+            MGRStatusHandler handler = set.isMgrReadWriteSplittingEnabled() ? new ReadWriteSplittingHandler() : new NonReadWriteSplittingHandler();
             DatabaseSet newSet = handler.createDatabaseSet(set, infos);
             DatabaseSet current = dasConfigure.getDatabaseSets().get(setName);
             //Replace databaseSet atomically if changed

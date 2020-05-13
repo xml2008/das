@@ -31,7 +31,7 @@ public class DatabaseSet {
 	private List<DataBase> slaveDbs = new ArrayList<DataBase>();
 	private Set<String> readOnlyAllShards;
 	private boolean mgrEnabled = false;
-	private boolean mgrReadWriteSplitting = false;
+	private boolean mgrReadWriteSplittingEnabled = false;
 	/**
 	 * The target DB set does not support shard
 	 * @param name
@@ -94,7 +94,7 @@ public class DatabaseSet {
 		newDataSet.dbCategory = this.dbCategory;
 		newDataSet.strategy = this.strategy;
 		newDataSet.mgrEnabled = this.mgrEnabled;
-		newDataSet.mgrReadWriteSplitting = this.mgrReadWriteSplitting;
+		newDataSet.mgrReadWriteSplittingEnabled = this.mgrReadWriteSplittingEnabled;
 		newDataSet.databases = new HashMap<>();
         newDataSet.databases.putAll(newDBs);
 
@@ -217,12 +217,12 @@ public class DatabaseSet {
 		return mgrEnabled;
 	}
 
-	public boolean isMgrReadWriteSplitting() {
-		return mgrReadWriteSplitting;
+	public boolean isMgrReadWriteSplittingEnabled() {
+		return mgrReadWriteSplittingEnabled;
 	}
 
-	public DatabaseSet setMgrReadWriteSplitting(boolean mgrReadWriteSplitting) {
-		this.mgrReadWriteSplitting = mgrReadWriteSplitting;
+	public DatabaseSet setMgrReadWriteSplittingEnabled(boolean mgrReadWriteSplittingEnabled) {
+		this.mgrReadWriteSplittingEnabled = mgrReadWriteSplittingEnabled;
 		return this;
 	}
 
@@ -241,13 +241,13 @@ public class DatabaseSet {
 				Objects.equals(getSlaveDbs(), that.getSlaveDbs()) &&
 				Objects.equals(readOnlyAllShards, that.readOnlyAllShards) &&
 				Objects.equals(isMgrEnabled(), that.isMgrEnabled()) &&
-				Objects.equals(isMgrReadWriteSplitting(), that.isMgrReadWriteSplitting());
+				Objects.equals(isMgrReadWriteSplittingEnabled(), that.isMgrReadWriteSplittingEnabled());
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(getName(), getProvider(), dbCategory, getDatabases(), masterDbByShard, slaveDbByShard,
-				getMasterDbs(), getSlaveDbs(), readOnlyAllShards, isMgrEnabled(), isMgrReadWriteSplitting());
+				getMasterDbs(), getSlaveDbs(), readOnlyAllShards, isMgrEnabled(), isMgrReadWriteSplittingEnabled());
 	}
 
 	@Override
@@ -264,7 +264,7 @@ public class DatabaseSet {
 				", slaveDbs=" + slaveDbs +
 				", readOnlyAllShards=" + readOnlyAllShards +
 				", isMgrEnabled=" + isMgrEnabled() +
-				", isMgrReadWriteSplitting=" + isMgrReadWriteSplitting() +
+				", isMgrReadWriteSplittingEnabled=" + isMgrReadWriteSplittingEnabled() +
 				'}';
 	}
 }
