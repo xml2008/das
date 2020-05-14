@@ -2,6 +2,7 @@ package com.ppdai.das.core;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -247,7 +249,7 @@ public class MGRConfigReader {
         DSEntity dsEntity = connectionString2DS.get(connectionString);
         String dbHost = dsEntity.getHost();
         if(exceptionalHosts.contains(dbHost)) {
-            return new ArrayList<>();
+            return Lists.newArrayList(new MGRInfo("N/A", dbHost, "OFFLINE", "N/A"));
         }
 
         try (Connection connection = dsEntity.getDs().getConnection();
@@ -261,13 +263,19 @@ public class MGRConfigReader {
                      String state = rs.getString("MEMBER_STATE");
                      String role = rs.getString("MEMBER_ROLE");
 
+                     //Invalid node
+                     if(Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(id)) {
+                         return Lists.newArrayList(new MGRInfo(id, dbHost, state, role));
+                     }
                      list.add(new MGRInfo(id, host, state, role));
                  }
              }
         } catch (SQLTimeoutException timeoutException){
             logger.error("MGR heartbeat timeout: " + timeoutException.getMessage());
+            return Lists.newArrayList(new MGRInfo("N/A", dbHost, "N/A", "N/A"));
         }catch (Exception e) {
             logger.error("MGR heartbeat exception:" + e.getMessage());
+            return Lists.newArrayList(new MGRInfo("N/A", dbHost, "N/A", "N/A"));
         }
         return list;
     }
@@ -326,7 +334,11 @@ public class MGRConfigReader {
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         e -> {
-                            return e.getValue().stream().findFirst().get();
+                            Optional<MGRInfo> candidate = e.getValue().stream()
+                                    .sorted((l, r) -> {return l.isOnline() ? -1 : 1;})
+                                    .findFirst();
+
+                            return candidate.get();
                         }));
         updateNodeStatus(infos);
 
