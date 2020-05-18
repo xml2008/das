@@ -22,6 +22,7 @@ public class DalTransaction  {
 	private AtomicBoolean rolledBack = new AtomicBoolean(false);
 	private AtomicBoolean completed = new AtomicBoolean(false);
 	private DasLogger logger;
+	private boolean defaultShardApplied = false;
 	
 	/**
 	 * For Das Server transaction
@@ -39,8 +40,9 @@ public class DalTransaction  {
 		this.timeout = timeout;
 	}
 
-    public DalTransaction(DalConnection connHolder, String logicDbName) throws SQLException{
+    public DalTransaction(DalConnection connHolder, String logicDbName, boolean defaultShardApplied) throws SQLException{
         this(connHolder, logicDbName, 60 * 1000);
+        this.defaultShardApplied = defaultShardApplied;
     }
     
     public void validate(String desiganateLogicDbName, String desiganateShard) throws SQLException {
@@ -214,5 +216,14 @@ public class DalTransaction  {
 		} catch (Throwable e2) {
 			System.err.println(e2);
 		}
+	}
+
+	public boolean isDefaultShardApplied() {
+		return defaultShardApplied;
+	}
+
+	public DalTransaction setDefaultShardApplied(boolean defaultShardApplied) {
+		this.defaultShardApplied = defaultShardApplied;
+		return this;
 	}
 }

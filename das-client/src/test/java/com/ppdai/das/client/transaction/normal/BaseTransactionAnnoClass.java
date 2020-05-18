@@ -138,7 +138,17 @@ public class BaseTransactionAnnoClass {
         testQuery(shardDb, hints);
         return DONE;
     }
-    
+
+    public String performWithDefaultShard(String id, Hints hints) {
+        assertTrue(DalTransactionManager.isInTransaction());
+        if(id != null)
+            assertEquals(id, DalTransactionManager.getCurrentShardId());
+        else
+            assertEquals(hints.getShard(), DalTransactionManager.getCurrentShardId());
+        testQuery(shardDb, hints);
+        return DONE;
+    }
+
     public String performWitShardNest(String id, Hints hints) {
         assertTrue(DalTransactionManager.isInTransaction());
         if(id != null)
@@ -148,7 +158,17 @@ public class BaseTransactionAnnoClass {
         performWitShard(id, hints);
         return DONE;
     }
-    
+
+    public String performWithDefaultShardNest(String id, Hints hints) {
+        assertTrue(DalTransactionManager.isInTransaction());
+        if(id != null)
+            assertEquals(id, DalTransactionManager.getCurrentShardId());
+        else
+            assertEquals(hints.getShard(), DalTransactionManager.getCurrentShardId());
+        performWithDefaultShard(id, hints);
+        return DONE;
+    }
+
     public String performWitShardNestConflict(String id, Hints hints) {
         assertTrue(DalTransactionManager.isInTransaction());
         assertEquals(id, DalTransactionManager.getCurrentShardId());

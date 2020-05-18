@@ -137,6 +137,17 @@ public class Hints {
     }
 
     /**
+     * Set in which shard the operation will be performed.
+     * It overwrites shard id from strategy and inner Hints, if Hints.inShard() is called.
+     *
+     * @return this {@code Hints}
+     * @see HintEnum#applyDefaultShard
+     */
+    public Hints applyDefaultShard() {
+        return set(HintEnum.applyDefaultShard);
+    }
+
+    /**
      * Set which table shard the operation will be performed.
      *
      * @param tableShardId

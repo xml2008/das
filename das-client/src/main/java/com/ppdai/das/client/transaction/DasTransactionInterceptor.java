@@ -5,11 +5,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.google.common.base.Preconditions;
 import com.ppdai.das.client.DasClientFactory;
 import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.annotation.DasTransactional;
+import com.ppdai.das.client.annotation.DefaultShard;
 import com.ppdai.das.client.annotation.Shard;
 import com.ppdai.das.core.DasException;
+import com.ppdai.das.core.client.DalTransactionManager;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
@@ -25,9 +28,14 @@ public class DasTransactionInterceptor implements MethodInterceptor {
 
         Annotation[][] paraAnnArrays = method.getParameterAnnotations();
         int shardParaIndex = -1;
+        int defaultShardParaIndex = -1;
         int i = 0;
         outter: for(Annotation[] paraAnnArray: paraAnnArrays) {
             for(Annotation paraAnn: paraAnnArray) {
+                if(paraAnn instanceof DefaultShard) {
+                    defaultShardParaIndex = i;
+                    break outter;
+                }
                 if(paraAnn instanceof Shard) {
                     shardParaIndex = i;
                     break outter;
@@ -43,6 +51,13 @@ public class DasTransactionInterceptor implements MethodInterceptor {
             if(shard != null)
                 hints.inShard(shard.toString());
         }
+        if(defaultShardParaIndex != -1) {
+            Object shard = args[defaultShardParaIndex];
+            if(shard != null){
+                checkMultipleDefaultShard(shard.toString());
+                hints.inShard(shard.toString()).applyDefaultShard();
+            }
+        }
 
         final AtomicReference<Object> result = new AtomicReference<>();
 
@@ -54,6 +69,13 @@ public class DasTransactionInterceptor implements MethodInterceptor {
             }
         }, hints);
         return result.get();
+    }
+
+    private void checkMultipleDefaultShard(String shard) {
+        if(DalTransactionManager.isDefaultShardApplied() && DalTransactionManager.getCurrentShardId() != null) {
+            Preconditions.checkArgument(DalTransactionManager.getCurrentShardId().equals(shard),
+                    "@DefaultShard are not same: [" + DalTransactionManager.getCurrentShardId() + "], [" + shard + "]");
+        }
     }
 
     private String getLogicDbName(Method method) {

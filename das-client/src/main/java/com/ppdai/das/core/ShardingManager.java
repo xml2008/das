@@ -54,6 +54,9 @@ public class ShardingManager {
         DatabaseSet dbSet = getDatabaseSet(appId, logicDbName);
         
         String shardId = hints.getShard();
+        if(DalTransactionManager.isDefaultShardApplied()) {
+            shardId = DalTransactionManager.getCurrentShardId();
+        }
         if(shardId == null) {
             if(hints.is(HintEnum.shardValue)) {
                 Set<String> shards = dbSet.getStrategy().locateDbShards(new ShardingContext(appId, logicDbName, dbSet.getAllShards(), hints, ConditionList.andList()));
@@ -202,13 +205,16 @@ public class ShardingManager {
         DatabaseSet dbSet = DasConfigureFactory.getConfigure(appId).getDatabaseSet(logicDbName);
 
         Set<String> shards;
-        if(hints.is(HintEnum.shard)){
+        if(DalTransactionManager.isDefaultShardApplied()){
+            shards = new HashSet<>();
+            shards.add(DalTransactionManager.getCurrentShardId());
+        }else if(hints.is(HintEnum.shard)){
             shards = new HashSet<>();
             shards.add(hints.getShard());
         } else {
             shards = dbSet.getStrategy().locateDbShards(new ShardingContext(appId, dbSet.getName(), dbSet.getAllShards(), hints, conditions));
         }
-        
+
         for(String shardId: shards)
             dbSet.validate(shardId);
 
