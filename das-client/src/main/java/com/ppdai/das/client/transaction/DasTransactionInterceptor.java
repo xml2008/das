@@ -72,7 +72,7 @@ public class DasTransactionInterceptor implements MethodInterceptor {
     }
 
     private void checkMultipleDefaultShard(String shard) {
-        if(DalTransactionManager.isDefaultShardId() && DalTransactionManager.getCurrentShardId() != null) {
+        if(DalTransactionManager.isDefaultShardApplied() && DalTransactionManager.getCurrentShardId() != null) {
             Preconditions.checkArgument(DalTransactionManager.getCurrentShardId().equals(shard),
                     "@DefaultShard are not same: [" + DalTransactionManager.getCurrentShardId() + "], [" + shard + "]");
         }

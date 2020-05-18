@@ -106,7 +106,7 @@ public class DalTransactionManager {
                     null;
 	}
 
-	public static boolean isDefaultShardId() {
+	public static boolean isDefaultShardApplied() {
 		return isInTransaction() ?
 				transactionHolder.get().isDefaultShardApplied():
 				false;

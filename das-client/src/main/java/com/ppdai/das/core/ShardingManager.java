@@ -54,7 +54,7 @@ public class ShardingManager {
         DatabaseSet dbSet = getDatabaseSet(appId, logicDbName);
         
         String shardId = hints.getShard();
-        if(DalTransactionManager.isDefaultShardId()) {
+        if(DalTransactionManager.isDefaultShardApplied()) {
             shardId = DalTransactionManager.getCurrentShardId();
         }
         if(shardId == null) {
@@ -205,7 +205,7 @@ public class ShardingManager {
         DatabaseSet dbSet = DasConfigureFactory.getConfigure(appId).getDatabaseSet(logicDbName);
 
         Set<String> shards;
-        if(DalTransactionManager.isDefaultShardId()){
+        if(DalTransactionManager.isDefaultShardApplied()){
             shards = new HashSet<>();
             shards.add(DalTransactionManager.getCurrentShardId());
         }else if(hints.is(HintEnum.shard)){
