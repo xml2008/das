@@ -1,5 +1,7 @@
 package com.ppdai.das.strategy;
 
+import com.google.common.base.Strings;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +13,11 @@ import java.util.stream.Collectors;
  *
  */
 public class AdvancedModStrategy extends AbstractConditionStrategy {
+    /**
+     * Key used to declared mod type.
+     */
+    public static final String TYPE = "type";
+
     /**
      * Key used to declared mod for locating DB shards.
      */
@@ -47,7 +54,8 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
     @Override
     public void initialize(Map<String, String> settings) {
         super.initialize(settings);
-        
+
+        String type = settings.get(TYPE);
         if(isShardByDb()) {
             if(!settings.containsKey(MOD))
                 throw new IllegalArgumentException("Property " + MOD + " is required for shard by database");
@@ -55,7 +63,7 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
             if(settings.containsKey(ZERO_PADDING))
                 zeroPaddingFormat = "%0" + Integer.parseInt(settings.get(ZERO_PADDING)) + "d";
 
-            dbLoactor = createLocator(Integer.parseInt(settings.get(MOD)));
+            dbLoactor = createLocator(type, Integer.parseInt(settings.get(MOD)));
         }
         
         if(isShardByTable()) {
@@ -66,7 +74,7 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
                 tableZeroPaddingFormat = "%0" + Integer.parseInt(settings.get(TABLE_ZERO_PADDING)) + "d";
 
             Integer mod = Integer.parseInt(settings.get(TABLE_MOD));
-            tableLoactor = createLocator(mod);
+            tableLoactor = createLocator(type, mod);
             
             Set<String> allShards = new HashSet<>();
             for(int i = 0; i < mod; i++)
@@ -76,8 +84,20 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
         }
     }
 
-    protected ModShardLocator createLocator(int mod) {
-        return new ModShardLocator<>(mod);
+    protected ModShardLocator createLocator(String type, int mod) {
+        if(Strings.isNullOrEmpty(type)){ //for version compatibility
+            return new ModShardLocator<>(mod);
+        }
+
+        if(type.equalsIgnoreCase("crc")) {
+            return new CRCModShardLocator(mod);
+        }
+
+        if(type.equalsIgnoreCase("md5")) {
+            return new HashModShardLocator(mod);
+        }
+
+        throw new IllegalArgumentException("Property " + TYPE + " is required 'crc' or 'md5'.");
     }
 
     @Override
