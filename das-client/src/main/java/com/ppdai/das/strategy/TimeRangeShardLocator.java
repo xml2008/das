@@ -181,34 +181,21 @@ public class TimeRangeShardLocator<CTX extends ConditionContext> extends Abstrac
     }
 
     private int maxWeekOfYear(int year) {
+        //Pick a day in the year
         Calendar cal1 = Calendar.getInstance();
         cal1.set(Calendar.YEAR, year);
-        cal1.set(Calendar.MONTH, 11);
-        cal1.set(Calendar.DAY_OF_MONTH, 31);
-        int w1 = cal1.get(Calendar.WEEK_OF_YEAR);
-
-        Calendar cal2 = Calendar.getInstance();
-        cal2.set(Calendar.YEAR, year);
-        cal2.set(Calendar.MONTH, 11);
-        cal2.set(Calendar.DAY_OF_MONTH, 24);
-        int w2 = cal2.get(Calendar.WEEK_OF_YEAR);
-        return Math.max(w1, w2);
+        cal1.set(Calendar.MONTH, 0);
+        cal1.set(Calendar.DAY_OF_MONTH, 1);
+        return cal1.getActualMaximum(Calendar.WEEK_OF_YEAR);
     }
 
     private int maxWeekOfMonth(int year, int month) {
-        int max = maxDayOfMonth(year, month);
+        //Pick a day in the month
         Calendar cal1 = Calendar.getInstance();
         cal1.set(Calendar.YEAR, year);
         cal1.set(Calendar.MONTH, month - 1);
-        cal1.set(Calendar.DAY_OF_MONTH, max);
-        int w1 = cal1.get(Calendar.WEEK_OF_MONTH);
-
-        Calendar cal2 = Calendar.getInstance();
-        cal2.set(Calendar.YEAR, year);
-        cal2.set(Calendar.MONTH, month - 1);
-        cal2.set(Calendar.DAY_OF_MONTH, max - 7);
-        int w2 = cal2.get(Calendar.WEEK_OF_MONTH);
-        return Math.max(w1, w2);
+        cal1.set(Calendar.DAY_OF_MONTH, 1);
+        return cal1.getActualMaximum(Calendar.WEEK_OF_MONTH);
     }
 
     private int upperEndpoint(Calendar cal) {
