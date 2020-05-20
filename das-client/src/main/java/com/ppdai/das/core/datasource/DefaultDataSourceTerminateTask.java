@@ -8,16 +8,14 @@ import com.ppdai.das.core.configure.DataSourceConfigure;
 import com.ppdai.das.core.configure.DataSourceConfigureConstants;
 
 import javax.sql.DataSource;
-import java.util.Date;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.Date;;
 import java.util.concurrent.TimeUnit;
 
-public class DefaultDataSourceTerminateTask extends AbstractDataSourceTerminateTask {
+public class DefaultDataSourceTerminateTask implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataSourceTerminateTask.class);
 
     private static final int MAX_RETRY_TIMES = 3;
     private static final int FIXED_DELAY = 5 * 1000; // milliseconds
-    private ScheduledExecutorService service = null;
 
     private String name;
     private DataSource dataSource;
@@ -36,22 +34,21 @@ public class DefaultDataSourceTerminateTask extends AbstractDataSourceTerminateT
     }
 
     @Override
-    public void setScheduledExecutorService(ScheduledExecutorService service) {
-        this.service = service;
-    }
-
-    @Override
     public void run() {
         boolean success = closeDataSource(dataSource);
         if (success) {
             log(name, isForceClosing, enqueueTime.getTime());
             return;
+        } else {
+            try {
+                TimeUnit.MILLISECONDS.sleep(FIXED_DELAY);
+            } catch (InterruptedException e) {
+                //Ignore interrupt
+            }
+            run();
         }
-
-        service.schedule(this, FIXED_DELAY, TimeUnit.MILLISECONDS);
     }
 
-    @Override
     public void log(String dataSourceName, boolean isForceClosing, long startTimeMilliseconds) {
         long cost = getElapsedMilliSeconds();
         LOGGER.info(String.format("**********DataSource %s has been closed,cost:%s ms.**********", name, cost));
