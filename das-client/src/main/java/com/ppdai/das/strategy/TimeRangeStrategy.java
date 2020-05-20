@@ -1,32 +1,25 @@
 package com.ppdai.das.strategy;
 
-import com.google.common.base.Strings;
-
+import com.google.common.base.Preconditions;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-/**
- * 
- * @author hejiehui
- *
- */
-public class AdvancedModStrategy extends AbstractConditionStrategy {
-    /**
-     * Key used to declared mod type.
-     */
-    public static final String TYPE = "type";
+public class TimeRangeStrategy extends AbstractConditionStrategy {
 
-    /**
-     * Key used to declared mod for locating DB shards.
-     */
-    public static final String MOD = "mod";
-
-    /**
-     * Key used to declared mod for locating table shards.
-     */
-    public static final String TABLE_MOD = "tableMod";
+    enum TIME_PATTERN {
+        WEEK_OF_YEAR,
+        WEEK_OF_MONTH,
+        DAY_OF_MONTH,
+        DAY_OF_YEAR,
+        DAY_OF_WEEK,
+        HOUR_OF_DAY,
+        MINUTE_OF_HOUR,
+        SECOND_OF_MINUTE,
+    }
 
     /**
      * Key used to declared table shard table 0 padding
@@ -47,80 +40,75 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
      * DB shard 0 padding format, default 1.
      */
     private String zeroPaddingFormat = "%01d";
-    
-    private ModShardLocator<ConditionContext> dbLoactor;
-    private ModShardLocator<TableConditionContext> tableLoactor;
-    
+
+    private static final String PATTERN = "pattern";
+    private static final String TABLE_PATTERN = "tablePattern";
+
+    private TimeRangeShardLocator<ConditionContext> dbLocator;
+    private TimeRangeShardLocator<TableConditionContext> tableLocator;
+
+
     @Override
     public void initialize(Map<String, String> settings) {
         super.initialize(settings);
 
-        String type = settings.get(TYPE);
         if(isShardByDb()) {
-            if(!settings.containsKey(MOD))
-                throw new IllegalArgumentException("Property " + MOD + " is required for shard by database");
-
             if(settings.containsKey(ZERO_PADDING))
                 zeroPaddingFormat = "%0" + Integer.parseInt(settings.get(ZERO_PADDING)) + "d";
 
-            dbLoactor = createLocator(type, Integer.parseInt(settings.get(MOD)));
+            dbLocator = createTimeRangeShardLocator(settings, PATTERN);
         }
-        
+
         if(isShardByTable()) {
-            if(!settings.containsKey(TABLE_MOD))
-                throw new IllegalArgumentException("Property " + TABLE_MOD + " is required for shard by table");
 
             if(settings.containsKey(TABLE_ZERO_PADDING))
                 tableZeroPaddingFormat = "%0" + Integer.parseInt(settings.get(TABLE_ZERO_PADDING)) + "d";
 
-            Integer mod = Integer.parseInt(settings.get(TABLE_MOD));
-            tableLoactor = createLocator(type, mod);
-            
+            tableLocator = createTimeRangeShardLocator(settings, TABLE_PATTERN);
+
             Set<String> allShards = new HashSet<>();
-            for(int i = 0; i < mod; i++)
+            for(int i = 0; i <= tableLocator.getMaxRange(); i++)
                 allShards.add(String.format(tableZeroPaddingFormat, i));
-            
+
             setAllTableShards(allShards);
         }
+
     }
 
-    protected ModShardLocator createLocator(String type, int mod) {
-        if(Strings.isNullOrEmpty(type)){ //for version compatibility
-            return new ModShardLocator<>(mod);
-        }
+    private TimeRangeShardLocator createTimeRangeShardLocator(Map<String, String> settings, String propName) {
+        Preconditions.checkArgument(settings.containsKey(propName),
+                "Property " + propName + " is missing");
 
-        if(type.equalsIgnoreCase("crc")) {
-            return new CRCModShardLocator(mod);
-        }
-
-        if(type.equalsIgnoreCase("md5")) {
-            return new HashModShardLocator(mod);
-        }
-
-        throw new IllegalArgumentException("Property " + TYPE + " is required 'crc' or 'md5'.");
+        String patternString = settings.get(propName);
+        Optional<TIME_PATTERN> pattern = Stream.of(TIME_PATTERN.values())
+                .filter(p -> p.name().equals(patternString.toUpperCase()))
+                .findFirst();
+        Preconditions.checkArgument(pattern.isPresent(),
+                "Property " + propName + " is required within: " + TIME_PATTERN.values());
+        return new TimeRangeShardLocator<>(pattern.get());
     }
 
     @Override
     public Set<String> locateDbShardsByValue(ShardingContext ctx, Object shardValue) {
-        Set<String> original = dbLoactor.locateByValue(shardValue);
+        Set<String> original = dbLocator.locateByValue(shardValue);
         return applySuffix(original, zeroPaddingFormat);
     }
 
     @Override
     public Set<String> locateDbShards(ConditionContext ctx) {
-        Set<String> original = dbLoactor.locateShards(ctx);
+        Set<String> original = dbLocator.locateShards(ctx);
         return applySuffix(original, zeroPaddingFormat);
     }
 
     @Override
     public Set<String> locateTableShardsByValue(TableShardingContext ctx, Object tableShardValue) {
-        Set<String> original = tableLoactor.locateByValue(tableShardValue);
+        Set<String> original = tableLocator.locateByValue(tableShardValue);
         return applySuffix(original, tableZeroPaddingFormat);
     }
 
     @Override
     public Set<String> locateTableShards(TableConditionContext ctx) {
-        Set<String> original = tableLoactor.locateShards(ctx);
+        Set<String> original = tableLocator.locateShards(ctx);
         return applySuffix(original, tableZeroPaddingFormat);
     }
 
@@ -129,4 +117,5 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
                 .map(s -> String.format(format, Integer.parseInt(s)))
                 .collect(Collectors.toSet());
     }
+
 }
