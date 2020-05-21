@@ -13,7 +13,6 @@ public class TimeRangeShardLocator<CTX extends ConditionContext> extends Abstrac
     private Range<Integer> range = null;
     private long period = 0L;
     private int field = 0;
-    private final Set<Integer> bigMonths = Sets.newHashSet(1, 3, 5, 7, 8, 10, 12);
 
     private static final int SECOND = 1000;
     private static final int MINUTE = SECOND * 60;
@@ -157,64 +156,16 @@ public class TimeRangeShardLocator<CTX extends ConditionContext> extends Abstrac
         return shards;
     }
 
-    private boolean isLeapYear(int year) {
-        return (year % 4 == 0 && year % 100 != 0 || year % 400 == 0);
-    }
-
-    private int maxDayOfMonth(int year, int month) {
-        if (bigMonths.contains(month)) {
-            return 31;
-        }
-        if (month == 2) {
-            if (isLeapYear(year)) {
-                return 28;
-            } else {
-                return 29;
-            }
-        } else {
-            return 30;
-        }
-    }
-
-    private int maxDayOfYear(int year) {
-        return isLeapYear(year) ? 366 : 365;
-    }
-
-    private int maxWeekOfYear(int year) {
-        //Pick a day in the year
-        Calendar cal1 = Calendar.getInstance();
-        cal1.set(Calendar.YEAR, year);
-        cal1.set(Calendar.MONTH, 0);
-        cal1.set(Calendar.DAY_OF_MONTH, 1);
-        return cal1.getActualMaximum(Calendar.WEEK_OF_YEAR);
-    }
-
-    private int maxWeekOfMonth(int year, int month) {
-        //Pick a day in the month
-        Calendar cal1 = Calendar.getInstance();
-        cal1.set(Calendar.YEAR, year);
-        cal1.set(Calendar.MONTH, month - 1);
-        cal1.set(Calendar.DAY_OF_MONTH, 1);
-        return cal1.getActualMaximum(Calendar.WEEK_OF_MONTH);
-    }
-
     private int upperEndpoint(Calendar cal) {
-        int year  = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH) + 1;
+        if (field == Calendar.DAY_OF_MONTH  ||
+            field == Calendar.DAY_OF_YEAR ||
+            field == Calendar.WEEK_OF_YEAR ||
+            field == Calendar.WEEK_OF_MONTH) {
 
-        if (field == Calendar.DAY_OF_MONTH) {
-            return maxDayOfMonth(year, month);
+            return cal.getActualMaximum(field);
+        } else {
+            return getMaxRange();
         }
-        if (field == Calendar.DAY_OF_YEAR) {
-            return maxDayOfYear(year);
-        }
-        if (field == Calendar.WEEK_OF_YEAR) {
-            return maxWeekOfYear(year);
-        }
-        if (field == Calendar.WEEK_OF_MONTH) {
-            return maxWeekOfMonth(year, month);
-        }
-        return getMaxRange();
     }
 
     public int getMaxRange() {
