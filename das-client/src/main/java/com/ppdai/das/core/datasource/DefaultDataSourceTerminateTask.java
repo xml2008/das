@@ -8,7 +8,7 @@ import com.ppdai.das.core.configure.DataSourceConfigure;
 import com.ppdai.das.core.configure.DataSourceConfigureConstants;
 
 import javax.sql.DataSource;
-import java.util.Date;;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class DefaultDataSourceTerminateTask implements Runnable {
