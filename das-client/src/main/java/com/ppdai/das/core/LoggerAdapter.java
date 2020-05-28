@@ -4,10 +4,10 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -111,7 +111,7 @@ public abstract class LoggerAdapter implements DasLogger {
         }
 
 		if (samplingLogging) {
-			scheduler = Executors.newScheduledThreadPool(1);
+			scheduler = new ScheduledThreadPoolExecutor(1);
 			scheduler.scheduleAtFixedRate(new Runnable() {
 				@Override
 				public void run() {

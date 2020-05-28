@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,7 +42,7 @@ public class MarkdownManager {
 			detectors.add(new TimeoutDetector());
 
 			detectorsRef.set(detectors);
-			ScheduledExecutorService manager = Executors.newSingleThreadScheduledExecutor();
+			ScheduledExecutorService manager = new ScheduledThreadPoolExecutor(1);
 			manager.scheduleAtFixedRate(new CollectExceptionTask(), durations,
 					durations, TimeUnit.MICROSECONDS);
 

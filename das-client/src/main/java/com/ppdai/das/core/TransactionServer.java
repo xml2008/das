@@ -4,11 +4,14 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ppdai.das.client.Hints;
 import com.ppdai.das.core.client.DalConnection;
 import com.ppdai.das.core.client.DalConnectionManager;
@@ -19,11 +22,16 @@ import com.ppdai.das.core.datasource.DataSourceLocator;
 
 public class TransactionServer implements DataSourceConfigureConstants {
     private static final Map<String, DalTransaction> transactionMap = new ConcurrentHashMap<>();
-    private Timer cleanupTimer = new Timer("DAS Server Transaction Cleanup Timer", true);
+
+    private ScheduledExecutorService cleanupTimer = new ScheduledThreadPoolExecutor(1,
+            new ThreadFactoryBuilder()
+                    .setNameFormat("DAS Server Transaction Cleanup Timer")
+                    .setDaemon(true)
+                    .build());
     private TransactionIdGenerator generator;
     private final String hostAddress;
     private final String workId;
-    
+
     private static final long SECOND = 1000;
     private static final long INITIAL_DELAY = 1 * SECOND;
     public static final long CLEAN_UP_INTERVAL = 10 * SECOND;
@@ -75,7 +83,7 @@ public class TransactionServer implements DataSourceConfigureConstants {
         this.hostAddress = hostAddress;
         this.workId = workId;
         this.generator = new TransactionIdGenerator();
-        cleanupTimer.schedule(new CleanupTimerTask(), INITIAL_DELAY, CLEAN_UP_INTERVAL);
+        cleanupTimer.scheduleAtFixedRate(new CleanupTimerTask(), INITIAL_DELAY, CLEAN_UP_INTERVAL, TimeUnit.MILLISECONDS);
     }
     
     public int getCurrentCount() {

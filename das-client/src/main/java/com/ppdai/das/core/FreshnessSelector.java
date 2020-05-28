@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -138,7 +138,7 @@ public class FreshnessSelector implements DatabaseSelector {
             }
 
             // Init task
-            ScheduledExecutorService executer = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+            ScheduledExecutorService executer = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
                 AtomicInteger atomic = new AtomicInteger();
 
                 @Override

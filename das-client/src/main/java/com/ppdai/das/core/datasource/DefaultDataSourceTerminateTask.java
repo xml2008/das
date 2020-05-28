@@ -128,7 +128,7 @@ public class DefaultDataSourceTerminateTask implements Runnable {
     }
 
     private long getElapsedMilliSeconds() {
-        return new Date().getTime() - enqueueTime.getTime();
+        return System.currentTimeMillis() - enqueueTime.getTime();
     }
 
     private int getElapsedSeconds() {

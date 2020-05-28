@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -45,7 +45,7 @@ public class ServerSelector {
     protected static List<DasServerInstanceWithStatus> allServerList = new CopyOnWriteArrayList<>();
     private final static ThreadLocal<ClientObject> currentClient = new ThreadLocal<>();
     private static final LoadingCache<DasServerInstanceWithStatus, LoadingCache<String, ClientObject>> servers = createClient();
-    private static final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
     private static final AtomicBoolean initialized = new AtomicBoolean(false);
     private static final AtomicBoolean checkInProgress = new AtomicBoolean(false);
 
