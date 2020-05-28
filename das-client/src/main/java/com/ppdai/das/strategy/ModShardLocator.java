@@ -21,10 +21,12 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
         return locateByValue(ctx.getValue());
     }
 
+    @Override
     public Set<String> locateForGreaterThan(CTX ctx) {
         return getAllShards(ctx);
     }
 
+    @Override
     public Set<String> locateForLessThan(CTX ctx) {
         return getAllShards(ctx);
     }

@@ -124,12 +124,14 @@ public class LogicDeletionDao<T> extends TableDao<T>{
         return super.batchUpdate(entities, hints);
     }
 
+    @Override
     public final int update(T entity, Hints...hints) throws SQLException {
         validateInput(entity);
         clearDeletionFlag(entity, hints);
         return super.update(entity, hints);
     }
 
+    @Override
     public final int[] batchUpdate(List<T> entities, Hints...hints) throws SQLException {
         validateInput(entities);
         clearDeletionFlag(entities, hints);

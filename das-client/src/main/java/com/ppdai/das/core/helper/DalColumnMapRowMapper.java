@@ -39,6 +39,7 @@ public class DalColumnMapRowMapper implements DalRowMapper<Map<String, Object>>,
 		columns = temColumns;
 	}
 
+	@Override
 	public Map<String, Object> map(ResultSet rs, int rowNum) throws SQLException {
 		initColumns(rs);
 		Map<String, Object> mapOfColValues = new LinkedHashMap<String, Object>(columns.length);

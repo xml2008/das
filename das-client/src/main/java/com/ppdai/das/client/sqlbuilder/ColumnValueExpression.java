@@ -51,6 +51,7 @@ public class ColumnValueExpression extends ColumnExpression implements Parameter
     /**
      * Mark this expression as optional when expression's value is null.
      */
+    @Override
     public ColumnExpression nullable() {
         when(value != null);
         return this;

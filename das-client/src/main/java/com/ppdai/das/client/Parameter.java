@@ -100,6 +100,7 @@ public class Parameter extends ParameterDefinition implements Segment, Parameter
     }
 
 
+    @Override
     public String toString() {
         return name + "=" + value;
     }
@@ -192,6 +193,7 @@ public class Parameter extends ParameterDefinition implements Segment, Parameter
     
     public static Parameter nvarcharOf(String name, List<?> values) {return inParameter(name, JDBCType.NVARCHAR, values);}
 
+    @Override
     public Parameter clone() {
         Parameter clone = isInValues() ? new Parameter(getName(), getType(), getValues()):new Parameter(getName(), getType(), getValue());
         clone.direction = direction;

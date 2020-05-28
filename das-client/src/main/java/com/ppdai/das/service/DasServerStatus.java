@@ -106,10 +106,12 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -195,6 +197,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
     this.transactionCount = other.transactionCount;
   }
 
+  @Override
   public DasServerStatus deepCopy() {
     return new DasServerStatus(this);
   }
@@ -403,6 +406,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TRANSACTIONCOUNT_ISSET_ID, value);
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case ONLINE:
@@ -472,6 +476,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -504,6 +509,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -754,15 +760,18 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -853,6 +862,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
   }
 
   private static class DasServerStatusStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasServerStatusStandardScheme getScheme() {
       return new DasServerStatusStandardScheme();
     }
@@ -860,6 +870,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
 
   private static class DasServerStatusStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasServerStatus> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasServerStatus struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -969,6 +980,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasServerStatus struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -1004,6 +1016,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
   }
 
   private static class DasServerStatusTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasServerStatusTupleScheme getScheme() {
       return new DasServerStatusTupleScheme();
     }

@@ -19,6 +19,7 @@ public class Text implements Segment {
         return text;
     }
     
+    @Override
     public String toString() {
         return getText();
     }

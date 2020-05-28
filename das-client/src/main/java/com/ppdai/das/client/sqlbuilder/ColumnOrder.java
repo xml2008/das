@@ -24,6 +24,7 @@ public class ColumnOrder implements Segment {
         return column.build(helper) + (asc ? " ASC" : " DESC");
     }
 
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

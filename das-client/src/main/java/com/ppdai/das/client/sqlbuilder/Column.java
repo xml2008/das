@@ -30,6 +30,7 @@ public final class Column extends AbstractColumn implements Segment {
         return this;
     }
     
+    @Override
     public Optional<String> getAlias() {
         return alias;
     }

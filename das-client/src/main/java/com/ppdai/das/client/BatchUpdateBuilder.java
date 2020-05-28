@@ -95,6 +95,7 @@ public class BatchUpdateBuilder implements Segment, ParameterDefinitionProvider 
         return hints;
     }
 
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

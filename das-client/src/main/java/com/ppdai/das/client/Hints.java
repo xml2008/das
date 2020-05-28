@@ -337,6 +337,7 @@ public class Hints {
      *
      * @return a clone {@code Hints} instance
      */
+    @Override
     public Hints clone() {
         Hints newHints = new Hints();
         newHints.hints.putAll(hints);

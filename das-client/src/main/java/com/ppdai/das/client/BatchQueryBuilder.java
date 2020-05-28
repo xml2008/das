@@ -37,6 +37,7 @@ public class BatchQueryBuilder {
         return this;
     }
     
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for(SqlBuilder query: queries) {

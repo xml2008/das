@@ -76,10 +76,12 @@ public class DasException extends org.apache.thrift.TException implements org.ap
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -121,6 +123,7 @@ public class DasException extends org.apache.thrift.TException implements org.ap
     }
   }
 
+  @Override
   public DasException deepCopy() {
     return new DasException(this);
   }
@@ -156,6 +159,7 @@ public class DasException extends org.apache.thrift.TException implements org.ap
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public String getMessage() {
     return this.message;
@@ -181,6 +185,7 @@ public class DasException extends org.apache.thrift.TException implements org.ap
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case CODE:
@@ -202,6 +207,7 @@ public class DasException extends org.apache.thrift.TException implements org.ap
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -216,6 +222,7 @@ public class DasException extends org.apache.thrift.TException implements org.ap
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -322,15 +329,18 @@ public class DasException extends org.apache.thrift.TException implements org.ap
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -383,6 +393,7 @@ public class DasException extends org.apache.thrift.TException implements org.ap
   }
 
   private static class DasExceptionStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasExceptionStandardScheme getScheme() {
       return new DasExceptionStandardScheme();
     }
@@ -390,6 +401,7 @@ public class DasException extends org.apache.thrift.TException implements org.ap
 
   private static class DasExceptionStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasException> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasException struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -427,6 +439,7 @@ public class DasException extends org.apache.thrift.TException implements org.ap
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasException struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -448,6 +461,7 @@ public class DasException extends org.apache.thrift.TException implements org.ap
   }
 
   private static class DasExceptionTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasExceptionTupleScheme getScheme() {
       return new DasExceptionTupleScheme();
     }

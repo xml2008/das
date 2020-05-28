@@ -23,6 +23,7 @@ public class DefaultConnectionPhantomReferenceCleaner implements ConnectionPhant
 
     static {
         Runtime.getRuntime().addShutdownHook(new CustomThreadFactory("DefaultConnectionPhantomReferenceCleaner").newThread(new Runnable() {
+            @Override
             public void run() {
                 shutdown();
             }

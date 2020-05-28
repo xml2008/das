@@ -86,10 +86,12 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -145,6 +147,7 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
     }
   }
 
+  @Override
   public DasCheckRequest deepCopy() {
     return new DasCheckRequest(this);
   }
@@ -257,6 +260,7 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case APP_ID:
@@ -294,6 +298,7 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -314,6 +319,7 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -476,15 +482,18 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -569,6 +578,7 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
   }
 
   private static class DasCheckRequestStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasCheckRequestStandardScheme getScheme() {
       return new DasCheckRequestStandardScheme();
     }
@@ -576,6 +586,7 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
 
   private static class DasCheckRequestStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasCheckRequest> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasCheckRequest struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -629,6 +640,7 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasCheckRequest struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -660,6 +672,7 @@ public class DasCheckRequest implements org.apache.thrift.TBase<DasCheckRequest,
   }
 
   private static class DasCheckRequestTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasCheckRequestTupleScheme getScheme() {
       return new DasCheckRequestTupleScheme();
     }

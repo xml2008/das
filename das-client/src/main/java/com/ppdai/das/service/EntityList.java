@@ -91,10 +91,12 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -163,6 +165,7 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
     }
   }
 
+  @Override
   public EntityList deepCopy() {
     return new EntityList(this);
   }
@@ -333,6 +336,7 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case DATABASE_NAME:
@@ -378,6 +382,7 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -401,6 +406,7 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -591,15 +597,18 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -684,6 +693,7 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
   }
 
   private static class EntityListStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public EntityListStandardScheme getScheme() {
       return new EntityListStandardScheme();
     }
@@ -691,6 +701,7 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
 
   private static class EntityListStandardScheme extends org.apache.thrift.scheme.StandardScheme<EntityList> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, EntityList struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -774,6 +785,7 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, EntityList struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -826,6 +838,7 @@ public class EntityList implements org.apache.thrift.TBase<EntityList, EntityLis
   }
 
   private static class EntityListTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public EntityListTupleScheme getScheme() {
       return new EntityListTupleScheme();
     }

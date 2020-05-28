@@ -37,6 +37,7 @@ public class FreshnessSelector implements DatabaseSelector {
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
             public void run() {
                 shutdown();
             }

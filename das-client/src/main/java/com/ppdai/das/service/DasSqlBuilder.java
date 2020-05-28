@@ -96,10 +96,12 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -167,6 +169,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
     }
   }
 
+  @Override
   public DasSqlBuilder deepCopy() {
     return new DasSqlBuilder(this);
   }
@@ -346,6 +349,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case PARTIALS:
@@ -399,6 +403,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -425,6 +430,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -640,15 +646,18 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -753,6 +762,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
   }
 
   private static class DasSqlBuilderStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasSqlBuilderStandardScheme getScheme() {
       return new DasSqlBuilderStandardScheme();
     }
@@ -760,6 +770,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
 
   private static class DasSqlBuilderStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasSqlBuilder> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasSqlBuilder struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -845,6 +856,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasSqlBuilder struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -901,6 +913,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
   }
 
   private static class DasSqlBuilderTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasSqlBuilderTupleScheme getScheme() {
       return new DasSqlBuilderTupleScheme();
     }

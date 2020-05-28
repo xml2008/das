@@ -126,10 +126,12 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -240,6 +242,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
     this.mapType = other.mapType;
   }
 
+  @Override
   public EntityMeta deepCopy() {
     return new EntityMeta(this);
   }
@@ -660,6 +663,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __MAPTYPE_ISSET_ID, value);
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case TABLE_NAME:
@@ -761,6 +765,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -805,6 +810,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -1191,15 +1197,18 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -1370,6 +1379,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
   }
 
   private static class EntityMetaStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public EntityMetaStandardScheme getScheme() {
       return new EntityMetaStandardScheme();
     }
@@ -1377,6 +1387,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
 
   private static class EntityMetaStandardScheme extends org.apache.thrift.scheme.StandardScheme<EntityMeta> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, EntityMeta struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -1569,6 +1580,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, EntityMeta struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -1711,6 +1723,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
   }
 
   private static class EntityMetaTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public EntityMetaTupleScheme getScheme() {
       return new EntityMetaTupleScheme();
     }

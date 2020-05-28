@@ -39,6 +39,7 @@ public final class ColumnDefinition extends AbstractColumn {
         return newColumn;
     }
 
+    @Override
     public Optional<String> getAlias() {
         return alias;
     }

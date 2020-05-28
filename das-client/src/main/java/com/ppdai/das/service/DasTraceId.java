@@ -71,10 +71,12 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -112,6 +114,7 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
     }
   }
 
+  @Override
   public DasTraceId deepCopy() {
     return new DasTraceId(this);
   }
@@ -157,6 +160,7 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case IDS:
@@ -170,6 +174,7 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -181,6 +186,7 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -259,15 +265,18 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -313,6 +322,7 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
   }
 
   private static class DasTraceIdStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasTraceIdStandardScheme getScheme() {
       return new DasTraceIdStandardScheme();
     }
@@ -320,6 +330,7 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
 
   private static class DasTraceIdStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasTraceId> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasTraceId struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -361,6 +372,7 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasTraceId struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -385,6 +397,7 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
   }
 
   private static class DasTraceIdTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasTraceIdTupleScheme getScheme() {
       return new DasTraceIdTupleScheme();
     }

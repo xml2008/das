@@ -24,6 +24,7 @@ public class DasConfigureFactory {
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
             public void run() {
                 Thread.currentThread().setName(THREAD_NAME);
                 shutdownFactory();

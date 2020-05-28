@@ -37,6 +37,7 @@ public abstract class AbstractColumn implements Segment {
     /**
      * @return the name used in select xxx segment. Like name, or c.name, or c.name as somename
      */
+    @Override
     public String build(BuilderContext helper) {
         return getAlias().isPresent() ? getReference(helper) + AS + getAlias().get() : getReference(helper);
     }
@@ -49,6 +50,7 @@ public abstract class AbstractColumn implements Segment {
         return sb.append(getTableName(helper)).append(PERIOD).append(columnName).toString();
     }
     
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

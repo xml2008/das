@@ -476,6 +476,7 @@ public class DalDirectClient implements DalClient {
 
     private ResultSet executeQuery(final PreparedStatement preparedStatement, final LogEntry entry) throws Exception {
         return execute(new Callable<ResultSet>() {
+            @Override
             public ResultSet call() throws Exception {
                 return preparedStatement.executeQuery();
             }
@@ -484,6 +485,7 @@ public class DalDirectClient implements DalClient {
 
     private void executeMultiple(final PreparedStatement preparedStatement, final LogEntry entry) throws Exception {
         execute(new Callable<Object>() {
+            @Override
             public Object call() throws Exception {
                 preparedStatement.execute();
                 return null;
@@ -493,6 +495,7 @@ public class DalDirectClient implements DalClient {
 
     private int executeUpdate(final PreparedStatement preparedStatement, final LogEntry entry) throws Exception {
         return execute(new Callable<Integer>() {
+            @Override
             public Integer call() throws Exception {
                 return entry.setAffectedRows(preparedStatement.executeUpdate());
             }
@@ -501,6 +504,7 @@ public class DalDirectClient implements DalClient {
 
     private int[] executeBatch(final Statement statement, final LogEntry entry) throws Exception {
         return execute(new Callable<int[]>() {
+            @Override
             public int[] call() throws Exception {
                 return entry.setAffectedRowsArray(statement.executeBatch());
             }
@@ -509,6 +513,7 @@ public class DalDirectClient implements DalClient {
 
     private Boolean executeCall(final CallableStatement callableStatement, final LogEntry entry) throws Exception {
         return execute(new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
                 return callableStatement.execute();
             }
@@ -517,6 +522,7 @@ public class DalDirectClient implements DalClient {
 
     private int[] executeBatch(final CallableStatement callableStatement, final LogEntry entry) throws Exception {
         return execute(new Callable<int[]>() {
+            @Override
             public int[] call() throws Exception {
                 return entry.setAffectedRowsArray(callableStatement.executeBatch());
             }

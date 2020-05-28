@@ -14,6 +14,7 @@ public class ColumnName implements Segment {
         return column.getColumnName();
     }
     
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

@@ -81,10 +81,12 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -142,6 +144,7 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
     }
   }
 
+  @Override
   public DasBatchCallBuilder deepCopy() {
     return new DasBatchCallBuilder(this);
   }
@@ -260,6 +263,7 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case NAME:
@@ -289,6 +293,7 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -306,6 +311,7 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -440,15 +446,18 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -515,6 +524,7 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
   }
 
   private static class DasBatchCallBuilderStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasBatchCallBuilderStandardScheme getScheme() {
       return new DasBatchCallBuilderStandardScheme();
     }
@@ -522,6 +532,7 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
 
   private static class DasBatchCallBuilderStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasBatchCallBuilder> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasBatchCallBuilder struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -598,6 +609,7 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasBatchCallBuilder struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -649,6 +661,7 @@ public class DasBatchCallBuilder implements org.apache.thrift.TBase<DasBatchCall
   }
 
   private static class DasBatchCallBuilderTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasBatchCallBuilderTupleScheme getScheme() {
       return new DasBatchCallBuilderTupleScheme();
     }

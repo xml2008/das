@@ -14,6 +14,7 @@ public class ShardedIntArrayResultMerger implements BulkTaskResultMerger<int[]>{
 	private Map<String , Integer[]> indexByShard = new HashMap<>();
 	private Map<Integer, Integer> affectedRowsMap = new TreeMap<>();
 	
+	@Override
 	public void recordPartial(String shard, Integer[] partialIndex) {
 		indexByShard.put(shard, partialIndex);
 	}

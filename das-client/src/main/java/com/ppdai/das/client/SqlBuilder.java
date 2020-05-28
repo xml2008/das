@@ -492,6 +492,7 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
         return meltdownHelper.build(segments, context);
     }
 
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

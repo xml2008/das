@@ -43,6 +43,7 @@ public class TableDefinition implements TableReference, Segment {
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -51,10 +52,12 @@ public class TableDefinition implements TableReference, Segment {
         return alias;
     }
     
+    @Override
     public String getShardId() {
         return shardId;
     }
 
+    @Override
     public String getShardValue() {
         return shardValue;
     }
@@ -117,6 +120,7 @@ public class TableDefinition implements TableReference, Segment {
         return alias == null ? realName : realName + " " + alias;
     }
     
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

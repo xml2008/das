@@ -93,6 +93,7 @@ public class ClientDasDelegate implements DasDelegate {
         return query(builder.setHints(hints));
     }
 
+    @Override
     public <T> List<T> queryBySample(T sample, PageRange range, Hints hints) throws SQLException {
         TableDefinition table = getTableDefinition(sample);
         SqlBuilder builder = SqlBuilder.selectAllFrom(table).where(SegmentConstants.match(table, sample)).into(sample.getClass());

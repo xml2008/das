@@ -15,15 +15,18 @@ public abstract class Expression implements Segment, Includable<Expression> {
     /**
      * Mark this expression as as optional when condition is not meet.
      */
+    @Override
     public Expression when(boolean condition) {
         included = condition;
         return this;
     }
     
+    @Override
     public boolean isIncluded() {
         return included;
     }
 
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

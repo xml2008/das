@@ -42,6 +42,7 @@ public class DefaultConnectionLocator implements ConnectionLocator {
         return dataSource.getConnection();
     }
 
+    @Override
     public DataSourceConfigureProvider getProvider() {
         return provider;
     }

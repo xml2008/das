@@ -35,21 +35,27 @@ public class DefaultLogger extends LoggerAdapter implements DasLogger {
 
 	@Override
 	public void info(final String desc) {
-	    call(new Runnable() {public void run() {
+	    call(new Runnable() {
+			@Override
+			public void run() {
 			logger.info(desc);
 	    }});
 	}
 
 	@Override
 	public void warn(final String desc) {
-        call(new Runnable() {public void run() {
+        call(new Runnable() {
+			@Override
+			public void run() {
             logger.warn(desc);
         }});
 	}
 
 	@Override
 	public void error(final String desc, final Throwable e) {
-        call(new Runnable() {public void run() {
+        call(new Runnable() {
+			@Override
+			public void run() {
             logger.error(desc, e);
         }});
 	}
@@ -65,7 +71,9 @@ public class DefaultLogger extends LoggerAdapter implements DasLogger {
 
 	@Override
 	public void getConnectionFailed(final String logicDb, final Throwable e) {
-        call(new Runnable() {public void run() {
+        call(new Runnable() {
+			@Override
+			public void run() {
             logConnectionFailed(logicDb, e);
         }});
 	}

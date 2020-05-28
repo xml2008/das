@@ -86,10 +86,12 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -155,6 +157,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
     }
   }
 
+  @Override
   public DasDiagInfo deepCopy() {
     return new DasDiagInfo(this);
   }
@@ -293,6 +296,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case NAME:
@@ -330,6 +334,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -350,6 +355,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -509,15 +515,18 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -588,6 +597,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
   }
 
   private static class DasDiagInfoStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasDiagInfoStandardScheme getScheme() {
       return new DasDiagInfoStandardScheme();
     }
@@ -595,6 +605,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
 
   private static class DasDiagInfoStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasDiagInfo> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasDiagInfo struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -671,6 +682,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasDiagInfo struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -715,6 +727,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
   }
 
   private static class DasDiagInfoTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasDiagInfoTupleScheme getScheme() {
       return new DasDiagInfoTupleScheme();
     }

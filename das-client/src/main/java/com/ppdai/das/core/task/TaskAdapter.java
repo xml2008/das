@@ -64,6 +64,7 @@ public class TaskAdapter<T> implements DaoTask<T> {
 	public boolean tableShardingEnabled;
 	protected String rawTableName;
 
+	@Override
 	public void initialize(DalParser<T> parser) {
 	    this.appId = parser.getAppId();
         this.logicDbName = parser.getDatabaseName();
@@ -238,6 +239,7 @@ public class TaskAdapter<T> implements DaoTask<T> {
 		return fields;
 	}
 
+	@Override
 	public List<Map<String, ?>> getPojosFields(List<T> daoPojos) {
 		List<Map<String, ?>> pojoFields = new LinkedList<Map<String, ?>>();
 		if (null == daoPojos || daoPojos.size() < 1) {

@@ -20,6 +20,7 @@ public class DalObjectRowMapper<T> implements DalRowMapper<T> {
 	private static final Map<Class<?>, TypeConverter<?>> typeConverterCache = new ConcurrentHashMap<>();
 	
 	private static TypeConverter<?> sameTypeConverter = new TypeConverter<Object>() {
+		@Override
 		public Object convert(ResultSet rs, Object value) {
 			return value;
 		}
@@ -36,6 +37,7 @@ public class DalObjectRowMapper<T> implements DalRowMapper<T> {
 		converter = (TypeConverter<T>)typeConverterCache.get(type);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public T map(ResultSet rs, int rowNum) throws SQLException {
 		Object value = rs.getObject(1);
@@ -53,27 +55,34 @@ public class DalObjectRowMapper<T> implements DalRowMapper<T> {
 	}
 	
 	static {
-		typeConverterCache.put(Short.class, new TypeConverter<Short>(){ public Short convert(ResultSet rs, Object value) {
+		typeConverterCache.put(Short.class, new TypeConverter<Short>(){ @Override
+		public Short convert(ResultSet rs, Object value) {
 			return ((Number)value).shortValue();}});
 
-		typeConverterCache.put(Byte.class, new TypeConverter<Byte>(){ public Byte convert(ResultSet rs, Object value) {
+		typeConverterCache.put(Byte.class, new TypeConverter<Byte>(){ @Override
+		public Byte convert(ResultSet rs, Object value) {
 			return ((Number)value).byteValue();}});
 
-		typeConverterCache.put(Integer.class, new TypeConverter<Integer>(){ public Integer convert(ResultSet rs, Object value) {
+		typeConverterCache.put(Integer.class, new TypeConverter<Integer>(){ @Override
+		public Integer convert(ResultSet rs, Object value) {
 			return ((Number)value).intValue();}});
 
-		typeConverterCache.put(Long.class, new TypeConverter<Long>(){ public Long convert(ResultSet rs, Object value) {
+		typeConverterCache.put(Long.class, new TypeConverter<Long>(){ @Override
+		public Long convert(ResultSet rs, Object value) {
 			return ((Number)value).longValue();}});
 
-		typeConverterCache.put(Float.class, new TypeConverter<Float>(){ public Float convert(ResultSet rs, Object value) {
+		typeConverterCache.put(Float.class, new TypeConverter<Float>(){ @Override
+		public Float convert(ResultSet rs, Object value) {
 			return ((Number)value).floatValue();}});
 
-		typeConverterCache.put(Double.class, new TypeConverter<Double>(){ public Double convert(ResultSet rs, Object value) {
+		typeConverterCache.put(Double.class, new TypeConverter<Double>(){ @Override
+		public Double convert(ResultSet rs, Object value) {
 			return ((Number)value).doubleValue();}});
 		/**
 		 * This is because oracle returns its own Timestamp type instead of standard java.sql.Timestamp
 		 */
-		typeConverterCache.put(Timestamp.class, new TypeConverter<Timestamp>(){ public Timestamp convert(ResultSet rs, Object value) throws SQLException {
+		typeConverterCache.put(Timestamp.class, new TypeConverter<Timestamp>(){ @Override
+		public Timestamp convert(ResultSet rs, Object value) throws SQLException {
 			return rs.getTimestamp(1);}});
 	}
 }

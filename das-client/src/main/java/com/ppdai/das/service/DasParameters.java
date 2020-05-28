@@ -71,10 +71,12 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -114,6 +116,7 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
     }
   }
 
+  @Override
   public DasParameters deepCopy() {
     return new DasParameters(this);
   }
@@ -164,6 +167,7 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case PARAMETERS:
@@ -177,6 +181,7 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -188,6 +193,7 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -266,15 +272,18 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -320,6 +329,7 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
   }
 
   private static class DasParametersStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasParametersStandardScheme getScheme() {
       return new DasParametersStandardScheme();
     }
@@ -327,6 +337,7 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
 
   private static class DasParametersStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasParameters> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasParameters struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -367,6 +378,7 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasParameters struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -390,6 +402,7 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
   }
 
   private static class DasParametersTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasParametersTupleScheme getScheme() {
       return new DasParametersTupleScheme();
     }

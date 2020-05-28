@@ -16,10 +16,12 @@ public class BooleanExpression extends Expression implements ConditionProvider {
         this.template = template;;
     }
 
+    @Override
     public Expression when(boolean condition) {
         throw new IllegalStateException("when() can not be applied to TRUE/FALSE");
     }
     
+    @Override
     public boolean isIncluded() {
         return true;
     }

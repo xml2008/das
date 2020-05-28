@@ -47,6 +47,7 @@ public class BetweenExpression extends ColumnExpression implements ParameterDefi
         return value;
     }
     
+    @Override
     public void validate(BuilderContext context) {
         Objects.requireNonNull(firstValue, "lower value for column :" + rightColumn.getReference(context) + 
                 " is null for BETWEEN. If you want this expression to be removed when value is null, please call nullable() before build");

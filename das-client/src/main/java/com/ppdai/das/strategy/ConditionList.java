@@ -86,6 +86,7 @@ public class ConditionList implements Condition, Iterable<Condition> {
         return conditions.iterator();
     }
 
+    @Override
     public Set<String> getTables() {
         Set<String> tables = new HashSet<>();
         for(Condition c: conditions) {
@@ -103,6 +104,7 @@ public class ConditionList implements Condition, Iterable<Condition> {
         return this;
     }
     
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(intersected ? SegmentConstants.AND : SegmentConstants.OR).append("(");

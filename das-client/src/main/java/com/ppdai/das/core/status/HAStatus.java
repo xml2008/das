@@ -23,38 +23,46 @@ public class HAStatus extends BaseStatus implements HAStatusMBean {
 		mysqlcodes = DatabaseCategory.MySql.getDefaultErrorCodes();
 	}
 	
-	public boolean isEnabled() {
+	@Override
+    public boolean isEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(boolean enabled) {
+	@Override
+    public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		changed();
 	}
 
-	public int getRetryCount() {
+	@Override
+    public int getRetryCount() {
 		return retryCount;
 	}
 
-	public void setRetryCount(int retryCount) {
+	@Override
+    public void setRetryCount(int retryCount) {
 		this.retryCount = retryCount;
 		changed();
 	}
 	
-	public String getSqlserverErrorCodes() {
+	@Override
+    public String getSqlserverErrorCodes() {
 		return StringUtils.join(sqlservercodes, ',');
 	}
 	
-	public void setSqlserverErrorCodes(String sqlserverErrorCodes) {
+	@Override
+    public void setSqlserverErrorCodes(String sqlserverErrorCodes) {
 		sqlservercodes = parseErrorCodes(sqlserverErrorCodes);
 		changed();
 	}
 
-	public String getMysqlErrorCodes() {
+	@Override
+    public String getMysqlErrorCodes() {
 		return StringUtils.join(mysqlcodes, ',');
 	}
 	
-	public void setMysqlErrorCodes(String mysqlErrorCodes) {
+	@Override
+    public void setMysqlErrorCodes(String mysqlErrorCodes) {
 		mysqlcodes = parseErrorCodes(mysqlErrorCodes);
 		changed();
 	}

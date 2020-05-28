@@ -53,11 +53,13 @@ public class Template implements Segment, Includable<Template>, ParameterProvide
     /**
      * Mark this expression as as optional when condition is not meet.
      */
+    @Override
     public Template when(boolean condition) {
         included = condition;
         return this;
     }
     
+    @Override
     public boolean isIncluded() {
         return included;
     }
@@ -71,6 +73,7 @@ public class Template implements Segment, Includable<Template>, ParameterProvide
         return template;
     }
 
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

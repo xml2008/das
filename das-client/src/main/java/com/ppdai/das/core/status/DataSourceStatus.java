@@ -18,9 +18,11 @@ public class DataSourceStatus extends BaseStatus implements DataSourceStatusMBea
 		this.name = name;
 	}
 	
+	@Override
 	public boolean isManualMarkdown() {
 		return manualMarkdown;
 	}
+	@Override
 	public void setManualMarkdown(boolean manualMarkdown) {
 		this.manualMarkdown = manualMarkdown;
 		if(manualMarkdown){
@@ -32,6 +34,7 @@ public class DataSourceStatus extends BaseStatus implements DataSourceStatusMBea
 		changed();
 	}
 	
+	@Override
 	public boolean isAutoMarkdown() {
 		return autoMarkdown;
 	}
@@ -43,14 +46,17 @@ public class DataSourceStatus extends BaseStatus implements DataSourceStatusMBea
 		changed();
 	}
 	
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public Date getManualMarkdownTime() {
 		return manualMarkdownTime;
 	}
 
+	@Override
 	public Date getAutoMarkdownTime() {
 		return autoMarkdownTime;
 	}

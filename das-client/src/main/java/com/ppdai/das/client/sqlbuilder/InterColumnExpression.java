@@ -21,6 +21,7 @@ public class InterColumnExpression extends ColumnExpression implements Condition
         return leftColumn;
     }
 
+    @Override
     public ColumnExpression nullable() {
         throw new IllegalArgumentException("nullable can not be applied to another column reference");
     }

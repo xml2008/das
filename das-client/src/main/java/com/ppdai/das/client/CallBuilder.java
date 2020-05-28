@@ -91,6 +91,7 @@ public class CallBuilder implements Segment, ParameterProvider {
         return sb.build(context);
     }
 
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }
