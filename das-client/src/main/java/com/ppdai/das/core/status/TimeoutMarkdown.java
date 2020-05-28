@@ -102,8 +102,9 @@ public class TimeoutMarkdown extends BaseStatus implements TimeoutMarkdownMBean 
 	
 	private Set<Integer> parseErrorCodes(String codes){
 		Set<Integer> temp = new HashSet<Integer>();
-		if(codes == null || codes.isEmpty())
-			return temp;
+		if(codes == null || codes.isEmpty()) {
+            return temp;
+        }
 		String[] tokens = codes.split(",");
 		for (String token : tokens) {
 			temp.add(Integer.valueOf(token));

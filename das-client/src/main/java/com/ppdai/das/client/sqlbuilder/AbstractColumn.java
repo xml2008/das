@@ -85,11 +85,13 @@ public abstract class AbstractColumn implements Segment {
      * @return
      */
     private ColumnExpression create(OperatorEnum operator, Object value) {
-        if (value instanceof AbstractColumn)
+        if (value instanceof AbstractColumn) {
             return new InterColumnExpression(operator, this, (AbstractColumn)value);
+        }
         
-        if(value instanceof ParameterDefinition)
+        if(value instanceof ParameterDefinition) {
             return new ColumnDefinitionExpression(operator.getTemplate(), this, ParameterDefinition.defineByVAR((ParameterDefinition)value, this, false));
+        }
 
         if(value instanceof ParameterDefinition.Builder) {
             ParameterDefinition.Builder builder = (ParameterDefinition.Builder)value;

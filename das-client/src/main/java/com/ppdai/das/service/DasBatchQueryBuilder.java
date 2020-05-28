@@ -54,7 +54,9 @@ public class DasBatchQueryBuilder implements org.apache.thrift.TBase<DasBatchQue
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -243,35 +245,43 @@ public class DasBatchQueryBuilder implements org.apache.thrift.TBase<DasBatchQue
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasBatchQueryBuilder)
-      return this.equals((DasBatchQueryBuilder)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasBatchQueryBuilder) {
+        return this.equals((DasBatchQueryBuilder)that);
+    }
     return false;
   }
 
   public boolean equals(DasBatchQueryBuilder that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_sqlBuilders = true && this.isSetSqlBuilders();
     boolean that_present_sqlBuilders = true && that.isSetSqlBuilders();
     if (this_present_sqlBuilders || that_present_sqlBuilders) {
-      if (!(this_present_sqlBuilders && that_present_sqlBuilders))
-        return false;
-      if (!this.sqlBuilders.equals(that.sqlBuilders))
-        return false;
+      if (!(this_present_sqlBuilders && that_present_sqlBuilders)) {
+          return false;
+      }
+      if (!this.sqlBuilders.equals(that.sqlBuilders)) {
+          return false;
+      }
     }
 
     boolean this_present_entityMeta = true && this.isSetEntityMeta();
     boolean that_present_entityMeta = true && that.isSetEntityMeta();
     if (this_present_entityMeta || that_present_entityMeta) {
-      if (!(this_present_entityMeta && that_present_entityMeta))
-        return false;
-      if (!this.entityMeta.equals(that.entityMeta))
-        return false;
+      if (!(this_present_entityMeta && that_present_entityMeta)) {
+          return false;
+      }
+      if (!this.entityMeta.equals(that.entityMeta)) {
+          return false;
+      }
     }
 
     return true;
@@ -282,12 +292,14 @@ public class DasBatchQueryBuilder implements org.apache.thrift.TBase<DasBatchQue
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetSqlBuilders()) ? 131071 : 524287);
-    if (isSetSqlBuilders())
-      hashCode = hashCode * 8191 + sqlBuilders.hashCode();
+    if (isSetSqlBuilders()) {
+        hashCode = hashCode * 8191 + sqlBuilders.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetEntityMeta()) ? 131071 : 524287);
-    if (isSetEntityMeta())
-      hashCode = hashCode * 8191 + entityMeta.hashCode();
+    if (isSetEntityMeta()) {
+        hashCode = hashCode * 8191 + entityMeta.hashCode();
+    }
 
     return hashCode;
   }
@@ -351,7 +363,9 @@ public class DasBatchQueryBuilder implements org.apache.thrift.TBase<DasBatchQue
       first = false;
     }
     if (isSetEntityMeta()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("entityMeta:");
       if (this.entityMeta == null) {
         sb.append("null");

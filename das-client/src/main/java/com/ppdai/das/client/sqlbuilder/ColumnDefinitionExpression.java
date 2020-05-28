@@ -15,8 +15,9 @@ public class ColumnDefinitionExpression extends ColumnExpression implements Para
 
     public ColumnDefinitionExpression(String template, AbstractColumn column, ParameterDefinition definition) {
         this(template, column);
-        if(column.getType() != definition.getType())
+        if(column.getType() != definition.getType()) {
             throw new IllegalArgumentException("The parameter definition's type does not match column type");
+        }
         
         Objects.requireNonNull(definition);
         this.definition = ParameterDefinition.defineByVAR(definition, column, false);

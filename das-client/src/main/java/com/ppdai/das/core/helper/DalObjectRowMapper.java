@@ -40,8 +40,9 @@ public class DalObjectRowMapper<T> implements DalRowMapper<T> {
 	public T map(ResultSet rs, int rowNum) throws SQLException {
 		Object value = rs.getObject(1);
 		
-		if(value == null || converter == null || type.isInstance(value))
-			return (T)value;
+		if(value == null || converter == null || type.isInstance(value)) {
+            return (T)value;
+        }
 
 		return converter.convert(rs, value);
 	}

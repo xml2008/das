@@ -141,16 +141,19 @@ public class TimeRangeShardLocator<CTX extends ConditionContext> extends Abstrac
             shards.add(lowerShard + "");
 
         } else if(lowerShard < upperShard) {
-           while(lowerShard <= upperShard)
+           while(lowerShard <= upperShard) {
                shards.add(String.valueOf(lowerShard++));
+           }
 
         } else {
-            while(lowerShard <= upperEndpoint(lowerCal))
+            while(lowerShard <= upperEndpoint(lowerCal)) {
                 shards.add(String.valueOf(lowerShard++));
+            }
 
             int shard = range.lowerEndpoint();
-            while(shard <= upperShard)
+            while(shard <= upperShard) {
                 shards.add(String.valueOf(shard++));
+            }
         }
 
         return shards;

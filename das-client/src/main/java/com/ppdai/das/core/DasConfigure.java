@@ -87,9 +87,10 @@ public class DasConfigure {
     }
 
     public DatabaseSet getDatabaseSet(String logicDbName) {
-        if (!databaseSets.containsKey(logicDbName))
+        if (!databaseSets.containsKey(logicDbName)) {
             throw new IllegalArgumentException("Can not find definition for Database Set " + logicDbName
                     + ". Please check spelling or define it in Dal.config");
+        }
 
         return databaseSets.get(logicDbName);
     }
@@ -104,12 +105,13 @@ public class DasConfigure {
                 } catch (Throwable e) {
                     e.printStackTrace();
                 } finally {
-                    if (conn != null)
+                    if (conn != null) {
                         try {
                             conn.close();
                         } catch (Throwable e) {
                             e.printStackTrace();
                         }
+                    }
                 }
             }
         }

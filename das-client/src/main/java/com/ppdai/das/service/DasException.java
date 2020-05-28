@@ -54,7 +54,9 @@ public class DasException extends org.apache.thrift.TException implements org.ap
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -230,35 +232,43 @@ public class DasException extends org.apache.thrift.TException implements org.ap
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasException)
-      return this.equals((DasException)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasException) {
+        return this.equals((DasException)that);
+    }
     return false;
   }
 
   public boolean equals(DasException that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_code = true && this.isSetCode();
     boolean that_present_code = true && that.isSetCode();
     if (this_present_code || that_present_code) {
-      if (!(this_present_code && that_present_code))
-        return false;
-      if (!this.code.equals(that.code))
-        return false;
+      if (!(this_present_code && that_present_code)) {
+          return false;
+      }
+      if (!this.code.equals(that.code)) {
+          return false;
+      }
     }
 
     boolean this_present_message = true && this.isSetMessage();
     boolean that_present_message = true && that.isSetMessage();
     if (this_present_message || that_present_message) {
-      if (!(this_present_message && that_present_message))
-        return false;
-      if (!this.message.equals(that.message))
-        return false;
+      if (!(this_present_message && that_present_message)) {
+          return false;
+      }
+      if (!this.message.equals(that.message)) {
+          return false;
+      }
     }
 
     return true;
@@ -269,12 +279,14 @@ public class DasException extends org.apache.thrift.TException implements org.ap
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetCode()) ? 131071 : 524287);
-    if (isSetCode())
-      hashCode = hashCode * 8191 + code.hashCode();
+    if (isSetCode()) {
+        hashCode = hashCode * 8191 + code.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetMessage()) ? 131071 : 524287);
-    if (isSetMessage())
-      hashCode = hashCode * 8191 + message.hashCode();
+    if (isSetMessage()) {
+        hashCode = hashCode * 8191 + message.hashCode();
+    }
 
     return hashCode;
   }
@@ -335,7 +347,9 @@ public class DasException extends org.apache.thrift.TException implements org.ap
       sb.append(this.code);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("message:");
     if (this.message == null) {
       sb.append("null");

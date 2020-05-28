@@ -27,8 +27,9 @@ public class DasAnnotationValidator implements BeanPostProcessor {
 
         while(targetClass.getName().contains(CGLIB_SIGNATURE)) {
             for(Class interf: targetClass.getInterfaces()) {
-                if(interf == TransactionalIntercepted.class)
+                if(interf == TransactionalIntercepted.class) {
                     return bean;
+                }
             }
 
             targetClass = targetClass.getSuperclass();

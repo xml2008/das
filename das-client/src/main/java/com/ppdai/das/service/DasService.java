@@ -921,7 +921,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -1051,26 +1053,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof execute_args)
-        return this.equals((execute_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof execute_args) {
+          return this.equals((execute_args)that);
+      }
       return false;
     }
 
     public boolean equals(execute_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_request = true && this.isSetRequest();
       boolean that_present_request = true && that.isSetRequest();
       if (this_present_request || that_present_request) {
-        if (!(this_present_request && that_present_request))
-          return false;
-        if (!this.request.equals(that.request))
-          return false;
+        if (!(this_present_request && that_present_request)) {
+            return false;
+        }
+        if (!this.request.equals(that.request)) {
+            return false;
+        }
       }
 
       return true;
@@ -1081,8 +1089,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetRequest()) ? 131071 : 524287);
-      if (isSetRequest())
-        hashCode = hashCode * 8191 + request.hashCode();
+      if (isSetRequest()) {
+          hashCode = hashCode * 8191 + request.hashCode();
+      }
 
       return hashCode;
     }
@@ -1298,7 +1307,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -1474,35 +1485,43 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof execute_result)
-        return this.equals((execute_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof execute_result) {
+          return this.equals((execute_result)that);
+      }
       return false;
     }
 
     public boolean equals(execute_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_success = true && this.isSetSuccess();
       boolean that_present_success = true && that.isSetSuccess();
       if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
+        if (!(this_present_success && that_present_success)) {
+            return false;
+        }
+        if (!this.success.equals(that.success)) {
+            return false;
+        }
       }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -1513,12 +1532,14 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
+      if (isSetSuccess()) {
+          hashCode = hashCode * 8191 + success.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -1579,7 +1600,9 @@ public class DasService {
         sb.append(this.success);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("e:");
       if (this.e == null) {
         sb.append("null");
@@ -1782,7 +1805,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -2004,44 +2029,54 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof start_args)
-        return this.equals((start_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof start_args) {
+          return this.equals((start_args)that);
+      }
       return false;
     }
 
     public boolean equals(start_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_appId = true && this.isSetAppId();
       boolean that_present_appId = true && that.isSetAppId();
       if (this_present_appId || that_present_appId) {
-        if (!(this_present_appId && that_present_appId))
-          return false;
-        if (!this.appId.equals(that.appId))
-          return false;
+        if (!(this_present_appId && that_present_appId)) {
+            return false;
+        }
+        if (!this.appId.equals(that.appId)) {
+            return false;
+        }
       }
 
       boolean this_present_database = true && this.isSetDatabase();
       boolean that_present_database = true && that.isSetDatabase();
       if (this_present_database || that_present_database) {
-        if (!(this_present_database && that_present_database))
-          return false;
-        if (!this.database.equals(that.database))
-          return false;
+        if (!(this_present_database && that_present_database)) {
+            return false;
+        }
+        if (!this.database.equals(that.database)) {
+            return false;
+        }
       }
 
       boolean this_present_hints = true && this.isSetHints();
       boolean that_present_hints = true && that.isSetHints();
       if (this_present_hints || that_present_hints) {
-        if (!(this_present_hints && that_present_hints))
-          return false;
-        if (!this.hints.equals(that.hints))
-          return false;
+        if (!(this_present_hints && that_present_hints)) {
+            return false;
+        }
+        if (!this.hints.equals(that.hints)) {
+            return false;
+        }
       }
 
       return true;
@@ -2052,16 +2087,19 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetAppId()) ? 131071 : 524287);
-      if (isSetAppId())
-        hashCode = hashCode * 8191 + appId.hashCode();
+      if (isSetAppId()) {
+          hashCode = hashCode * 8191 + appId.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetDatabase()) ? 131071 : 524287);
-      if (isSetDatabase())
-        hashCode = hashCode * 8191 + database.hashCode();
+      if (isSetDatabase()) {
+          hashCode = hashCode * 8191 + database.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetHints()) ? 131071 : 524287);
-      if (isSetHints())
-        hashCode = hashCode * 8191 + hints.hashCode();
+      if (isSetHints()) {
+          hashCode = hashCode * 8191 + hints.hashCode();
+      }
 
       return hashCode;
     }
@@ -2132,7 +2170,9 @@ public class DasService {
         sb.append(this.appId);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("database:");
       if (this.database == null) {
         sb.append("null");
@@ -2140,7 +2180,9 @@ public class DasService {
         sb.append(this.database);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("hints:");
       if (this.hints == null) {
         sb.append("null");
@@ -2359,7 +2401,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -2535,35 +2579,43 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof start_result)
-        return this.equals((start_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof start_result) {
+          return this.equals((start_result)that);
+      }
       return false;
     }
 
     public boolean equals(start_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_success = true && this.isSetSuccess();
       boolean that_present_success = true && that.isSetSuccess();
       if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
+        if (!(this_present_success && that_present_success)) {
+            return false;
+        }
+        if (!this.success.equals(that.success)) {
+            return false;
+        }
       }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -2574,12 +2626,14 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
+      if (isSetSuccess()) {
+          hashCode = hashCode * 8191 + success.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -2640,7 +2694,9 @@ public class DasService {
         sb.append(this.success);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("e:");
       if (this.e == null) {
         sb.append("null");
@@ -2833,7 +2889,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -2963,26 +3021,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof commit_args)
-        return this.equals((commit_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof commit_args) {
+          return this.equals((commit_args)that);
+      }
       return false;
     }
 
     public boolean equals(commit_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_tranId = true && this.isSetTranId();
       boolean that_present_tranId = true && that.isSetTranId();
       if (this_present_tranId || that_present_tranId) {
-        if (!(this_present_tranId && that_present_tranId))
-          return false;
-        if (!this.tranId.equals(that.tranId))
-          return false;
+        if (!(this_present_tranId && that_present_tranId)) {
+            return false;
+        }
+        if (!this.tranId.equals(that.tranId)) {
+            return false;
+        }
       }
 
       return true;
@@ -2993,8 +3057,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetTranId()) ? 131071 : 524287);
-      if (isSetTranId())
-        hashCode = hashCode * 8191 + tranId.hashCode();
+      if (isSetTranId()) {
+          hashCode = hashCode * 8191 + tranId.hashCode();
+      }
 
       return hashCode;
     }
@@ -3205,7 +3270,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -3335,26 +3402,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof commit_result)
-        return this.equals((commit_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof commit_result) {
+          return this.equals((commit_result)that);
+      }
       return false;
     }
 
     public boolean equals(commit_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -3365,8 +3438,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -3574,7 +3648,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -3704,26 +3780,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof rollback_args)
-        return this.equals((rollback_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof rollback_args) {
+          return this.equals((rollback_args)that);
+      }
       return false;
     }
 
     public boolean equals(rollback_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_tranId = true && this.isSetTranId();
       boolean that_present_tranId = true && that.isSetTranId();
       if (this_present_tranId || that_present_tranId) {
-        if (!(this_present_tranId && that_present_tranId))
-          return false;
-        if (!this.tranId.equals(that.tranId))
-          return false;
+        if (!(this_present_tranId && that_present_tranId)) {
+            return false;
+        }
+        if (!this.tranId.equals(that.tranId)) {
+            return false;
+        }
       }
 
       return true;
@@ -3734,8 +3816,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetTranId()) ? 131071 : 524287);
-      if (isSetTranId())
-        hashCode = hashCode * 8191 + tranId.hashCode();
+      if (isSetTranId()) {
+          hashCode = hashCode * 8191 + tranId.hashCode();
+      }
 
       return hashCode;
     }
@@ -3946,7 +4029,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -4076,26 +4161,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof rollback_result)
-        return this.equals((rollback_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof rollback_result) {
+          return this.equals((rollback_result)that);
+      }
       return false;
     }
 
     public boolean equals(rollback_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -4106,8 +4197,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -4315,7 +4407,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -4445,26 +4539,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof check_args)
-        return this.equals((check_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof check_args) {
+          return this.equals((check_args)that);
+      }
       return false;
     }
 
     public boolean equals(check_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_request = true && this.isSetRequest();
       boolean that_present_request = true && that.isSetRequest();
       if (this_present_request || that_present_request) {
-        if (!(this_present_request && that_present_request))
-          return false;
-        if (!this.request.equals(that.request))
-          return false;
+        if (!(this_present_request && that_present_request)) {
+            return false;
+        }
+        if (!this.request.equals(that.request)) {
+            return false;
+        }
       }
 
       return true;
@@ -4475,8 +4575,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetRequest()) ? 131071 : 524287);
-      if (isSetRequest())
-        hashCode = hashCode * 8191 + request.hashCode();
+      if (isSetRequest()) {
+          hashCode = hashCode * 8191 + request.hashCode();
+      }
 
       return hashCode;
     }
@@ -4692,7 +4793,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -4868,35 +4971,43 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof check_result)
-        return this.equals((check_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof check_result) {
+          return this.equals((check_result)that);
+      }
       return false;
     }
 
     public boolean equals(check_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_success = true && this.isSetSuccess();
       boolean that_present_success = true && that.isSetSuccess();
       if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
+        if (!(this_present_success && that_present_success)) {
+            return false;
+        }
+        if (!this.success.equals(that.success)) {
+            return false;
+        }
       }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -4907,12 +5018,14 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
+      if (isSetSuccess()) {
+          hashCode = hashCode * 8191 + success.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -4973,7 +5086,9 @@ public class DasService {
         sb.append(this.success);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("e:");
       if (this.e == null) {
         sb.append("null");

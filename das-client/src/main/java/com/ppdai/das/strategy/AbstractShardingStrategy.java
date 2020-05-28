@@ -54,15 +54,17 @@ public abstract class AbstractShardingStrategy implements ShardingStrategy {
         // names are separated by ','
         String[] names = value.split(",");
         Set<String> nameSet = new HashSet<>();
-        for(int i = 0; i < names.length; i++)
+        for(int i = 0; i < names.length; i++) {
             nameSet.add(names[i].toLowerCase().trim());
+        }
         return nameSet;
     }
     
     protected void setShardedTables(Set<String> shardedTables) {
         this.shardedTables = new HashSet<>();
-        for(String shard: shardedTables)
+        for(String shard: shardedTables) {
             this.shardedTables.add(shard.toLowerCase());
+        }
     }
 
     protected void setSeparator(String separator) {
@@ -79,8 +81,9 @@ public abstract class AbstractShardingStrategy implements ShardingStrategy {
 
     protected void setAllTableShards(Set<String> allTableShards) {
         Objects.requireNonNull(allTableShards);
-        if(allTableShards.isEmpty())
+        if(allTableShards.isEmpty()) {
             throw new IllegalArgumentException("Table shards should not be empty");
+        }
         
         this.allTableShards = new HashSet<>(allTableShards);
     }
@@ -117,8 +120,9 @@ public abstract class AbstractShardingStrategy implements ShardingStrategy {
      * @return
      */
     protected Set<String> toSet(String id) {
-        if(id == null)
+        if(id == null) {
             return Collections.emptySet();
+        }
 
         Set<String> shards = new HashSet<>();
         shards.add(id);

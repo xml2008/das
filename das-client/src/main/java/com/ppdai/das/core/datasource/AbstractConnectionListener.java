@@ -40,8 +40,9 @@ public abstract class AbstractConnectionListener implements ConnectionListener {
 
     @Override
     public void onAbandonConnection(String poolDesc, Connection connection) {
-        if (connection != null)
+        if (connection != null) {
             doOnAbandonConnection(poolDesc, connection);
+        }
     }
 
     protected void doOnAbandonConnection(String poolDesc, Connection connection) {
@@ -79,14 +80,16 @@ public abstract class AbstractConnectionListener implements ConnectionListener {
     }
 
     private void putConnectionUrlToCache(Connection connection) {
-        if (connection == null)
+        if (connection == null) {
             return;
+        }
 
         try {
             String connectionId = connection.toString();
             String url = simpleUrl(connection.getMetaData().getURL());
-            if (url == null || url.isEmpty())
+            if (url == null || url.isEmpty()) {
                 return;
+            }
 
             connectionUrlCache.put(connectionId, url);
             LOGGER.info(String.format("%s put to url cache.", connectionId));
@@ -95,8 +98,9 @@ public abstract class AbstractConnectionListener implements ConnectionListener {
     }
 
     private void removeConnectionUrlFromCache(Connection connection) {
-        if (connection == null)
+        if (connection == null) {
             return;
+        }
 
         try {
             String connectionId = connection.toString();
@@ -107,8 +111,9 @@ public abstract class AbstractConnectionListener implements ConnectionListener {
     }
 
     private String getConnectionUrlFromCache(Connection connection) {
-        if (connection == null)
+        if (connection == null) {
             return "null";
+        }
 
         String connectionId = connection.toString();
         return connectionUrlCache.get(connectionId);

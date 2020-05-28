@@ -45,16 +45,19 @@ public class PPDaiDalMapper<T> implements DalRowMapper<T>, CustomizableMapper<T>
             T instance = this.clazz.newInstance();
             for (int i = 0; i < columnNames.length; i++) {
                 Field field = fieldsMap.get(columnNames[i]);
-                if (field == null)
-                    if (ignorMissingFields)
+                if (field == null) {
+                    if (ignorMissingFields) {
                         continue;
-                    else
+                    } else {
                         throw new DasException(ErrorCode.FieldNotExists, clazz.getName(), columnNames[i]);
+                    }
+                }
                 setValue(field, instance, rs, i);
             }
 
-            if (instance instanceof UpdatableEntity)
+            if (instance instanceof UpdatableEntity) {
                 ((UpdatableEntity) instance).reset();
+            }
 
             return instance;
         } catch (Throwable e) {
@@ -152,8 +155,9 @@ public class PPDaiDalMapper<T> implements DalRowMapper<T>, CustomizableMapper<T>
         // User user defined columns if it is partial query case
         this.columnNames = hints.is(HintEnum.partialQuery) ? hints.getPartialQueryColumns() : rawMapper.columnNames;
 
-        if (hints.is(HintEnum.allowPartial) == false)
+        if (hints.is(HintEnum.allowPartial) == false) {
             return;
+        }
 
         Set<String> preDefinedColumns = toSet(columnNames);
 
@@ -168,8 +172,9 @@ public class PPDaiDalMapper<T> implements DalRowMapper<T>, CustomizableMapper<T>
         }
 
         // If what user specifies is a subset of actual result set columns set
-        if (resetSetColumns.containsAll(preDefinedColumns))
+        if (resetSetColumns.containsAll(preDefinedColumns)) {
             return;
+        }
 
         // Get the common set of both
         preDefinedColumns.retainAll(resetSetColumns);
@@ -178,8 +183,9 @@ public class PPDaiDalMapper<T> implements DalRowMapper<T>, CustomizableMapper<T>
 
     private Set<String> toSet(String[] values) {
         Set<String> s = new HashSet<>();
-        for (String v : values)
+        for (String v : values) {
             s.add(v);
+        }
         return s;
     }
 }

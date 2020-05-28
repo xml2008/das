@@ -22,9 +22,11 @@ public class DasTransactionInterceptor implements MethodInterceptor {
     public Object intercept(final Object obj, final Method method, final Object[] args, final MethodProxy proxy) throws Throwable {
         Hints hints = null;
 
-        for(Object o: args)
-            if(o instanceof Hints)
-                hints = (Hints)o;
+        for(Object o: args) {
+            if(o instanceof Hints) {
+                hints = (Hints) o;
+            }
+        }
 
         Annotation[][] paraAnnArrays = method.getParameterAnnotations();
         int shardParaIndex = -1;
@@ -48,8 +50,9 @@ public class DasTransactionInterceptor implements MethodInterceptor {
 
         if(shardParaIndex != -1) {
             Object shard = args[shardParaIndex];
-            if(shard != null)
+            if(shard != null) {
                 hints.inShard(shard.toString());
+            }
         }
         if(defaultShardParaIndex != -1) {
             Object shard = args[defaultShardParaIndex];
@@ -80,8 +83,9 @@ public class DasTransactionInterceptor implements MethodInterceptor {
 
     private String getLogicDbName(Method method) {
         DasTransactional tran = method.getAnnotation(DasTransactional.class);
-        if(tran != null)
+        if(tran != null) {
             return tran.logicDbName();
+        }
 
         return method.getAnnotation(DasTransactional.class).logicDbName();
     }

@@ -79,7 +79,9 @@ public class ColumnMeta implements org.apache.thrift.TBase<ColumnMeta, ColumnMet
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -481,80 +483,98 @@ public class ColumnMeta implements org.apache.thrift.TBase<ColumnMeta, ColumnMet
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof ColumnMeta)
-      return this.equals((ColumnMeta)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof ColumnMeta) {
+        return this.equals((ColumnMeta)that);
+    }
     return false;
   }
 
   public boolean equals(ColumnMeta that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_name = true && this.isSetName();
     boolean that_present_name = true && that.isSetName();
     if (this_present_name || that_present_name) {
-      if (!(this_present_name && that_present_name))
-        return false;
-      if (!this.name.equals(that.name))
-        return false;
+      if (!(this_present_name && that_present_name)) {
+          return false;
+      }
+      if (!this.name.equals(that.name)) {
+          return false;
+      }
     }
 
     boolean this_present_type = true && this.isSetType();
     boolean that_present_type = true && that.isSetType();
     if (this_present_type || that_present_type) {
-      if (!(this_present_type && that_present_type))
-        return false;
-      if (!this.type.equals(that.type))
-        return false;
+      if (!(this_present_type && that_present_type)) {
+          return false;
+      }
+      if (!this.type.equals(that.type)) {
+          return false;
+      }
     }
 
     boolean this_present_autoIncremental = true;
     boolean that_present_autoIncremental = true;
     if (this_present_autoIncremental || that_present_autoIncremental) {
-      if (!(this_present_autoIncremental && that_present_autoIncremental))
-        return false;
-      if (this.autoIncremental != that.autoIncremental)
-        return false;
+      if (!(this_present_autoIncremental && that_present_autoIncremental)) {
+          return false;
+      }
+      if (this.autoIncremental != that.autoIncremental) {
+          return false;
+      }
     }
 
     boolean this_present_primaryKey = true;
     boolean that_present_primaryKey = true;
     if (this_present_primaryKey || that_present_primaryKey) {
-      if (!(this_present_primaryKey && that_present_primaryKey))
-        return false;
-      if (this.primaryKey != that.primaryKey)
-        return false;
+      if (!(this_present_primaryKey && that_present_primaryKey)) {
+          return false;
+      }
+      if (this.primaryKey != that.primaryKey) {
+          return false;
+      }
     }
 
     boolean this_present_insertable = true;
     boolean that_present_insertable = true;
     if (this_present_insertable || that_present_insertable) {
-      if (!(this_present_insertable && that_present_insertable))
-        return false;
-      if (this.insertable != that.insertable)
-        return false;
+      if (!(this_present_insertable && that_present_insertable)) {
+          return false;
+      }
+      if (this.insertable != that.insertable) {
+          return false;
+      }
     }
 
     boolean this_present_updatable = true;
     boolean that_present_updatable = true;
     if (this_present_updatable || that_present_updatable) {
-      if (!(this_present_updatable && that_present_updatable))
-        return false;
-      if (this.updatable != that.updatable)
-        return false;
+      if (!(this_present_updatable && that_present_updatable)) {
+          return false;
+      }
+      if (this.updatable != that.updatable) {
+          return false;
+      }
     }
 
     boolean this_present_version = true;
     boolean that_present_version = true;
     if (this_present_version || that_present_version) {
-      if (!(this_present_version && that_present_version))
-        return false;
-      if (this.version != that.version)
-        return false;
+      if (!(this_present_version && that_present_version)) {
+          return false;
+      }
+      if (this.version != that.version) {
+          return false;
+      }
     }
 
     return true;
@@ -565,12 +585,14 @@ public class ColumnMeta implements org.apache.thrift.TBase<ColumnMeta, ColumnMet
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetName()) ? 131071 : 524287);
-    if (isSetName())
-      hashCode = hashCode * 8191 + name.hashCode();
+    if (isSetName()) {
+        hashCode = hashCode * 8191 + name.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetType()) ? 131071 : 524287);
-    if (isSetType())
-      hashCode = hashCode * 8191 + type.hashCode();
+    if (isSetType()) {
+        hashCode = hashCode * 8191 + type.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((autoIncremental) ? 131071 : 524287);
 
@@ -692,7 +714,9 @@ public class ColumnMeta implements org.apache.thrift.TBase<ColumnMeta, ColumnMet
     }
     first = false;
     if (isSetType()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("type:");
       if (this.type == null) {
         sb.append("null");
@@ -701,23 +725,33 @@ public class ColumnMeta implements org.apache.thrift.TBase<ColumnMeta, ColumnMet
       }
       first = false;
     }
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("autoIncremental:");
     sb.append(this.autoIncremental);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("primaryKey:");
     sb.append(this.primaryKey);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("insertable:");
     sb.append(this.insertable);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("updatable:");
     sb.append(this.updatable);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("version:");
     sb.append(this.version);
     first = false;

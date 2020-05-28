@@ -50,8 +50,9 @@ public abstract class AbstractConditionStrategy extends AbstractShardingStrategy
             setShardByTable(true);
         }
 
-        if(isShardByDb() == false && isShardByTable() == false)
+        if(isShardByDb() == false && isShardByTable() == false) {
             throw new IllegalArgumentException("Property " + COLUMNS + " or " + TABLE_COLUMNS + " is required for the strategy");
+        }
     }
 
     protected boolean isDbShardingRelated(ConditionContext ctx) {
@@ -84,10 +85,11 @@ public abstract class AbstractConditionStrategy extends AbstractShardingStrategy
         
         for(Condition condition: conditions.getConditions()) {
             Set<String> range;
-            if(condition instanceof ConditionList)
+            if(condition instanceof ConditionList) {
                 range = locateShards(isRelated, locator, shardingContext, (ConditionList)condition);
-            else
+            } else {
                 range = locateShards(isRelated, locator, shardingContext, (ColumnCondition)condition);
+            }
 
             if(!allShards.containsAll(range)) {
                 range.removeAll(allShards);
@@ -97,13 +99,15 @@ public abstract class AbstractConditionStrategy extends AbstractShardingStrategy
             if(conditions.isIntersected()) {
                 shards.retainAll(range);
 
-                if(shards.isEmpty())
+                if(shards.isEmpty()) {
                     break;
+                }
             }else {
                 shards.addAll(range);
 
-                if(allShards.size() == shards.size())
+                if(allShards.size() == shards.size()) {
                     break;
+                }
             }
         }
         
@@ -113,14 +117,17 @@ public abstract class AbstractConditionStrategy extends AbstractShardingStrategy
     private Set<String> locateShards(Predicate<ConditionContext> isRelated, Function<ConditionContext, Set<String>> locator, ShardingContext shardingContext, ColumnCondition condition) {
         ConditionContext context = shardingContext.create(condition);
 
-        if(context.getValue() instanceof AbstractColumn)
+        if(context.getValue() instanceof AbstractColumn) {
             return shardingContext.getAllShards();
+        }
 
-        if(context.getOperator() == OperatorEnum.UN_DEFINED)
+        if(context.getOperator() == OperatorEnum.UN_DEFINED) {
             return shardingContext.getAllShards();
+        }
 
-        if(!isRelated.test(context))
+        if(!isRelated.test(context)) {
             return shardingContext.getAllShards();
+        }
         
         return locator.apply(context);
     }

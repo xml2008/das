@@ -24,8 +24,9 @@ public class MultipleResultMerger implements ResultMerger<List<?>> {
 	@Override
 	public List merge() throws SQLException {
 		List result = new ArrayList<>();
-		for(ResultMerger merger: mergers)
-			result.add(merger.merge());
+		for(ResultMerger merger: mergers) {
+            result.add(merger.merge());
+        }
 		return result;
 	}
 

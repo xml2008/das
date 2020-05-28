@@ -132,18 +132,22 @@ public enum DatabaseCategory {
 	public static final int SQL_SERVER_TYPE_TVP = -1000;
 
 	public static DatabaseCategory matchWith(String provider) {
-		if(provider == null || provider.trim().length() == 0)
-			throw new RuntimeException("The provider value can not be NULL or empty!");
+		if(provider == null || provider.trim().length() == 0) {
+            throw new RuntimeException("The provider value can not be NULL or empty!");
+        }
 
 		provider = provider.trim();
-		if(provider.equalsIgnoreCase(SQL_PROVIDER))
-			return DatabaseCategory.SqlServer;
+		if(provider.equalsIgnoreCase(SQL_PROVIDER)) {
+            return DatabaseCategory.SqlServer;
+        }
 
-		if(provider.equalsIgnoreCase(MYSQL_PROVIDER))
-			return DatabaseCategory.MySql;
+		if(provider.equalsIgnoreCase(MYSQL_PROVIDER)) {
+            return DatabaseCategory.MySql;
+        }
 
-		if(provider.equalsIgnoreCase(ORACLE_PROVIDER))
-			return DatabaseCategory.Oracle;
+		if(provider.equalsIgnoreCase(ORACLE_PROVIDER)) {
+            return DatabaseCategory.Oracle;
+        }
 
 		throw new RuntimeException("The provider: " + provider + " can not be recoganized");
 	}
@@ -164,8 +168,9 @@ public enum DatabaseCategory {
 	}
 
 	public boolean isDisconnectionError(String sqlState) {
-		if (sqlState == null)
-			return false;
+		if (sqlState == null) {
+            return false;
+        }
 
 		switch (this) {
 			case MySql:
@@ -246,8 +251,9 @@ public enum DatabaseCategory {
 
 	private Set<Integer> parseErrorCodes(int[] codes){
 		Set<Integer> temp = new TreeSet<Integer>();
-		for(int value: codes)
-			temp.add(value);
+		for(int value: codes) {
+            temp.add(value);
+        }
 
 		return temp;
 	}

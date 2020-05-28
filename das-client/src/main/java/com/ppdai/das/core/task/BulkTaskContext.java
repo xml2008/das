@@ -34,8 +34,9 @@ public class BulkTaskContext<T> {
 
 	public BulkTaskContext(List<T> rawPojos) {
 		this.rawPojos = rawPojos;
-		if(rawPojos != null && rawPojos.size() > 0)
-			isUpdatableEntity = rawPojos.get(0) instanceof UpdatableEntity;
+		if(rawPojos != null && rawPojos.size() > 0) {
+            isUpdatableEntity = rawPojos.get(0) instanceof UpdatableEntity;
+        }
 	}
 
 	public boolean isUpdatableEntity() {

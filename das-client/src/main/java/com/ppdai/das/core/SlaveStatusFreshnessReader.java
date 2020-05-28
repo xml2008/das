@@ -31,8 +31,9 @@ public class SlaveStatusFreshnessReader implements FreshnessReader {
         }
 
         Map<String, ?> result = DasClientFactory.getClient(logicDbName).queryObjectNullable(sqlBuilder.intoMap());
-        if(result != null)
+        if(result != null) {
             return Integer.parseInt(result.get(selectField).toString());
+        }
 
         return INVALID;
     }

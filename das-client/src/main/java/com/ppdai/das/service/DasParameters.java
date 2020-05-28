@@ -49,7 +49,9 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -200,26 +202,32 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasParameters)
-      return this.equals((DasParameters)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasParameters) {
+        return this.equals((DasParameters)that);
+    }
     return false;
   }
 
   public boolean equals(DasParameters that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_parameters = true && this.isSetParameters();
     boolean that_present_parameters = true && that.isSetParameters();
     if (this_present_parameters || that_present_parameters) {
-      if (!(this_present_parameters && that_present_parameters))
-        return false;
-      if (!this.parameters.equals(that.parameters))
-        return false;
+      if (!(this_present_parameters && that_present_parameters)) {
+          return false;
+      }
+      if (!this.parameters.equals(that.parameters)) {
+          return false;
+      }
     }
 
     return true;
@@ -230,8 +238,9 @@ public class DasParameters implements org.apache.thrift.TBase<DasParameters, Das
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetParameters()) ? 131071 : 524287);
-    if (isSetParameters())
-      hashCode = hashCode * 8191 + parameters.hashCode();
+    if (isSetParameters()) {
+        hashCode = hashCode * 8191 + parameters.hashCode();
+    }
 
     return hashCode;
   }

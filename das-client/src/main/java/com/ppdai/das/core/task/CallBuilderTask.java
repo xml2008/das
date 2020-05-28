@@ -35,8 +35,9 @@ public class CallBuilderTask implements SqlBuilderTask<Object>{
 
     private void populateOutput(List<Parameter> ctripParameters, List<Parameter> parameters) {
         for (Parameter p : parameters) {
-            if (p.getDirection() == ParameterDirection.Input)
+            if (p.getDirection() == ParameterDirection.Input) {
                 continue;
+            }
 
             if (p.getDirection() == ParameterDirection.Output ||
                     p.getDirection() == ParameterDirection.InputOutput) {
@@ -47,12 +48,14 @@ public class CallBuilderTask implements SqlBuilderTask<Object>{
     }
 
     private Parameter get(List<Parameter> parameters, String name, ParameterDirection direction) {
-        if(name == null)
+        if(name == null) {
             return null;
+        }
 
         for(Parameter parameter: parameters) {
-            if(parameter.getName() != null && parameter.getName().equalsIgnoreCase(name) && direction == parameter.getDirection())
+            if(parameter.getName() != null && parameter.getName().equalsIgnoreCase(name) && direction == parameter.getDirection()) {
                 return parameter;
+            }
         }
         return null;
     }

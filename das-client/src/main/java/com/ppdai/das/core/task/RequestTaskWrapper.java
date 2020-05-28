@@ -39,8 +39,9 @@ public class RequestTaskWrapper<T> implements Callable<T> {
 
         logger.endTask(logContext, shard, error);
 
-        if(error != null)
+        if(error != null) {
             throw DasException.wrap(error);
+        }
 
         return result;
     }

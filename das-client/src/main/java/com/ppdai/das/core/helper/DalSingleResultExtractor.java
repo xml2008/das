@@ -27,8 +27,9 @@ public class DalSingleResultExtractor<T> implements DalResultSetExtractor<T>, Hi
 		
 		if(rs.next()) {
 			result = mapper.map(rs, 0);
-			if(rs.next() && requireSingle)
-				throw new DasException(ErrorCode.AssertSingle);
+			if(rs.next() && requireSingle) {
+                throw new DasException(ErrorCode.AssertSingle);
+            }
 		}
 		return result;
 	}

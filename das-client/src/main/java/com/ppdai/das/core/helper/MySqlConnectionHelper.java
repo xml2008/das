@@ -9,8 +9,9 @@ public class MySqlConnectionHelper {
     }
 
     private static boolean pingInternal(MySQLConnection connection, int timeout) {
-        if (connection == null)
+        if (connection == null) {
             return false;
+        }
 
         try {
             connection.pingInternal(false, timeout * 1000);

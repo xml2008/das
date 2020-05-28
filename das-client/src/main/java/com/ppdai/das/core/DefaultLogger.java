@@ -55,10 +55,11 @@ public class DefaultLogger extends LoggerAdapter implements DasLogger {
 	}
 	
 	private void infoOrError(final String desc, final Throwable e) {
-        if(e == null)
+        if(e == null) {
             info(desc);
-        else
+        } else {
             error(desc, e);
+        }
 
 	}
 
@@ -119,8 +120,9 @@ public class DefaultLogger extends LoggerAdapter implements DasLogger {
 	@Override
 	public void success(final LogEntry entry, final int count) {
 		recordStatementResult(entry, null);
-		if (samplingLogging && !validate(entry) )
-			return;
+		if (samplingLogging && !validate(entry) ) {
+            return;
+        }
         call(()-> recordSuccess(entry, count));
 	}
 

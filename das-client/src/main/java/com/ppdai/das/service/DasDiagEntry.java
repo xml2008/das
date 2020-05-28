@@ -59,7 +59,9 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -295,44 +297,54 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasDiagEntry)
-      return this.equals((DasDiagEntry)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasDiagEntry) {
+        return this.equals((DasDiagEntry)that);
+    }
     return false;
   }
 
   public boolean equals(DasDiagEntry that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_stage = true && this.isSetStage();
     boolean that_present_stage = true && that.isSetStage();
     if (this_present_stage || that_present_stage) {
-      if (!(this_present_stage && that_present_stage))
-        return false;
-      if (!this.stage.equals(that.stage))
-        return false;
+      if (!(this_present_stage && that_present_stage)) {
+          return false;
+      }
+      if (!this.stage.equals(that.stage)) {
+          return false;
+      }
     }
 
     boolean this_present_cost = true;
     boolean that_present_cost = true;
     if (this_present_cost || that_present_cost) {
-      if (!(this_present_cost && that_present_cost))
-        return false;
-      if (this.cost != that.cost)
-        return false;
+      if (!(this_present_cost && that_present_cost)) {
+          return false;
+      }
+      if (this.cost != that.cost) {
+          return false;
+      }
     }
 
     boolean this_present_contexts = true && this.isSetContexts();
     boolean that_present_contexts = true && that.isSetContexts();
     if (this_present_contexts || that_present_contexts) {
-      if (!(this_present_contexts && that_present_contexts))
-        return false;
-      if (!this.contexts.equals(that.contexts))
-        return false;
+      if (!(this_present_contexts && that_present_contexts)) {
+          return false;
+      }
+      if (!this.contexts.equals(that.contexts)) {
+          return false;
+      }
     }
 
     return true;
@@ -343,14 +355,16 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetStage()) ? 131071 : 524287);
-    if (isSetStage())
-      hashCode = hashCode * 8191 + stage.hashCode();
+    if (isSetStage()) {
+        hashCode = hashCode * 8191 + stage.hashCode();
+    }
 
     hashCode = hashCode * 8191 + org.apache.thrift.TBaseHelper.hashCode(cost);
 
     hashCode = hashCode * 8191 + ((isSetContexts()) ? 131071 : 524287);
-    if (isSetContexts())
-      hashCode = hashCode * 8191 + contexts.hashCode();
+    if (isSetContexts()) {
+        hashCode = hashCode * 8191 + contexts.hashCode();
+    }
 
     return hashCode;
   }
@@ -421,12 +435,16 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
       sb.append(this.stage);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("cost:");
     sb.append(this.cost);
     first = false;
     if (isSetContexts()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("contexts:");
       if (this.contexts == null) {
         sb.append("null");

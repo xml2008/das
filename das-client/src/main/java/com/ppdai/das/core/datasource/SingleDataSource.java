@@ -59,8 +59,9 @@ public class SingleDataSource implements DataSourceConfigureConstants {
     }
 
     public SingleDataSource(String name, DataSourceConfigure dataSourceConfigure) throws SQLException {
-        if (dataSourceConfigure == null)
+        if (dataSourceConfigure == null) {
             throw new SQLException("Can not find any connection configure for " + name);
+        }
 
         try {
             this.name = name;
@@ -101,15 +102,17 @@ public class SingleDataSource implements DataSourceConfigureConstants {
     private void registerDataSource() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException, InstanceNotFoundException {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName objectName = new ObjectName(JMX_TOMCAT_DATASOURCE, "type", name);
-        if(mbs.isRegistered(objectName))
+        if(mbs.isRegistered(objectName)) {
             mbs.unregisterMBean(objectName);
+        }
         DasTomcatDataSource dasTomcatDataSource = new DasTomcatDataSource((DalTomcatDataSource)dataSource);
         mbs.registerMBean(dasTomcatDataSource, objectName) ;
     }
 
     private void testConnection(org.apache.tomcat.jdbc.pool.DataSource dataSource) throws SQLException {
-        if (dataSource == null)
+        if (dataSource == null) {
             return;
+        }
 
         Connection con = null;
         try {
@@ -117,12 +120,13 @@ public class SingleDataSource implements DataSourceConfigureConstants {
         } catch (Throwable e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
-            if (con != null)
+            if (con != null) {
                 try {
                     con.close();
                 } catch (Throwable e) {
                     LOGGER.error(e.getMessage(), e);
                 }
+            }
         }
     }
 

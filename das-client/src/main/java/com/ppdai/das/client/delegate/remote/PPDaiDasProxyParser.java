@@ -52,8 +52,9 @@ public class PPDaiDasProxyParser implements DalParser<Entity> {
             this.tableMeta = tableMeta;
             types = new JDBCType[tableMeta.getColumnTypes().size()];
             int i = 0;
-            for (String t : tableMeta.getColumnTypes())
+            for (String t : tableMeta.getColumnTypes()) {
                 types[i++] = JDBCType.valueOf(t);//.getVendorTypeNumber();
+            }
         }
        /* if(tableMeta != null && !tableMeta.isMapType()*//* && tableMeta.getTableName() !=null*//*) {
             this.tableMeta = tableMeta;
@@ -70,8 +71,9 @@ public class PPDaiDasProxyParser implements DalParser<Entity> {
         this.tableMeta = tableMeta;
         types = new JDBCType[tableMeta.getColumnTypes().size()];
         int i = 0;
-        for (String t : tableMeta.getColumnTypes())
+        for (String t : tableMeta.getColumnTypes()) {
             types[i++] = JDBCType.valueOf(t);//.getVendorTypeNumber();
+        }
     }
 
     /**
@@ -93,8 +95,9 @@ public class PPDaiDasProxyParser implements DalParser<Entity> {
         List<String> partialColumns = partialColumns(columnNames, rs.getMetaData());
         Map<String, Object> values = new LinkedHashMap<>(partialColumns.size());
 
-        for (String col : partialColumns)
+        for (String col : partialColumns) {
             values.put(col, rs.getObject(col));
+        }
 
         if(values.isEmpty()){//primitive
             return new Entity().setValue(SqlBuilderSerializer.serializePrimitive(rs.getObject(1)));
@@ -159,8 +162,9 @@ public class PPDaiDasProxyParser implements DalParser<Entity> {
         String[] pkNames = getPrimaryKeyNames();
         Map<String, Object> values = entity2POJO(pojo, tableMeta, Map.class);
         Map<String, Object> pks = new LinkedHashMap<>(pkNames.length);
-        for (String pk : pkNames)
+        for (String pk : pkNames) {
             pks.put(pk, values.get(pk));
+        }
         return pks;
     }
 

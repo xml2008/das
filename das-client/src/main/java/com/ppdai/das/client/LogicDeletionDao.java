@@ -148,9 +148,11 @@ public class LogicDeletionDao<T> extends TableDao<T>{
      */
     protected final List<T> filterDeleted(List<T> entities) {
         List<T> deleted = new LinkedList<>();
-        for(int i = entities.size() -1; i >= 0; i--)
-            if(deletionSupport.isDeleted(entities.get(i)))
+        for(int i = entities.size() -1; i >= 0; i--) {
+            if(deletionSupport.isDeleted(entities.get(i))) {
                 deleted.add(entities.remove(i));
+            }
+        }
         return deleted;
     }
     
@@ -161,9 +163,11 @@ public class LogicDeletionDao<T> extends TableDao<T>{
      * @return
      */
     protected final boolean containsDeleted(List<T> entities) {
-        for(T entity: entities)
-            if(deletionSupport.isDeleted(entity))
+        for(T entity: entities) {
+            if(deletionSupport.isDeleted(entity)) {
                 return true;
+            }
+        }
         return false;
     }
     
@@ -183,8 +187,9 @@ public class LogicDeletionDao<T> extends TableDao<T>{
      * @param entity
      */
     protected final void validateInput(T entity) throws SQLException {
-        if(isDeleted(entity))
+        if(isDeleted(entity)) {
             throw new SQLException("The input recorder for update is marked as deleted!");
+        }
     }
     
     /**
@@ -193,8 +198,9 @@ public class LogicDeletionDao<T> extends TableDao<T>{
      * @param entities
      */
     protected final void validateInput(List<T> entities) throws SQLException {
-        if(containsDeleted(entities))
+        if(containsDeleted(entities)) {
             throw new SQLException("The input recorders for update is marked as deleted!");
+        }
     }
     
     protected final T processOutput(T result)  throws SQLException {
@@ -216,8 +222,9 @@ public class LogicDeletionDao<T> extends TableDao<T>{
     }
 
     protected final void setActiveFlag(List<T> entities) {
-        for(T entity: entities)
+        for(T entity: entities) {
             setActiveFlag(entity);
+        }
     }
 
     protected final void setDeletionFlag(T entity) {
@@ -225,8 +232,9 @@ public class LogicDeletionDao<T> extends TableDao<T>{
     }
 
     protected final void setDeletionFlag(List<T> entities) {
-        for(T entity: entities)
+        for(T entity: entities) {
             setDeletionFlag(entity);
+        }
     }
 
     protected final void clearDeletionFlag(T entity, Hints... hintsList) {
@@ -236,7 +244,8 @@ public class LogicDeletionDao<T> extends TableDao<T>{
     }
 
     protected final void clearDeletionFlag(List<T> entities, Hints... hints) {
-        for(T entity: entities)
+        for(T entity: entities) {
             clearDeletionFlag(entity, hints);
+        }
     }    
 }

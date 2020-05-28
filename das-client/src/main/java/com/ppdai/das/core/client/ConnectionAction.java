@@ -99,8 +99,9 @@ public abstract class ConnectionAction<T> {
 			}
 		}
 
-		if(meta != null)
-			meta.populate(entry);
+		if(meta != null) {
+            meta.populate(entry);
+        }
 
 		if(connHolder !=null) {
 			entry.setMaster(connHolder.isMaster());
@@ -119,10 +120,11 @@ public abstract class ConnectionAction<T> {
 
 		wrapSql();
 		entry.setCallString(callString);
-		if(sqls != null)
-			entry.setSqls(sqls);
-		else
-			entry.setSqls(sql);
+		if(sqls != null) {
+            entry.setSqls(sqls);
+        } else {
+            entry.setSqls(sql);
+        }
 
 		if (null != parametersList) {
 			String[] params = new String[parametersList.length];
@@ -143,8 +145,9 @@ public abstract class ConnectionAction<T> {
 			valuesSb.append(String.format("%s=%s",
 					param.getName() == null ? param.getIndex() : param.getName(),
 					param.isSensitive() ? SQLHIDDENString : param.getValue()));
-			if (++i < parameters.size())
-				valuesSb.append(",");
+			if (++i < parameters.size()) {
+                valuesSb.append(",");
+            }
 		}
 		return valuesSb.toString();
 	}
@@ -179,8 +182,9 @@ public abstract class ConnectionAction<T> {
 		this.e = e;
 
 		// When Db is markdown, there will be no connHolder
-		if(connHolder!=null)
-			connHolder.error(e);
+		if(connHolder!=null) {
+            connHolder.error(e);
+        }
 	}
 
 	public void end(Object result) throws SQLException {
@@ -254,12 +258,14 @@ public abstract class ConnectionAction<T> {
 
 	private void closeConnection() {
 		//do nothing for connection in transaction
-		if(DalTransactionManager.isInTransaction())
-			return;
+		if(DalTransactionManager.isInTransaction()) {
+            return;
+        }
 
 		// For list of nested commands, the top level action will not hold any connHolder
-		if(connHolder == null)
-			return;
+		if(connHolder == null) {
+            return;
+        }
 
 		connHolder.close();
 
@@ -268,8 +274,9 @@ public abstract class ConnectionAction<T> {
 	}
 
 	private void handleException(Throwable e) throws SQLException {
-		if(e != null)
-			throw e instanceof SQLException ? (SQLException)e : DasException.wrap(e);
+		if(e != null) {
+            throw e instanceof SQLException ? (SQLException)e : DasException.wrap(e);
+        }
 	}
 
 	private String wrapAPPID(String sql){

@@ -46,8 +46,9 @@ public class EntityMeta {
         for(int i = 0; i < columns.length; i++) {
             ColumnMeta meta = columns[i];
             String name = meta.getName();
-            if(nameSet.contains(name))
+            if(nameSet.contains(name)) {
                 throw new IllegalArgumentException("Column name " + name + " is already defined");
+            }
             
             metaMap.put(name, meta);
             columnNames[i] = name;
@@ -55,23 +56,29 @@ public class EntityMeta {
                 columnTypeList.add(meta.getType());
             }
             
-            if(meta.isAutoIncremental())
+            if(meta.isAutoIncremental()) {
                 autoInc = true;
+            }
             
-            if(meta.isPrimaryKey())
+            if(meta.isPrimaryKey()) {
                 primaryKeys.add(name);
+            }
             
-            if(meta.isInsertable())
+            if(meta.isInsertable()) {
                 insertableColumns.add(name);
+            }
             
-            if(meta.isUpdatable())
+            if(meta.isUpdatable()) {
                 updatableColumns.add(name);
+            }
             
-            if(meta.isVersion())
-                if(version == null)
+            if(meta.isVersion()) {
+                if(version == null) {
                     version = name;
-                else
+                } else {
                     throw new IllegalArgumentException("Version column should only be defined once. Please check the column definition of " + version + " and " + name);
+                }
+            }
         }
 
         primaryKeyNames = primaryKeys.toArray(new String[0]);

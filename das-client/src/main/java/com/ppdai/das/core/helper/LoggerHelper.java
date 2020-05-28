@@ -39,18 +39,21 @@ public class LoggerHelper {
 			if (chr == '\'') {
 				for (i++; i < len; i++) {
 					// 如果不等于'，continue
-					if (chrs[i] != '\'')
-						continue;
+					if (chrs[i] != '\'') {
+                        continue;
+                    }
 
 					// 循环到结尾，break
-					if (i == len - 1)
-						break;
+					if (i == len - 1) {
+                        break;
+                    }
 
 					// 如果下一字符是'，继续
-					if (chrs[i + 1] == '\'')
-						i++;
-					else
-						break;
+					if (chrs[i + 1] == '\'') {
+                        i++;
+                    } else {
+                        break;
+                    }
 				}
 				continue;
 			}
@@ -109,8 +112,9 @@ public class LoggerHelper {
 	}
 	
 	public static String getSqlTpl(LogEntry entry) {
-		if ( entry.isSensitive() )
-			return SQLHIDDENString;
+		if ( entry.isSensitive() ) {
+            return SQLHIDDENString;
+        }
 		EventEnum event = entry.getEvent();
 		
 		if(event == EventEnum.QUERY ||  event == EventEnum.UPDATE_SIMPLE ||

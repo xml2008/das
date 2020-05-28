@@ -29,8 +29,9 @@ public final class ColumnDefinition extends AbstractColumn {
     }
 
     public ColumnDefinition as(String alias) {
-        if(this.alias.isPresent())
+        if(this.alias.isPresent()) {
             throw new IllegalStateException("Alias can only be set once for this column instance: " + getColumnName());
+        }
 
         ColumnDefinition newColumn = new ColumnDefinition(table, getColumnName(), getType());
         newColumn.alias = Optional.of(alias);

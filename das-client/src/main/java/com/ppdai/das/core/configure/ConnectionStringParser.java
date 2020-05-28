@@ -40,8 +40,9 @@ public class ConnectionStringParser {
      */
     public ConnectionStringConfigure parse(String name, String connectionString) {
         DataSourceConfigure config = new DataSourceConfigure();
-        if (connectionString == null)
+        if (connectionString == null) {
             return config;
+        }
 
         String version = null;
         Matcher matcher = versionPattern.matcher(connectionString);

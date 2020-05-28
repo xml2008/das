@@ -106,8 +106,9 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
 	 * @return current builder
 	 */
     public SqlBuilder append(Object...segs) {
-	    for(Object seg: segs)
-	        add(seg);
+	    for(Object seg: segs) {
+            add(seg);
+        }
 
 	    return this;
 	}
@@ -147,10 +148,13 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
      * @return
      */
     public SqlBuilder appendWith(Text separator, Object...segs) {
-        for(Object seg: segs)
+        for(Object seg: segs) {
             append(seg, separator);
+        }
 
-        if(segs.length > 0) segments.removeLast();
+        if(segs.length > 0) {
+            segments.removeLast();
+        }
         return this;
     }
     
@@ -159,10 +163,13 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
     }
     
     public SqlBuilder appendPlaceHolder(int count) {
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) {
             append(PLACE_HOLDER, COMMA);
+        }
 
-        if(count > 0) segments.removeLast();
+        if(count > 0) {
+            segments.removeLast();
+        }
         return this;
     }
 
@@ -220,8 +227,9 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
     public static SqlBuilder insertInto(TableDefinition table, ColumnDefinition...columns) {
         String[] columnNames = new String[columns.length];
         int i = 0;
-        for(ColumnDefinition def: columns)
+        for(ColumnDefinition def: columns) {
             columnNames[i++] = def.getColumnName();
+        }
         return insertInto(table, columnNames);
     }
     
@@ -495,8 +503,9 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
             List<Segment> filtered = getFilteredSegments();
 
             for(Segment seg: filtered) {
-                if(seg instanceof ParameterDefinitionProvider)
+                if(seg instanceof ParameterDefinitionProvider) {
                     pdList.addAll(((ParameterDefinitionProvider)seg).buildDefinitions());
+                }
             }
             return pdList;
         } else {
@@ -512,8 +521,9 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
             List<Segment> filtered = getFilteredSegments();
 
             for(Segment seg: filtered) {
-                if(seg instanceof ParameterProvider)
+                if(seg instanceof ParameterProvider) {
                     params.addAll(((ParameterProvider)seg).buildParameters());
+                }
             }
         }else {
             params = builtParameters;
@@ -535,10 +545,11 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
     private SqlBuilder add(Object seg) {
         Objects.requireNonNull(seg);
         
-        if(seg instanceof Object[])
+        if(seg instanceof Object[]) {
             segments.addAll(split((Object[])seg));
-        else
+        } else {
             segments.add(normalize(seg));
+        }
 
         return this;
     }
@@ -546,10 +557,11 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
     private List<Segment> split(Object[] objs) {
         List<Segment> l = new ArrayList<>();
         for(Object obj: objs) {
-            if(obj instanceof Object[])
+            if(obj instanceof Object[]) {
                 l.addAll(split((Object[])obj));
-            else
+            } else {
                 l.add(normalize(obj));
+            }
         }
         return l;
     }

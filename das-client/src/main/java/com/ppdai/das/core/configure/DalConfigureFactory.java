@@ -50,9 +50,10 @@ public class DalConfigureFactory implements DalConfigConstants {
      */
     public static DasConfigure load() throws Exception {
         URL dalconfigUrl = dalConfigUrl == null ? getDalConfigUrl() : dalConfigUrl.toURL() ;
-        if (dalconfigUrl == null)
+        if (dalconfigUrl == null) {
             throw new IllegalStateException(
                     "Can not find " + DAS_XML + " or " + DAL_CONFIG + " to initilize dal configure");
+        }
 
         return load(dalconfigUrl);
     }
@@ -76,12 +77,13 @@ public class DalConfigureFactory implements DalConfigConstants {
             in.close();
             return def;
         } finally {
-            if (in != null)
+            if (in != null) {
                 try {
                     in.close();
                 } catch (Throwable e1) {
 
                 }
+            }
         }
     }
 
@@ -126,8 +128,9 @@ public class DalConfigureFactory implements DalConfigConstants {
 
         if (node != null) {
             Node implNode = getChildNode(node, implNodeName);
-            if (implNode != null)
+            if (implNode != null) {
                 component = (T) Class.forName(implNode.getTextContent()).newInstance();
+            }
         }
 
         component.initialize(getSettings(node));
@@ -137,16 +140,18 @@ public class DalConfigureFactory implements DalConfigConstants {
     private Map<String, String> getSettings(Node pNode) {
         Map<String, String> settings = new HashMap<>();
 
-        if (pNode == null)
+        if (pNode == null) {
             return settings;
+        }
 
         Node settingsNode = getChildNode(pNode, SETTINGS);
 
         if (settingsNode != null) {
             NodeList children = settingsNode.getChildNodes();
             for (int i = 0; i < children.getLength(); i++) {
-                if (children.item(i).getNodeType() == Node.ELEMENT_NODE)
+                if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     settings.put(children.item(i).getNodeName(), children.item(i).getTextContent().trim());
+                }
             }
         }
         return settings;
@@ -160,8 +165,9 @@ public class DalConfigureFactory implements DalConfigConstants {
         NodeList children = node.getChildNodes();
         Node found = null;
         for (int i = 0; i < children.getLength(); i++) {
-            if (!children.item(i).getNodeName().equalsIgnoreCase(name))
+            if (!children.item(i).getNodeName().equalsIgnoreCase(name)) {
                 continue;
+            }
             found = children.item(i);
             break;
         }
@@ -182,10 +188,11 @@ public class DalConfigureFactory implements DalConfigConstants {
         checkAttribte(databaseSetNode, NAME, PROVIDER, SHARD_STRATEGY, SHARDING_STRATEGY, MGR_ENABLED, MGR_RW_SPLITTING_ENABLED);
         String shardingStrategy = "";
         
-        if(hasAttribute(databaseSetNode, SHARD_STRATEGY))
+        if(hasAttribute(databaseSetNode, SHARD_STRATEGY)) {
             shardingStrategy = getAttribute(databaseSetNode, SHARD_STRATEGY);
-        else if(hasAttribute(databaseSetNode, SHARDING_STRATEGY))
-                shardingStrategy = getAttribute(databaseSetNode, SHARDING_STRATEGY);
+        } else if(hasAttribute(databaseSetNode, SHARDING_STRATEGY)) {
+            shardingStrategy = getAttribute(databaseSetNode, SHARDING_STRATEGY);
+        }
 
         shardingStrategy = shardingStrategy.trim();
         
@@ -225,8 +232,9 @@ public class DalConfigureFactory implements DalConfigConstants {
         List<Node> nodes = new ArrayList<>();
         NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
-            if (!children.item(i).getNodeName().equalsIgnoreCase(name))
+            if (!children.item(i).getNodeName().equalsIgnoreCase(name)) {
                 continue;
+            }
             nodes.add(children.item(i));
         }
         return nodes;
@@ -238,32 +246,37 @@ public class DalConfigureFactory implements DalConfigConstants {
 
     public static URL getDalConfigUrl() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null)
+        if (classLoader == null) {
             classLoader = DalConfigureFactory.class.getClassLoader();
+        }
 
         URL dalconfigUrl = classLoader.getResource(DAS_XML);
-        if (dalconfigUrl == null)
+        if (dalconfigUrl == null) {
             dalconfigUrl = classLoader.getResource(DAL_CONFIG);
+        }
 
         return dalconfigUrl;
     }
 
     private void checkAttribte(Node node, String... validNames) {
         NamedNodeMap map = node.getAttributes();
-        if(map == null)
+        if(map == null) {
             return;
+        }
         
         for(int i = 0 ; i <map.getLength(); i++) {
             String name = map.item(i).getNodeName();
             boolean found = false;
-            for(String candidate: validNames)
+            for(String candidate: validNames) {
                 if(name.equals(candidate)){
                     found = true;
                     break;
                 }
+            }
             
-            if(!found)
+            if(!found) {
                 throw new IllegalStateException("");
+            }
         }
     }
 }

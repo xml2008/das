@@ -38,12 +38,14 @@ public class TransactionServer implements DataSourceConfigureConstants {
             Set<String> ids = new HashSet<>(transactionMap.keySet());
             
             for(String id: ids) {
-                if(!transactionMap.containsKey(id))
+                if(!transactionMap.containsKey(id)) {
                     continue;
+                }
                 
                 DalTransaction trans = transactionMap.get(id);
-                if(isTimeout(trans))
+                if(isTimeout(trans)) {
                     cleanUp(id, trans);
+                }
             }
         }
         
@@ -105,8 +107,9 @@ public class TransactionServer implements DataSourceConfigureConstants {
     public void commit(String transactionId) throws SQLException {
        DalTransaction transaction = transactionMap.get(transactionId);
         
-        if(transaction == null)
+        if(transaction == null) {
             throw new SQLException("calling endTransaction with empty ConnectionCache");
+        }
 
         try {
             transaction.endTransaction(0);//always 0
@@ -119,8 +122,9 @@ public class TransactionServer implements DataSourceConfigureConstants {
         DalTransaction transaction = transactionMap.get(transactionId);
         
         // Already handled in deeper level
-        if(transaction == null)
+        if(transaction == null) {
             return;
+        }
 
         try {
             transaction.rollbackTransaction();
@@ -130,8 +134,9 @@ public class TransactionServer implements DataSourceConfigureConstants {
     }
 
     public <T> T doInTransaction(String transactionId, Callable<T> transaction) throws Exception {
-        if(transactionId == null)
+        if(transactionId == null) {
             return transaction.call();
+        }
         
         prepareTransaction(transactionId);
         try {

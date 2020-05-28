@@ -27,23 +27,27 @@ public class MeltdownHelper implements SegmentConstants {
             }
 
             if(isBracket(entry) && !isLeft(entry)){
-                if(meltDownRightBracket(filtered))
+                if(meltDownRightBracket(filtered)) {
                     continue;
+                }
             }
             
             // AND/OR
             if(isOperator(entry) && !isNot(entry)) {
-                if(meltDownAndOrOperator(filtered))
+                if(meltDownAndOrOperator(filtered)) {
                     continue;
+                }
             }
             
-            if(entry instanceof Includable && ((Includable)entry).isIncluded() == false)
+            if(entry instanceof Includable && ((Includable)entry).isIncluded() == false) {
                 continue;
+            }
             
             if(entry instanceof SqlBuilder) {
                 filtered.addAll(((SqlBuilder)entry).getFilteredSegments());
-            }else
+            }else {
                 filtered.add(entry);
+            }
         }
         
         return filtered;
@@ -65,8 +69,9 @@ public class MeltdownHelper implements SegmentConstants {
 
             sb.append(curSegment.build(context));
 
-            if(skipSpaceInsertion(curSegment, nextSegment))
+            if(skipSpaceInsertion(curSegment, nextSegment)) {
                 continue;
+            }
             
             sb.append(" ");
         }
@@ -81,36 +86,43 @@ public class MeltdownHelper implements SegmentConstants {
      * 3. next segment is right bracket or COMMA
      */
     private boolean skipSpaceInsertion(Segment curSegment, Segment nextSegment) {
-        if(!enableSmartSpaceSkipping)
+        if(!enableSmartSpaceSkipping) {
             return false;
+        }
         
-        if(isOperator(curSegment))
+        if(isOperator(curSegment)) {
             return false;
+        }
         // if after "("
-        if(isBracket(curSegment) && isLeft(curSegment))
+        if(isBracket(curSegment) && isLeft(curSegment)) {
             return true;
+        }
         
         // reach the end
-        if(nextSegment == null)
+        if(nextSegment == null) {
             return true;
+        }
 
-        if(isBracket(nextSegment) && !isLeft(nextSegment))
+        if(isBracket(nextSegment) && !isLeft(nextSegment)) {
             return true;
+        }
         
         return isComma(nextSegment);
     }
     
     private void meltDownNullValue(LinkedList<Segment> filtered) {
-        if(filtered.isEmpty())
+        if(filtered.isEmpty()) {
             return;
+        }
 
         while(!filtered.isEmpty()) {
             Segment entry = filtered.getLast();
             // Remove any leading AND/OR/NOT (NOT is both operator and segment)
             if(isOperator(entry)) {
                 filtered.removeLast();
-            }else
+            }else {
                 break;
+            }
         }
     }
 
@@ -124,8 +136,9 @@ public class MeltdownHelper implements SegmentConstants {
                 bracketCount--;
             } else if(isOperator(entry)) {// Remove any leading AND/OR/NOT (NOT is both operator and segment)
                 filtered.removeLast();
-            } else
+            } else {
                 break;
+            }
         }
         
         return bracketCount == 0? true : false;
@@ -133,14 +146,16 @@ public class MeltdownHelper implements SegmentConstants {
 
     private boolean meltDownAndOrOperator(LinkedList<Segment> filtered) {
         // If it is the first element
-        if(filtered.isEmpty())
+        if(filtered.isEmpty()) {
             return true;
+        }
 
         Segment entry = filtered.getLast();
 
         // The last one is "("
-        if(isBracket(entry))
+        if(isBracket(entry)) {
             return isLeft(entry);
+        }
             
         // AND/OR/NOT AND/OR
         if(isOperator(entry)) {
@@ -148,8 +163,9 @@ public class MeltdownHelper implements SegmentConstants {
         }
         
         // If it is expression. 
-        if(isExpression(entry))
+        if(isExpression(entry)) {
             return false;
+        }
 
         // Reach the beginning of the meltdown section
         return true;

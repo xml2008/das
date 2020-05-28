@@ -26,8 +26,9 @@ public class DalColumnMapRowMapper implements DalRowMapper<Map<String, Object>>,
 	private volatile String[] columns;
 	
 	private synchronized void initColumns(ResultSet rs) throws SQLException {
-		if(columns != null)
-			return;
+		if(columns != null) {
+            return;
+        }
 		ResultSetMetaData rsmd = rs.getMetaData();
 		
 		String[] temColumns = new String[rsmd.getColumnCount()];

@@ -68,38 +68,47 @@ public abstract class LoggerAdapter implements DasLogger {
 
 	@Override
 	public void initialize(Map<String, String> settings) {
-		if(settings == null)
-			return;
+		if(settings == null) {
+            return;
+        }
 
 		initSampling(settings);
 
-		if(settings.containsKey(SIMPLIFIED))
-			simplifyLogging = Boolean.parseBoolean(settings.get(SIMPLIFIED));
+		if(settings.containsKey(SIMPLIFIED)) {
+            simplifyLogging = Boolean.parseBoolean(settings.get(SIMPLIFIED));
+        }
 
-		if(settings.containsKey(ENCRYPT))
-			encryptLogging = Boolean.parseBoolean(settings.get(ENCRYPT));
+		if(settings.containsKey(ENCRYPT)) {
+            encryptLogging = Boolean.parseBoolean(settings.get(ENCRYPT));
+        }
 
-		if(settings.containsKey(SECRETKEY))
-			secretKey = settings.get(SECRETKEY);
+		if(settings.containsKey(SECRETKEY)) {
+            secretKey = settings.get(SECRETKEY);
+        }
 
 		initAsyncLogging(settings);
 	}
 
 	private void initSampling(Map<String, String> settings) {
-		if(settings.containsKey(SAMPLING))
-			samplingLogging = Boolean.parseBoolean(settings.get(SAMPLING));
+		if(settings.containsKey(SAMPLING)) {
+            samplingLogging = Boolean.parseBoolean(settings.get(SAMPLING));
+        }
 
-		if(settings.containsKey(SAMPLEMAXNUM))
-			sampleMaxNum = Integer.parseInt(settings.get(SAMPLEMAXNUM));
+		if(settings.containsKey(SAMPLEMAXNUM)) {
+            sampleMaxNum = Integer.parseInt(settings.get(SAMPLEMAXNUM));
+        }
 
-		if(settings.containsKey(SAMPLECLEARINTERVAL))
-			sampleClearInterval = Integer.parseInt(settings.get(SAMPLECLEARINTERVAL));
+		if(settings.containsKey(SAMPLECLEARINTERVAL)) {
+            sampleClearInterval = Integer.parseInt(settings.get(SAMPLECLEARINTERVAL));
+        }
 
-		if(settings.containsKey(SAMPLINGLOW))
-			samplingLow = Integer.parseInt(settings.get(SAMPLINGLOW)) * 60 * 1000;
+		if(settings.containsKey(SAMPLINGLOW)) {
+            samplingLow = Integer.parseInt(settings.get(SAMPLINGLOW)) * 60 * 1000;
+        }
 
-		if(settings.containsKey(SAMPLINGHIGH))
-			samplingHigh = Integer.parseInt(settings.get(SAMPLINGHIGH)) * 60 * 1000;
+		if(settings.containsKey(SAMPLINGHIGH)) {
+            samplingHigh = Integer.parseInt(settings.get(SAMPLINGHIGH)) * 60 * 1000;
+        }
 
 		if (samplingLogging) {
 			scheduler = Executors.newScheduledThreadPool(1);
@@ -114,8 +123,9 @@ public abstract class LoggerAdapter implements DasLogger {
 
 	private void clearCache() {
 		int currentCount = logEntryCache.size();
-		if (sampleMaxNum > currentCount)
-			return;
+		if (sampleMaxNum > currentCount) {
+            return;
+        }
 		isClearingCache.set(true);
 		for(Map.Entry<Integer, Long> entry : logEntryCache.entrySet()) {
 			Integer key = entry.getKey();
@@ -129,8 +139,9 @@ public abstract class LoggerAdapter implements DasLogger {
 	}
 
 	private void initAsyncLogging(Map<String, String> settings) {
-		if(settings.containsKey(ASYNCLOGGING))
-			asyncLogging = Boolean.parseBoolean(settings.get(ASYNCLOGGING));
+		if(settings.containsKey(ASYNCLOGGING)) {
+            asyncLogging = Boolean.parseBoolean(settings.get(ASYNCLOGGING));
+        }
 
 		if (settings.containsKey(CAPACITY)) {
 			executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
@@ -148,10 +159,12 @@ public abstract class LoggerAdapter implements DasLogger {
 
 	@Override
 	public void shutdown() {
-		if (executor != null)
-			executor.shutdown();
-		if (scheduler != null)
-			scheduler.shutdown();
+		if (executor != null) {
+            executor.shutdown();
+        }
+		if (scheduler != null) {
+            scheduler.shutdown();
+        }
 	}
 
 
@@ -164,17 +177,20 @@ public abstract class LoggerAdapter implements DasLogger {
 	 * @return  The log can be sent only when returning value is true
 	 */
 	protected boolean validate(LogEntry entry) {
-		if ( isClearingCache.get() )
-			return false;
+		if ( isClearingCache.get() ) {
+            return false;
+        }
 		String sqlTpl = LoggerHelper.getSqlTpl(entry);
-		if (LoggerHelper.SQLHIDDENString.equals(sqlTpl) || "".equals(sqlTpl) )
-			return true;
+		if (LoggerHelper.SQLHIDDENString.equals(sqlTpl) || "".equals(sqlTpl) ) {
+            return true;
+        }
 		int hashCode = LoggerHelper.getHashCode(sqlTpl);
 		long now = System.currentTimeMillis();
 		Long old = logEntryCache.putIfAbsent(hashCode, now);
 		if (old == null) {
-			if (logEntryCache.size() > sampleMaxNum)
-				logEntryCache.remove(hashCode);
+			if (logEntryCache.size() > sampleMaxNum) {
+                logEntryCache.remove(hashCode);
+            }
 			return true;
 		}
 		boolean userLow = useLow(entry);
@@ -190,8 +206,9 @@ public abstract class LoggerAdapter implements DasLogger {
 	private boolean useLow(LogEntry entry) {
 		String[] pramemters = entry.getPramemters();
 		//use low when have parameters, otherwise use high.
-		if (pramemters == null || pramemters.length <= 0)
-			return false;
+		if (pramemters == null || pramemters.length <= 0) {
+            return false;
+        }
 		return true;
 	}
 

@@ -16,8 +16,9 @@ public class DefaultDataSourceConfigureProvider implements DataSourceConfigurePr
     public DataSourceConfigure getDataSourceConfigure(String dbName) {
         DataSourceConfigure dataSourceConfigure =
                 DataSourceConfigureLocatorManager.getInstance().getDataSourceConfigure(dbName);
-        if (dataSourceConfigure == null)
+        if (dataSourceConfigure == null) {
             return new DataSourceConfigure(dbName);
+        }
 
         return new DataSourceConfigure(dbName, dataSourceConfigure.getProperties());
     }

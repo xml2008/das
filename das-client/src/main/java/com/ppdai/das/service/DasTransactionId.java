@@ -94,7 +94,9 @@ public class DasTransactionId implements org.apache.thrift.TBase<DasTransactionI
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -634,107 +636,131 @@ public class DasTransactionId implements org.apache.thrift.TBase<DasTransactionI
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasTransactionId)
-      return this.equals((DasTransactionId)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasTransactionId) {
+        return this.equals((DasTransactionId)that);
+    }
     return false;
   }
 
   public boolean equals(DasTransactionId that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_logicDbName = true && this.isSetLogicDbName();
     boolean that_present_logicDbName = true && that.isSetLogicDbName();
     if (this_present_logicDbName || that_present_logicDbName) {
-      if (!(this_present_logicDbName && that_present_logicDbName))
-        return false;
-      if (!this.logicDbName.equals(that.logicDbName))
-        return false;
+      if (!(this_present_logicDbName && that_present_logicDbName)) {
+          return false;
+      }
+      if (!this.logicDbName.equals(that.logicDbName)) {
+          return false;
+      }
     }
 
     boolean this_present_clientAddress = true && this.isSetClientAddress();
     boolean that_present_clientAddress = true && that.isSetClientAddress();
     if (this_present_clientAddress || that_present_clientAddress) {
-      if (!(this_present_clientAddress && that_present_clientAddress))
-        return false;
-      if (!this.clientAddress.equals(that.clientAddress))
-        return false;
+      if (!(this_present_clientAddress && that_present_clientAddress)) {
+          return false;
+      }
+      if (!this.clientAddress.equals(that.clientAddress)) {
+          return false;
+      }
     }
 
     boolean this_present_serverAddress = true && this.isSetServerAddress();
     boolean that_present_serverAddress = true && that.isSetServerAddress();
     if (this_present_serverAddress || that_present_serverAddress) {
-      if (!(this_present_serverAddress && that_present_serverAddress))
-        return false;
-      if (!this.serverAddress.equals(that.serverAddress))
-        return false;
+      if (!(this_present_serverAddress && that_present_serverAddress)) {
+          return false;
+      }
+      if (!this.serverAddress.equals(that.serverAddress)) {
+          return false;
+      }
     }
 
     boolean this_present_createTime = true;
     boolean that_present_createTime = true;
     if (this_present_createTime || that_present_createTime) {
-      if (!(this_present_createTime && that_present_createTime))
-        return false;
-      if (this.createTime != that.createTime)
-        return false;
+      if (!(this_present_createTime && that_present_createTime)) {
+          return false;
+      }
+      if (this.createTime != that.createTime) {
+          return false;
+      }
     }
 
     boolean this_present_sequenceNumber = true;
     boolean that_present_sequenceNumber = true;
     if (this_present_sequenceNumber || that_present_sequenceNumber) {
-      if (!(this_present_sequenceNumber && that_present_sequenceNumber))
-        return false;
-      if (this.sequenceNumber != that.sequenceNumber)
-        return false;
+      if (!(this_present_sequenceNumber && that_present_sequenceNumber)) {
+          return false;
+      }
+      if (this.sequenceNumber != that.sequenceNumber) {
+          return false;
+      }
     }
 
     boolean this_present_physicalDbName = true && this.isSetPhysicalDbName();
     boolean that_present_physicalDbName = true && that.isSetPhysicalDbName();
     if (this_present_physicalDbName || that_present_physicalDbName) {
-      if (!(this_present_physicalDbName && that_present_physicalDbName))
-        return false;
-      if (!this.physicalDbName.equals(that.physicalDbName))
-        return false;
+      if (!(this_present_physicalDbName && that_present_physicalDbName)) {
+          return false;
+      }
+      if (!this.physicalDbName.equals(that.physicalDbName)) {
+          return false;
+      }
     }
 
     boolean this_present_shardId = true && this.isSetShardId();
     boolean that_present_shardId = true && that.isSetShardId();
     if (this_present_shardId || that_present_shardId) {
-      if (!(this_present_shardId && that_present_shardId))
-        return false;
-      if (!this.shardId.equals(that.shardId))
-        return false;
+      if (!(this_present_shardId && that_present_shardId)) {
+          return false;
+      }
+      if (!this.shardId.equals(that.shardId)) {
+          return false;
+      }
     }
 
     boolean this_present_level = true;
     boolean that_present_level = true;
     if (this_present_level || that_present_level) {
-      if (!(this_present_level && that_present_level))
-        return false;
-      if (this.level != that.level)
-        return false;
+      if (!(this_present_level && that_present_level)) {
+          return false;
+      }
+      if (this.level != that.level) {
+          return false;
+      }
     }
 
     boolean this_present_rolledBack = true;
     boolean that_present_rolledBack = true;
     if (this_present_rolledBack || that_present_rolledBack) {
-      if (!(this_present_rolledBack && that_present_rolledBack))
-        return false;
-      if (this.rolledBack != that.rolledBack)
-        return false;
+      if (!(this_present_rolledBack && that_present_rolledBack)) {
+          return false;
+      }
+      if (this.rolledBack != that.rolledBack) {
+          return false;
+      }
     }
 
     boolean this_present_completed = true;
     boolean that_present_completed = true;
     if (this_present_completed || that_present_completed) {
-      if (!(this_present_completed && that_present_completed))
-        return false;
-      if (this.completed != that.completed)
-        return false;
+      if (!(this_present_completed && that_present_completed)) {
+          return false;
+      }
+      if (this.completed != that.completed) {
+          return false;
+      }
     }
 
     return true;
@@ -745,28 +771,33 @@ public class DasTransactionId implements org.apache.thrift.TBase<DasTransactionI
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetLogicDbName()) ? 131071 : 524287);
-    if (isSetLogicDbName())
-      hashCode = hashCode * 8191 + logicDbName.hashCode();
+    if (isSetLogicDbName()) {
+        hashCode = hashCode * 8191 + logicDbName.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetClientAddress()) ? 131071 : 524287);
-    if (isSetClientAddress())
-      hashCode = hashCode * 8191 + clientAddress.hashCode();
+    if (isSetClientAddress()) {
+        hashCode = hashCode * 8191 + clientAddress.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetServerAddress()) ? 131071 : 524287);
-    if (isSetServerAddress())
-      hashCode = hashCode * 8191 + serverAddress.hashCode();
+    if (isSetServerAddress()) {
+        hashCode = hashCode * 8191 + serverAddress.hashCode();
+    }
 
     hashCode = hashCode * 8191 + org.apache.thrift.TBaseHelper.hashCode(createTime);
 
     hashCode = hashCode * 8191 + org.apache.thrift.TBaseHelper.hashCode(sequenceNumber);
 
     hashCode = hashCode * 8191 + ((isSetPhysicalDbName()) ? 131071 : 524287);
-    if (isSetPhysicalDbName())
-      hashCode = hashCode * 8191 + physicalDbName.hashCode();
+    if (isSetPhysicalDbName()) {
+        hashCode = hashCode * 8191 + physicalDbName.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetShardId()) ? 131071 : 524287);
-    if (isSetShardId())
-      hashCode = hashCode * 8191 + shardId.hashCode();
+    if (isSetShardId()) {
+        hashCode = hashCode * 8191 + shardId.hashCode();
+    }
 
     hashCode = hashCode * 8191 + level;
 
@@ -913,7 +944,9 @@ public class DasTransactionId implements org.apache.thrift.TBase<DasTransactionI
       sb.append(this.logicDbName);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("clientAddress:");
     if (this.clientAddress == null) {
       sb.append("null");
@@ -921,7 +954,9 @@ public class DasTransactionId implements org.apache.thrift.TBase<DasTransactionI
       sb.append(this.clientAddress);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("serverAddress:");
     if (this.serverAddress == null) {
       sb.append("null");
@@ -929,15 +964,21 @@ public class DasTransactionId implements org.apache.thrift.TBase<DasTransactionI
       sb.append(this.serverAddress);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("createTime:");
     sb.append(this.createTime);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("sequenceNumber:");
     sb.append(this.sequenceNumber);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("physicalDbName:");
     if (this.physicalDbName == null) {
       sb.append("null");
@@ -946,7 +987,9 @@ public class DasTransactionId implements org.apache.thrift.TBase<DasTransactionI
     }
     first = false;
     if (isSetShardId()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("shardId:");
       if (this.shardId == null) {
         sb.append("null");
@@ -955,15 +998,21 @@ public class DasTransactionId implements org.apache.thrift.TBase<DasTransactionI
       }
       first = false;
     }
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("level:");
     sb.append(this.level);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("rolledBack:");
     sb.append(this.rolledBack);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("completed:");
     sb.append(this.completed);
     first = false;

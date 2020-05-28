@@ -23,16 +23,19 @@ public class PoolPropertiesHolder {
             new ConcurrentHashMap<>();
 
     public void setPoolProperties(PoolProperties poolProperties) {
-        if (poolProperties == null)
+        if (poolProperties == null) {
             return;
+        }
 
         String url = poolProperties.getUrl();
-        if (url == null || url.length() == 0)
+        if (url == null || url.length() == 0) {
             return;
+        }
 
         String userName = poolProperties.getUsername();
-        if (userName == null || userName.length() == 0)
+        if (userName == null || userName.length() == 0) {
             return;
+        }
 
         url = getShortString(url, SEMICOLON);
         userName = getShortString(userName, AT);
@@ -60,25 +63,30 @@ public class PoolPropertiesHolder {
     }
 
     public PoolProperties getPoolProperties(String url, String userName) {
-        if (url == null || url.length() == 0)
+        if (url == null || url.length() == 0) {
             return null;
-        if (userName == null || userName.length() == 0)
+        }
+        if (userName == null || userName.length() == 0) {
             return null;
+        }
 
         url = getShortString(url, SEMICOLON);
         userName = getShortString(userName, AT);
         ConcurrentHashMap<String, PoolProperties> map = poolPropertiesMap.get(url);
-        if (map == null)
+        if (map == null) {
             return null;
+        }
         return map.get(userName);
     }
 
     private String getShortString(String str, String separator) {
-        if (str == null || str.length() == 0)
+        if (str == null || str.length() == 0) {
             return null;
+        }
         int index = str.indexOf(separator);
-        if (index > -1)
+        if (index > -1) {
             str = str.substring(0, index);
+        }
         return str;
     }
 

@@ -204,8 +204,9 @@ public class Parameter extends ParameterDefinition implements Segment, Parameter
      * Expand in parameters if necessary. This must be executed before execution
      */
     public static void compile(List<Parameter> parameters) {
-        if(!containsInParameter(parameters))
+        if(!containsInParameter(parameters)) {
             return;
+        }
 
         //To be safe, order parameters by original index
         Collections.sort(parameters);
@@ -231,8 +232,9 @@ public class Parameter extends ParameterDefinition implements Segment, Parameter
     
     public static List<Parameter> reindex(List<Parameter> parameters) {
         int index = 1;
-        for (Parameter parameter : parameters)
+        for (Parameter parameter : parameters) {
             parameter.setIndex(index++);
+        }
         return parameters;
     }
 
@@ -241,9 +243,11 @@ public class Parameter extends ParameterDefinition implements Segment, Parameter
     }
 
     public static boolean containsInParameter(List<Parameter> parameters) {
-        for(Parameter p: parameters)
-            if(p.isInParam())
+        for(Parameter p: parameters) {
+            if(p.isInParam()) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -273,14 +277,16 @@ public class Parameter extends ParameterDefinition implements Segment, Parameter
     }
 
     public boolean isInputParameter() {
-        if(isResultsParameter())
+        if(isResultsParameter()) {
             return false;
+        }
         return direction == ParameterDirection.Input || direction == ParameterDirection.InputOutput;
     }
 
     public boolean isOutParameter() {
-        if(resultsParameter || direction == null)
+        if(resultsParameter || direction == null) {
             return false;
+        }
         return direction == ParameterDirection.Output || direction == ParameterDirection.InputOutput;
     }
 

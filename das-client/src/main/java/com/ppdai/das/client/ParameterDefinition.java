@@ -61,15 +61,17 @@ public class ParameterDefinition implements Segment, ParameterDefinitionProvider
     }
     
     public Parameter createParameter(Object value) {
-        if(isInValues())
+        if(isInValues()) {
             throw new IllegalArgumentException("To create IN parameter by definition, List<?> must be provided");
+        }
 
         return new Parameter(direction, name, type, value);
     }
     
     public Parameter createParameter(List<?> values) {
-        if(!isInValues())
+        if(!isInValues()) {
             throw new IllegalArgumentException("To create parameter from definition that is not for IN, Object value must be provided");
+        }
 
         return new Parameter(name, type, values);
     }
@@ -95,11 +97,13 @@ public class ParameterDefinition implements Segment, ParameterDefinitionProvider
      * @return
      */
     public static ParameterDefinition defineByVAR(ParameterDefinition def, AbstractColumn column, boolean isInValues) {
-        if(SegmentConstants.VAR == def)
+        if(SegmentConstants.VAR == def) {
             return builder().type(column.getType()).name(SegmentConstants.VAR.getName()).inValues(isInValues).build();
+        }
         
-        if(def.type != column.getType() || def.isInValues() != isInValues)
+        if(def.type != column.getType() || def.isInValues() != isInValues) {
             throw new IllegalArgumentException("The JDBCType of parameter definition or isInValues does not match the column type");
+        }
 
         return def;
     }
@@ -140,13 +144,15 @@ public class ParameterDefinition implements Segment, ParameterDefinitionProvider
         }
         
         public ParameterDefinition of(AbstractColumn column) {
-            if(!isNameSet())
+            if(!isNameSet()) {
                 name(column.getColumnName());
+            }
             
-            if(isTypeSet() && column.getType() != type)
+            if(isTypeSet() && column.getType() != type) {
                 throw new IllegalArgumentException("The JDBCType of parameter definition is not the same with column type");
-            else
+            } else {
                 type(column.getType());
+            }
             
             return build();
         }

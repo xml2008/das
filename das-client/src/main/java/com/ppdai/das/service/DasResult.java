@@ -74,7 +74,9 @@ public class DasResult implements org.apache.thrift.TBase<DasResult, DasResult._
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -457,71 +459,87 @@ public class DasResult implements org.apache.thrift.TBase<DasResult, DasResult._
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasResult)
-      return this.equals((DasResult)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasResult) {
+        return this.equals((DasResult)that);
+    }
     return false;
   }
 
   public boolean equals(DasResult that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_rowCount = true && this.isSetRowCount();
     boolean that_present_rowCount = true && that.isSetRowCount();
     if (this_present_rowCount || that_present_rowCount) {
-      if (!(this_present_rowCount && that_present_rowCount))
-        return false;
-      if (this.rowCount != that.rowCount)
-        return false;
+      if (!(this_present_rowCount && that_present_rowCount)) {
+          return false;
+      }
+      if (this.rowCount != that.rowCount) {
+          return false;
+      }
     }
 
     boolean this_present_rows = true && this.isSetRows();
     boolean that_present_rows = true && that.isSetRows();
     if (this_present_rows || that_present_rows) {
-      if (!(this_present_rows && that_present_rows))
-        return false;
-      if (!this.rows.equals(that.rows))
-        return false;
+      if (!(this_present_rows && that_present_rows)) {
+          return false;
+      }
+      if (!this.rows.equals(that.rows)) {
+          return false;
+      }
     }
 
     boolean this_present_batchRowsIndex = true && this.isSetBatchRowsIndex();
     boolean that_present_batchRowsIndex = true && that.isSetBatchRowsIndex();
     if (this_present_batchRowsIndex || that_present_batchRowsIndex) {
-      if (!(this_present_batchRowsIndex && that_present_batchRowsIndex))
-        return false;
-      if (!this.batchRowsIndex.equals(that.batchRowsIndex))
-        return false;
+      if (!(this_present_batchRowsIndex && that_present_batchRowsIndex)) {
+          return false;
+      }
+      if (!this.batchRowsIndex.equals(that.batchRowsIndex)) {
+          return false;
+      }
     }
 
     boolean this_present_parameters = true && this.isSetParameters();
     boolean that_present_parameters = true && that.isSetParameters();
     if (this_present_parameters || that_present_parameters) {
-      if (!(this_present_parameters && that_present_parameters))
-        return false;
-      if (!this.parameters.equals(that.parameters))
-        return false;
+      if (!(this_present_parameters && that_present_parameters)) {
+          return false;
+      }
+      if (!this.parameters.equals(that.parameters)) {
+          return false;
+      }
     }
 
     boolean this_present_diagInfo = true && this.isSetDiagInfo();
     boolean that_present_diagInfo = true && that.isSetDiagInfo();
     if (this_present_diagInfo || that_present_diagInfo) {
-      if (!(this_present_diagInfo && that_present_diagInfo))
-        return false;
-      if (!this.diagInfo.equals(that.diagInfo))
-        return false;
+      if (!(this_present_diagInfo && that_present_diagInfo)) {
+          return false;
+      }
+      if (!this.diagInfo.equals(that.diagInfo)) {
+          return false;
+      }
     }
 
     boolean this_present_entityMeta = true && this.isSetEntityMeta();
     boolean that_present_entityMeta = true && that.isSetEntityMeta();
     if (this_present_entityMeta || that_present_entityMeta) {
-      if (!(this_present_entityMeta && that_present_entityMeta))
-        return false;
-      if (!this.entityMeta.equals(that.entityMeta))
-        return false;
+      if (!(this_present_entityMeta && that_present_entityMeta)) {
+          return false;
+      }
+      if (!this.entityMeta.equals(that.entityMeta)) {
+          return false;
+      }
     }
 
     return true;
@@ -532,28 +550,34 @@ public class DasResult implements org.apache.thrift.TBase<DasResult, DasResult._
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetRowCount()) ? 131071 : 524287);
-    if (isSetRowCount())
-      hashCode = hashCode * 8191 + rowCount;
+    if (isSetRowCount()) {
+        hashCode = hashCode * 8191 + rowCount;
+    }
 
     hashCode = hashCode * 8191 + ((isSetRows()) ? 131071 : 524287);
-    if (isSetRows())
-      hashCode = hashCode * 8191 + rows.hashCode();
+    if (isSetRows()) {
+        hashCode = hashCode * 8191 + rows.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetBatchRowsIndex()) ? 131071 : 524287);
-    if (isSetBatchRowsIndex())
-      hashCode = hashCode * 8191 + batchRowsIndex.hashCode();
+    if (isSetBatchRowsIndex()) {
+        hashCode = hashCode * 8191 + batchRowsIndex.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetParameters()) ? 131071 : 524287);
-    if (isSetParameters())
-      hashCode = hashCode * 8191 + parameters.hashCode();
+    if (isSetParameters()) {
+        hashCode = hashCode * 8191 + parameters.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetDiagInfo()) ? 131071 : 524287);
-    if (isSetDiagInfo())
-      hashCode = hashCode * 8191 + diagInfo.hashCode();
+    if (isSetDiagInfo()) {
+        hashCode = hashCode * 8191 + diagInfo.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetEntityMeta()) ? 131071 : 524287);
-    if (isSetEntityMeta())
-      hashCode = hashCode * 8191 + entityMeta.hashCode();
+    if (isSetEntityMeta()) {
+        hashCode = hashCode * 8191 + entityMeta.hashCode();
+    }
 
     return hashCode;
   }
@@ -653,7 +677,9 @@ public class DasResult implements org.apache.thrift.TBase<DasResult, DasResult._
       first = false;
     }
     if (isSetRows()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("rows:");
       if (this.rows == null) {
         sb.append("null");
@@ -663,7 +689,9 @@ public class DasResult implements org.apache.thrift.TBase<DasResult, DasResult._
       first = false;
     }
     if (isSetBatchRowsIndex()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("batchRowsIndex:");
       if (this.batchRowsIndex == null) {
         sb.append("null");
@@ -673,7 +701,9 @@ public class DasResult implements org.apache.thrift.TBase<DasResult, DasResult._
       first = false;
     }
     if (isSetParameters()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("parameters:");
       if (this.parameters == null) {
         sb.append("null");
@@ -683,7 +713,9 @@ public class DasResult implements org.apache.thrift.TBase<DasResult, DasResult._
       first = false;
     }
     if (isSetDiagInfo()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("diagInfo:");
       if (this.diagInfo == null) {
         sb.append("null");
@@ -693,7 +725,9 @@ public class DasResult implements org.apache.thrift.TBase<DasResult, DasResult._
       first = false;
     }
     if (isSetEntityMeta()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("entityMeta:");
       if (this.entityMeta == null) {
         sb.append("null");

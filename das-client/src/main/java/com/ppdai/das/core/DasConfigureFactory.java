@@ -32,12 +32,14 @@ public class DasConfigureFactory {
     }
 
     public static void initialize(DasConfigureContext configContext) {
-        if(initialzed.get())
+        if(initialzed.get()) {
             return;
+        }
 
         synchronized(initialzed) {
-            if(initialzed.get())
+            if(initialzed.get()) {
                 return;
+            }
             
             try {
                 if(configContext.isLocalMode()) {
@@ -46,8 +48,9 @@ public class DasConfigureFactory {
                             configContext.getTaskFactory().getProperty(SqlRequestExecutor.KEEP_ALIVE_TIME));
             
                     StatusManager.initializeGlobal();
-                    for(String appId: configContext.getAppIds())
+                    for(String appId: configContext.getAppIds()) {
                         StatusManager.registerApplication(appId, configContext.getConfigure(appId));
+                    }
                 }
                 
                 LogEntry.init();
@@ -61,8 +64,9 @@ public class DasConfigureFactory {
     }
     
     private static DasConfigureContext getContext() {
-        if(!initialzed.get())
+        if(!initialzed.get()) {
             throw new IllegalStateException("DasConfigFactory has not been initilized!");
+        }
             
         return configContextRef.get();
     }
@@ -105,8 +109,9 @@ public class DasConfigureFactory {
     }
 
     public static DalClient getClient(String appId, String logicDbName) {
-        if (logicDbName == null)
+        if (logicDbName == null) {
             throw new NullPointerException("Database Set name can not be null");
+        }
 
         DasConfigure config = getContext().getConfigure(appId);
 

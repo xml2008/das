@@ -61,8 +61,9 @@ public class ShardingManager {
             if(hints.is(HintEnum.shardValue)) {
                 Set<String> shards = dbSet.getStrategy().locateDbShards(new ShardingContext(appId, logicDbName, dbSet.getAllShards(), hints, ConditionList.andList()));
                 return validateId(shards, dbSet.getAllShards());
-            }else
+            }else {
                 return null;
+            }
         }else {
             return validateId(shardId, dbSet.getAllShards());
         }
@@ -103,8 +104,9 @@ public class ShardingManager {
             if(hints.is(HintEnum.tableShardValue)) {
                 Set<String> tableShards = strategy.locateTableShards(new TableShardingContext(appId, logicDbName, null, strategy.getAllTableShards(), hints, ConditionList.andList()));
                 return validateId(tableShards, strategy.getAllTableShards());
-            }else
+            }else {
                 return null;
+            }
         }else {
             return validateId(tableShardId, strategy.getAllTableShards());
         }
@@ -121,8 +123,9 @@ public class ShardingManager {
     public static String locateTableShardId(String appId, String logicDbName, String tableName, Map<String, ?> pojo) throws SQLException {
         ShardingStrategy strategy = getDatabaseSet(appId, logicDbName).getStrategy();
         
-        if(!strategy.isShardingEnable(tableName))
+        if(!strategy.isShardingEnable(tableName)) {
             return null;
+        }
 
         Hints tmpHints = new Hints();
         //TODO ? this can be removed because Hints does not has this field;
@@ -150,11 +153,13 @@ public class ShardingManager {
     }
 
     private static String validateId(Set<String> shards, Set<String> validateShards) throws SQLException {
-        if(shards.size() == 0)
+        if(shards.size() == 0) {
             return null;
+        }
         
-        if(shards.size() > 1)
+        if(shards.size() > 1) {
             throw new IllegalArgumentException(String.format("Expect only one shard id but found %d shard ids: %s", shards.size(), shards));
+        }
 
         String shardId = shards.iterator().next();
         
@@ -162,8 +167,9 @@ public class ShardingManager {
     }
     
     private static String validateId(String shardId, Set<String> validateShards) throws SQLException {
-        if(validateShards != null && !validateShards.isEmpty() && !validateShards.contains(shardId))
+        if(validateShards != null && !validateShards.isEmpty() && !validateShards.contains(shardId)) {
             throw new SQLException("No shard defined for id: " + shardId);
+        }
 
         return shardId;
     }
@@ -199,8 +205,9 @@ public class ShardingManager {
     
     public static Set<String> locateShards(String appId, String logicDbName, Hints hints, ConditionList conditions) throws SQLException {
         hints.appendDiagnose("ConditionList", Objects.toString(conditions, "conditions is null"));
-        if (!isShardingEnabled(appId, logicDbName))
+        if (!isShardingEnabled(appId, logicDbName)) {
             throw new IllegalArgumentException(String.format("Logic DB %s of App %s does not support DB shard", logicDbName, appId));
+        }
         
         DatabaseSet dbSet = DasConfigureFactory.getConfigure(appId).getDatabaseSet(logicDbName);
 
@@ -215,8 +222,9 @@ public class ShardingManager {
             shards = dbSet.getStrategy().locateDbShards(new ShardingContext(appId, dbSet.getName(), dbSet.getAllShards(), hints, conditions));
         }
 
-        for(String shardId: shards)
+        for(String shardId: shards) {
             dbSet.validate(shardId);
+        }
 
         hints.appendDiagnose("ShardID", shards);
         detectDistributedTransaction(shards);
@@ -268,15 +276,18 @@ public class ShardingManager {
     }
 
     public static void detectDistributedTransaction(Set<String> shardIds) throws SQLException {
-        if(!DalTransactionManager.isInTransaction())
+        if(!DalTransactionManager.isInTransaction()) {
             return;
+        }
         
-        if(shardIds == null)
+        if(shardIds == null) {
             return;
+        }
         
         // Not allowed for distributed transaction
-        if(shardIds.size() > 1)
+        if(shardIds.size() > 1) {
             throw new SQLException("Potential distributed operation detected in shards: " + shardIds);
+        }
         
         String shardId = shardIds.iterator().next();
         
@@ -284,14 +295,16 @@ public class ShardingManager {
     }
 
     public static void detectDistributedTransaction(String shardId) throws SQLException {
-        if(!DalTransactionManager.isInTransaction())
+        if(!DalTransactionManager.isInTransaction()) {
             return;
+        }
 
         isSameShard(shardId);
     }
 
     private static void isSameShard(String shardId) throws SQLException {
-        if(!shardId.equals(DalTransactionManager.getCurrentShardId()))
+        if(!shardId.equals(DalTransactionManager.getCurrentShardId())) {
             throw new SQLException("Operation is not allowed in different database shard within current transaction. Current shardId: " + DalTransactionManager.getCurrentShardId() + ". Requested shardId: " + shardId);
+        }
     }
 }

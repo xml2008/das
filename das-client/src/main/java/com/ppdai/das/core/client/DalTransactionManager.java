@@ -53,8 +53,9 @@ public class DalTransactionManager {
 	private void endTransaction(int startLevel) throws SQLException {
 		DalTransaction transaction = transactionHolder.get();
 		
-		if(transaction == null)
-			throw new SQLException("calling endTransaction with empty ConnectionCache");
+		if(transaction == null) {
+            throw new SQLException("calling endTransaction with empty ConnectionCache");
+        }
 
 		transaction.endTransaction(startLevel);
 	}
@@ -64,8 +65,9 @@ public class DalTransactionManager {
 	}
 	
 	private static void reqiresTransaction() throws DasException {
-		if(!isInTransaction())
-			throw new DasException(ErrorCode.TransactionNoFound);
+		if(!isInTransaction()) {
+            throw new DasException(ErrorCode.TransactionNoFound);
+        }
 	}
 	
 	public static List<DalTransactionListener> getCurrentListeners() throws DasException {
@@ -84,8 +86,9 @@ public class DalTransactionManager {
 		DalTransaction transaction = transactionHolder.get();
 		
 		// Already handled in deeper level
-		if(transaction == null)
-			return;
+		if(transaction == null) {
+            return;
+        }
 
 		transaction.rollbackTransaction();
 	}

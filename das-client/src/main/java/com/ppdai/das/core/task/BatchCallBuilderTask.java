@@ -32,8 +32,9 @@ public class BatchCallBuilderTask implements SqlBuilderTask<int[]>{
 
         List<Parameter>[] paramList = new ArrayList[valuesList.size()];
         int i = 0;
-        for(Object[] values: valuesList)
+        for(Object[] values: valuesList) {
             paramList[i++] = ParameterDefinition.bind(defList, values);
+        }
         
         return client.batchCall(callSql, paramList, hints);
 

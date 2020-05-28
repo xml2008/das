@@ -47,8 +47,9 @@ public class MarkdownStatus extends BaseStatus implements MarkdownStatusMBean {
 	public String getMarkdownKeys() {
 		Set<String> names = new HashSet<>();
 		for(String dbName: StatusManager.getDataSourceNames()){
-			if(MarkdownManager.isMarkdown(dbName))
-				names.add(dbName);
+			if(MarkdownManager.isMarkdown(dbName)) {
+                names.add(dbName);
+            }
 		}
 
 		return StringUtils.join(names, ",");
@@ -58,8 +59,9 @@ public class MarkdownStatus extends BaseStatus implements MarkdownStatusMBean {
 		Set<String> names = new HashSet<>();
 		for(String dbName: StatusManager.getDataSourceNames()){
 			DataSourceStatus dss = StatusManager.getDataSourceStatus(dbName);
-			if(dss.isAutoMarkdown())
-				names.add(dbName);
+			if(dss.isAutoMarkdown()) {
+                names.add(dbName);
+            }
 		}
 		return StringUtils.join(names, ",");
 	}

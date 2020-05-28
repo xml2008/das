@@ -49,7 +49,9 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -193,26 +195,32 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasTraceId)
-      return this.equals((DasTraceId)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasTraceId) {
+        return this.equals((DasTraceId)that);
+    }
     return false;
   }
 
   public boolean equals(DasTraceId that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_ids = true && this.isSetIds();
     boolean that_present_ids = true && that.isSetIds();
     if (this_present_ids || that_present_ids) {
-      if (!(this_present_ids && that_present_ids))
-        return false;
-      if (!this.ids.equals(that.ids))
-        return false;
+      if (!(this_present_ids && that_present_ids)) {
+          return false;
+      }
+      if (!this.ids.equals(that.ids)) {
+          return false;
+      }
     }
 
     return true;
@@ -223,8 +231,9 @@ public class DasTraceId implements org.apache.thrift.TBase<DasTraceId, DasTraceI
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetIds()) ? 131071 : 524287);
-    if (isSetIds())
-      hashCode = hashCode * 8191 + ids.hashCode();
+    if (isSetIds()) {
+        hashCode = hashCode * 8191 + ids.hashCode();
+    }
 
     return hashCode;
   }

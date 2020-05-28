@@ -31,8 +31,9 @@ public class DefaultConnectionPhantomReferenceCleaner implements ConnectionPhant
 
     @Override
     public void start() throws Exception {
-        if (started.getAndSet(true))
+        if (started.getAndSet(true)) {
             return;
+        }
         try {
             nonRegisteringDriver = Class.forName(driverClassName);
             connectionPhantomReference = nonRegisteringDriver.getDeclaredField(fieldName);
@@ -65,8 +66,9 @@ public class DefaultConnectionPhantomReferenceCleaner implements ConnectionPhant
 
 
     private static void shutdown() {
-        if (defaultConnectionPhantomReferenceCleanerRef.get() == null)
+        if (defaultConnectionPhantomReferenceCleanerRef.get() == null) {
             return;
+        }
         defaultConnectionPhantomReferenceCleanerRef.get().shutdown();
         defaultConnectionPhantomReferenceCleanerRef.set(null);
         started.compareAndSet(true,false);

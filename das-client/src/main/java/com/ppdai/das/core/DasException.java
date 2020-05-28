@@ -50,8 +50,9 @@ public class DasException extends SQLException {
     }
 
     public static void handleError(String msg, Throwable e) throws SQLException {
-        if(e == null)
+        if(e == null) {
             return;
+        }
 
         // Just make sure error is not swallowed by us
         DasConfigureFactory.getLogger().error(msg, e);

@@ -33,8 +33,9 @@ public class BatchUpdateBuilder implements Segment, ParameterDefinitionProvider 
         builder = new SqlBuilder();
         ParameterDefinition[] definitions = new ParameterDefinition[columns.length];
         int i = 0;
-        for(ColumnDefinition c: columns)
+        for(ColumnDefinition c: columns) {
             definitions[i++] = ParameterDefinition.var(c.getColumnName(), c.getType());
+        }
 
         builder.append(new Template(statement, definitions));
     }
@@ -70,8 +71,9 @@ public class BatchUpdateBuilder implements Segment, ParameterDefinitionProvider 
     }
 
     private void checkPermission() {
-        if(statements != null)
+        if(statements != null) {
             throw new IllegalArgumentException("Parameter should not be defined for multiple SQL update");
+        }
     }
 
     @Override

@@ -59,7 +59,9 @@ public class DasCallBuilder implements org.apache.thrift.TBase<DasCallBuilder, D
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -302,44 +304,54 @@ public class DasCallBuilder implements org.apache.thrift.TBase<DasCallBuilder, D
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasCallBuilder)
-      return this.equals((DasCallBuilder)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasCallBuilder) {
+        return this.equals((DasCallBuilder)that);
+    }
     return false;
   }
 
   public boolean equals(DasCallBuilder that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_name = true && this.isSetName();
     boolean that_present_name = true && that.isSetName();
     if (this_present_name || that_present_name) {
-      if (!(this_present_name && that_present_name))
-        return false;
-      if (!this.name.equals(that.name))
-        return false;
+      if (!(this_present_name && that_present_name)) {
+          return false;
+      }
+      if (!this.name.equals(that.name)) {
+          return false;
+      }
     }
 
     boolean this_present_parameters = true && this.isSetParameters();
     boolean that_present_parameters = true && that.isSetParameters();
     if (this_present_parameters || that_present_parameters) {
-      if (!(this_present_parameters && that_present_parameters))
-        return false;
-      if (!this.parameters.equals(that.parameters))
-        return false;
+      if (!(this_present_parameters && that_present_parameters)) {
+          return false;
+      }
+      if (!this.parameters.equals(that.parameters)) {
+          return false;
+      }
     }
 
     boolean this_present_callByIndex = true;
     boolean that_present_callByIndex = true;
     if (this_present_callByIndex || that_present_callByIndex) {
-      if (!(this_present_callByIndex && that_present_callByIndex))
-        return false;
-      if (this.callByIndex != that.callByIndex)
-        return false;
+      if (!(this_present_callByIndex && that_present_callByIndex)) {
+          return false;
+      }
+      if (this.callByIndex != that.callByIndex) {
+          return false;
+      }
     }
 
     return true;
@@ -350,12 +362,14 @@ public class DasCallBuilder implements org.apache.thrift.TBase<DasCallBuilder, D
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetName()) ? 131071 : 524287);
-    if (isSetName())
-      hashCode = hashCode * 8191 + name.hashCode();
+    if (isSetName()) {
+        hashCode = hashCode * 8191 + name.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetParameters()) ? 131071 : 524287);
-    if (isSetParameters())
-      hashCode = hashCode * 8191 + parameters.hashCode();
+    if (isSetParameters()) {
+        hashCode = hashCode * 8191 + parameters.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((callByIndex) ? 131071 : 524287);
 
@@ -429,7 +443,9 @@ public class DasCallBuilder implements org.apache.thrift.TBase<DasCallBuilder, D
     }
     first = false;
     if (isSetParameters()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("parameters:");
       if (this.parameters == null) {
         sb.append("null");
@@ -438,7 +454,9 @@ public class DasCallBuilder implements org.apache.thrift.TBase<DasCallBuilder, D
       }
       first = false;
     }
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("callByIndex:");
     sb.append(this.callByIndex);
     first = false;

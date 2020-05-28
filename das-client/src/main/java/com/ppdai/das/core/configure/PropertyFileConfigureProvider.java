@@ -44,9 +44,10 @@ public class PropertyFileConfigureProvider implements DataSourceConfigureProvide
 
         URL configUrl = classLoader.getResource(CONFIG_NAME);
 
-        if (configUrl == null)
+        if (configUrl == null) {
             throw new IllegalStateException(
                     "Can not find " + CONFIG_NAME + " to initilize database configure provider");
+        }
 
         properties.load(new FileReader(new File(configUrl.toURI())));
         convertPropertiesToMap(properties);
@@ -55,8 +56,9 @@ public class PropertyFileConfigureProvider implements DataSourceConfigureProvide
     private void convertPropertiesToMap(Properties properties) {
         map.clear();
 
-        if (properties == null)
+        if (properties == null) {
             return;
+        }
 
         Set<String> names = properties.stringPropertyNames();
         for (String temp : names) {
@@ -88,9 +90,10 @@ public class PropertyFileConfigureProvider implements DataSourceConfigureProvide
     public void setup(Set<String> dbNames) {
         for (String name : dbNames) {
             for (String item : MUST_HAVES) {
-                if (properties.getProperty(name + item) == null)
+                if (properties.getProperty(name + item) == null) {
                     throw new IllegalStateException(
                             "Can not find " + name + item + " to initilize database configure provider");
+                }
             }
         }
     }

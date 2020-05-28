@@ -73,10 +73,11 @@ public interface ResultMerger<T> {
 		private BigInteger total;
 		@Override
 		public void addPartial(String shard, BigInteger partial) {
-			if(total == null)
-				total = partial;
-			else
-				total.add(partial);
+			if(total == null) {
+                total = partial;
+            } else {
+                total.add(partial);
+            }
 		}
 
 		@Override
@@ -89,10 +90,11 @@ public interface ResultMerger<T> {
 		private BigDecimal total;
 		@Override
 		public void addPartial(String shard, BigDecimal partial) {
-			if(total == null)
-				total = partial;
-			else
-				total.add(partial);
+			if(total == null) {
+                total = partial;
+            } else {
+                total.add(partial);
+            }
 		}
 
 		@Override
@@ -215,10 +217,11 @@ public interface ResultMerger<T> {
 		@Override
 		public void addPartial(String shard, Map<String, Number> partial) {
 			count += partial.get(countColumn).intValue();
-			if(sum == null)
-				sum = (BigInteger)partial.get(sumColumn);
-			else
-				sum.add((BigInteger)partial.get(sumColumn));
+			if(sum == null) {
+                sum = (BigInteger)partial.get(sumColumn);
+            } else {
+                sum.add((BigInteger)partial.get(sumColumn));
+            }
 		}
 
 		@Override
@@ -250,10 +253,11 @@ public interface ResultMerger<T> {
 		@Override
 		public void addPartial(String shard, Map<String, Number> partial) {
 			count += partial.get(countColumn).intValue();
-			if(sum == null)
-				sum = (BigDecimal)partial.get(sumColumn);
-			else
-				sum.add((BigDecimal)partial.get(sumColumn));
+			if(sum == null) {
+                sum = (BigDecimal)partial.get(sumColumn);
+            } else {
+                sum.add((BigDecimal)partial.get(sumColumn));
+            }
 		}
 
 		@Override

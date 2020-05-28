@@ -37,8 +37,9 @@ public class DataSourceStatus extends BaseStatus implements DataSourceStatusMBea
 	}
 	public void setAutoMarkdown(boolean autoMarkdown) {
 		this.autoMarkdown = autoMarkdown;
-		if(autoMarkdown)
-			this.autoMarkdownTime = new Date();
+		if(autoMarkdown) {
+            this.autoMarkdownTime = new Date();
+        }
 		changed();
 	}
 	

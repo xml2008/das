@@ -53,22 +53,25 @@ public class TimeRangeStrategy extends AbstractConditionStrategy {
         super.initialize(settings);
 
         if(isShardByDb()) {
-            if(settings.containsKey(ZERO_PADDING))
+            if(settings.containsKey(ZERO_PADDING)) {
                 zeroPaddingFormat = "%0" + Integer.parseInt(settings.get(ZERO_PADDING)) + "d";
+            }
 
             dbLocator = createTimeRangeShardLocator(settings, PATTERN);
         }
 
         if(isShardByTable()) {
 
-            if(settings.containsKey(TABLE_ZERO_PADDING))
+            if(settings.containsKey(TABLE_ZERO_PADDING)) {
                 tableZeroPaddingFormat = "%0" + Integer.parseInt(settings.get(TABLE_ZERO_PADDING)) + "d";
+            }
 
             tableLocator = createTimeRangeShardLocator(settings, TABLE_PATTERN);
 
             Set<String> allShards = new HashSet<>();
-            for(int i = 0; i <= tableLocator.getMaxRange(); i++)
+            for(int i = 0; i <= tableLocator.getMaxRange(); i++) {
                 allShards.add(String.format(tableZeroPaddingFormat, i));
+            }
 
             setAllTableShards(allShards);
         }

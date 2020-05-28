@@ -30,8 +30,12 @@ public class DasServerInstance {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         DasServerInstance that = (DasServerInstance) o;
         return port == that.port &&
                 Objects.equals(address, that.address);

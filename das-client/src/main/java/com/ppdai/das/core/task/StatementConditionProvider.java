@@ -51,15 +51,18 @@ public interface StatementConditionProvider {
     static DalRowMapper getMapper(Class type) {
         Objects.requireNonNull(type, "The entity type is missing, you should specify entity type using one of the SqlBuilder.into() method");
 
-        if(type == Object.class)
+        if(type == Object.class) {
             return new DalObjectRowMapper();
+        }
 
-        if(type == Map.class)
+        if(type == Map.class) {
             return new DalColumnMapRowMapper();
+        }
 
-        if(EntityMetaManager.extract(type).getColumnNames().length == 0)
+        if(EntityMetaManager.extract(type).getColumnNames().length == 0) {
             return new DalObjectRowMapper();
-        else
+        } else {
             return new PPDaiDalMapper(type);
+        }
     }
 }

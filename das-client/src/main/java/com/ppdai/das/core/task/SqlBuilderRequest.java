@@ -56,16 +56,19 @@ public class SqlBuilderRequest<T> implements SqlRequest<T>{
     }
 
     private Set<String> getShards() throws SQLException {
-        if (isShardingEnabled(appId, logicDbName) == false)
+        if (isShardingEnabled(appId, logicDbName) == false) {
             return null;
+        }
         
-        if(provider.allowCrossShards() == false)
+        if(provider.allowCrossShards() == false) {
             return null;
+        }
         
         shards = locateShards(appId, logicDbName, hints.clone().setParameters(parameters), provider.buildConditions());
         
-        if(shards != null && shards.size() > 1)
+        if(shards != null && shards.size() > 1) {
             logger.warn(String.format("Execute on multiple shards %s detected: %s", shards, provider.getRawRequest()));
+        }
         
         return shards;
     }
@@ -94,8 +97,9 @@ public class SqlBuilderRequest<T> implements SqlRequest<T>{
     public Map<String, Callable<T>> createTasks() throws SQLException {
         Map<String, Callable<T>> tasks = new HashMap<>();
         
-        for(String shard: shards)
+        for(String shard: shards) {
             tasks.put(shard, create(hints.clone().inShard(shard)));
+        }
         
         return tasks;
     }
@@ -141,21 +145,25 @@ public class SqlBuilderRequest<T> implements SqlRequest<T>{
         
         @Override
         public T call() throws Exception {
-            if(isCrossShardAction())
+            if(isCrossShardAction()) {
                 return executeByTableShards();
-            else
+            } else {
                 return task.execute(client, provider, parameters, hints);
+            }
         }
         
         private boolean isCrossShardAction() throws SQLException {
-            if(provider.allowCrossTableShards() == false)
+            if(provider.allowCrossTableShards() == false) {
                 return false;
+            }
 
-            if(isTableShardingEnabled(appId, logicDbName) == false)
+            if(isTableShardingEnabled(appId, logicDbName) == false) {
                 return false;
+            }
 
-            if(provider.isTableShardDecided(appId, logicDbName))
+            if(provider.isTableShardDecided(appId, logicDbName)) {
                 return false;
+            }
 
             tableShards = locateTableShards(appId, logicDbName, hints.setParameters(parameters), conditions);
             return tableShards.size() > 0 ;

@@ -23,8 +23,9 @@ public class BatchUpdateBuilderTask implements SqlBuilderTask<int[]>{
     @Override
     public int[] execute(DalClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
         BatchUpdateBuilder builder = provider.getRawRequest();
-        if(builder.isMultipleStatements())
+        if(builder.isMultipleStatements()) {
             return client.batchUpdate(builder.getStatements(), hints);
+        }
 
         List<ParameterDefinition> defList = builder.buildDefinitions();
         List<Object[]> valuesList = builder.getValuesList();

@@ -69,8 +69,9 @@ public class PPDaiDalParser<T> extends AbstractDalParser<T> implements Customiza
         if (pojo.getClass().equals(this.clazz) && identity != null) {
             try {
                 Object val = identity.get(pojo);
-                if (val instanceof Number)
+                if (val instanceof Number) {
                     return (Number) val;
+                }
             } catch (Throwable e) {
                 throw new RuntimeException(e);
             }

@@ -46,21 +46,24 @@ public class HaContext {
 	public void update(SQLException ex){
 		this.retry = false;
 		if(this.isOver()) //There is no more connections to fail over.
-			return;
+        {
+            return;
+        }
 		this.exception = ex;
 		this.increment();
-		if(dbCategory == DatabaseCategory.SqlServer)
-			this.retry = StatusManager.getHaStatus()
-				.getSqlservercodes().contains(this.exception.getErrorCode());
-		else{
+		if(dbCategory == DatabaseCategory.SqlServer) {
+            this.retry = StatusManager.getHaStatus()
+                .getSqlservercodes().contains(this.exception.getErrorCode());
+        } else{
 			this.retry = StatusManager.getHaStatus()
 					.getMysqlcodes().contains(this.exception.getErrorCode());
 		}
 	}
 	
 	public void clear(){
-		if(!this.isOver())
-			this.exception = null;
+		if(!this.isOver()) {
+            this.exception = null;
+        }
 		this.retry = false;
 	}
 
@@ -88,9 +91,9 @@ public class HaContext {
 	}
 	
 	public String getDB(){
-		if(!this.usedKeys.isEmpty() && this.usedKeys.size() == 1)
-			return this.usedKeys.iterator().next();
-		else{
+		if(!this.usedKeys.isEmpty() && this.usedKeys.size() == 1) {
+            return this.usedKeys.iterator().next();
+        } else{
 			return null;
 		}
 	}

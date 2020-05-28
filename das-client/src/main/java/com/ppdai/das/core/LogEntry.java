@@ -363,8 +363,9 @@ public class LogEntry {
         String sqlType = getDao() + "." + getMethod();
 
         // If comes from internal executor
-        if(sqlType.startsWith("java.util.concurrent.FutureTask"))
+        if(sqlType.startsWith("java.util.concurrent.FutureTask")) {
             sqlType = currentCaller.get().toString();
+        }
 
         return sqlType;
     }
@@ -404,15 +405,17 @@ public class LogEntry {
     }
 
     public synchronized static void init(){
-        if(currentCaller != null)
+        if(currentCaller != null) {
             return;
+        }
         
         currentCaller = new ThreadLocal<>();
     }
 
     public synchronized static void shutdown() {
-        if(currentCaller == null)
+        if(currentCaller == null) {
             return;
+        }
         
         currentCaller.remove();
         currentCaller = null;

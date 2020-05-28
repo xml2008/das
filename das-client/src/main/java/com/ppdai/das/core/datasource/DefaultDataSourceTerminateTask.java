@@ -99,8 +99,9 @@ public class DefaultDataSourceTerminateTask implements Runnable {
         }
 
         ConnectionPool pool = ds.getPool();
-        if (pool == null)
+        if (pool == null) {
             return success;
+        }
 
         int idle = pool.getIdle();
         if (idle > 0) {

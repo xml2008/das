@@ -49,7 +49,9 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -204,26 +206,32 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasHints)
-      return this.equals((DasHints)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasHints) {
+        return this.equals((DasHints)that);
+    }
     return false;
   }
 
   public boolean equals(DasHints that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_hints = true && this.isSetHints();
     boolean that_present_hints = true && that.isSetHints();
     if (this_present_hints || that_present_hints) {
-      if (!(this_present_hints && that_present_hints))
-        return false;
-      if (!this.hints.equals(that.hints))
-        return false;
+      if (!(this_present_hints && that_present_hints)) {
+          return false;
+      }
+      if (!this.hints.equals(that.hints)) {
+          return false;
+      }
     }
 
     return true;
@@ -234,8 +242,9 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetHints()) ? 131071 : 524287);
-    if (isSetHints())
-      hashCode = hashCode * 8191 + hints.hashCode();
+    if (isSetHints()) {
+        hashCode = hashCode * 8191 + hints.hashCode();
+    }
 
     return hashCode;
   }

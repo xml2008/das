@@ -22,8 +22,9 @@ public class ShardedIntArrayResultMerger implements BulkTaskResultMerger<int[]>{
 	public void addPartial(String shard, int[] affectedRows) throws SQLException {
 		Integer[] indexList = indexByShard.get(shard);
 		int i = 0;
-		for(Integer index: indexList)
-			affectedRowsMap.put(index, affectedRows[i++]);
+		for(Integer index: indexList) {
+            affectedRowsMap.put(index, affectedRows[i++]);
+        }
 	}
 
 	@Override
@@ -31,8 +32,9 @@ public class ShardedIntArrayResultMerger implements BulkTaskResultMerger<int[]>{
 		int[] affectedRowsList = new int[affectedRowsMap.size()];
 		
 		int i = 0;
-		for(Integer affectedRows: affectedRowsMap.values())
-			affectedRowsList[i++] = affectedRows;
+		for(Integer affectedRows: affectedRowsMap.values()) {
+            affectedRowsList[i++] = affectedRows;
+        }
 		
 		return affectedRowsList;
 	}

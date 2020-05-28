@@ -160,8 +160,9 @@ public class DasRemoteDelegate implements DasDelegate {
         EntityMeta meta = extract(pojos.get(0).getClass());
         
         List<Entity> entities = new ArrayList<>(pojos.size());
-        for(T pojo: pojos)
+        for(T pojo: pojos) {
             entities.add(pojo2Entity(pojo, meta));
+        }
 
         return create(operation, hints).setEntityList(new EntityList().setEntityMeta(meta).setRows(entities));
     }
@@ -267,8 +268,9 @@ public class DasRemoteDelegate implements DasDelegate {
         TableDefinition table = EntityMetaManager.extract(sample.getClass()).getTableDefinition();
         SqlBuilder builder = SqlBuilder.selectAllFrom(table).where(SegmentConstants.match(table, sample)).into(sample.getClass());
 
-        if(range.hasOrders())
+        if(range.hasOrders()) {
             builder.orderBy(range.getOrders());
+        }
 
         builder.atPage(range.getPageNo(), range.getPageSize());
         builder.setHints(hints);

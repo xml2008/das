@@ -56,8 +56,9 @@ public class KeyHolder {
         currentPos.set(0);
         remainSize.set(size);
 
-        if (allKeys.size() > 0)
+        if (allKeys.size() > 0) {
             logger.warn("Reuse of KeyHolder detected!");
+        }
 
         allKeys.clear();
 
@@ -86,14 +87,16 @@ public class KeyHolder {
     }
 
     public void waitForMerge() throws InterruptedException {
-        while (isMerged() == false)
+        while (isMerged() == false) {
             Thread.sleep(1);
+        }
     }
 
     public void waitForMerge(int timeout) throws InterruptedException {
         int i = 0;
-        while (isMerged() == false && timeout > i++)
+        while (isMerged() == false && timeout > i++) {
             Thread.sleep(1);
+        }
     }
 
     /**
@@ -113,8 +116,9 @@ public class KeyHolder {
      * @throws SQLException if the generated key is not number type.
      */
     public Number getKey(int index) throws SQLException {
-        if (size() != 0 && requireMerge && allKeys.containsKey(index))
+        if (size() != 0 && requireMerge && allKeys.containsKey(index)) {
             return getId(allKeys.get(index));
+        }
 
         try {
             return getId(getKeyList().get(index));
@@ -149,14 +153,16 @@ public class KeyHolder {
      * @throws DasException
      */
     public List<Map<String, Object>> getKeyList() throws DasException {
-        if (requireMerge && merged.get() == false)
+        if (requireMerge && merged.get() == false) {
             throw new DasException(ErrorCode.KeyGenerationFailOrNotCompleted);
+        }
 
         List<Map<String, Object>> keyList = new ArrayList<>();
 
         int size = size();
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++) {
             keyList.add(allKeys.get(i));
+        }
 
         return keyList;
     }
@@ -196,8 +202,9 @@ public class KeyHolder {
      */
     public void addKeys(List<Map<String, Object>> keys) {
         int i = 0;
-        for (Map<String, Object> key : keys)
+        for (Map<String, Object> key : keys) {
             allKeys.put(i++, key);
+        }
     }
 
     /**
@@ -214,33 +221,38 @@ public class KeyHolder {
         // To avoid shard id being polluted by each pojos
         Hints localHints = hints.clone();
 
-        if (isKeyHolderRequired(task, hints.getKeyHolder()))
+        if (isKeyHolderRequired(task, hints.getKeyHolder())) {
             localHints.prepareInsert();
+        }
 
         return localHints;
     }
 
     public static void mergePartial(DaoTask<?> task, KeyHolder originalHolder, Integer[] indexList,
                                     KeyHolder localHolder, Throwable error) throws SQLException {
-        if (!isKeyHolderRequired(task, originalHolder))
+        if (!isKeyHolderRequired(task, originalHolder)) {
             return;
+        }
 
-        if (error == null)
+        if (error == null) {
             originalHolder.addPatial(indexList, localHolder);
-        else
+        } else {
             originalHolder.patialFailed(indexList.length);
+        }
 
     }
 
     public static void mergePartial(DaoTask<?> task, KeyHolder originalHolder, KeyHolder localHolder, Throwable error)
             throws SQLException {
-        if (!isKeyHolderRequired(task, originalHolder))
+        if (!isKeyHolderRequired(task, originalHolder)) {
             return;
+        }
 
-        if (error == null)
+        if (error == null) {
             originalHolder.addKey(localHolder.getUniqueKey());
-        else
+        } else {
             originalHolder.singleFail();
+        }
     }
 
     /**
@@ -253,8 +265,9 @@ public class KeyHolder {
     }
 
     public void addEmptyKeys(int count) {
-        if (count < 1)
+        if (count < 1) {
             return;
+        }
 
         for (int i = 0; i < count; i++) {
             Map<String, Object> map = createEmptyKeys();
@@ -292,28 +305,33 @@ public class KeyHolder {
     }
 
     private void deduct(int size) {
-        if (remainSize.addAndGet(-size) == 0)
+        if (remainSize.addAndGet(-size) == 0) {
             merge();
+        }
     }
 
     private synchronized void merge() {
-        if (merged.get())
+        if (merged.get()) {
             return;
+        }
 
         merged.set(true);
     }
 
     public static void setGeneratedKeyBack(DaoTask<?> task, Hints hints, List<?> rawPojos) throws SQLException {
-        if (!(task instanceof KeyHolderAwaredTask))
+        if (!(task instanceof KeyHolderAwaredTask)) {
             return;
+        }
 
         KeyHolder keyHolder = hints.getKeyHolder();
 
-        if (keyHolder == null || rawPojos == null || rawPojos.isEmpty())
+        if (keyHolder == null || rawPojos == null || rawPojos.isEmpty()) {
             return;
+        }
 
-        if (!(hints.is(HintEnum.setIdentityBack) && hints.isIdentityInsertDisabled()))
+        if (!(hints.is(HintEnum.setIdentityBack) && hints.isIdentityInsertDisabled())) {
             return;
+        }
 
         //Handle remote Entities
         Object obj = rawPojos.get(0);
@@ -335,20 +353,23 @@ public class KeyHolder {
         }
 
         EntityMeta em = EntityMetaManager.extract(rawPojos.get(0).getClass());
-        if (em.getPrimaryKeyNames().length == 0)
+        if (em.getPrimaryKeyNames().length == 0) {
             throw new IllegalArgumentException(
                     "insertIdentityBack only support JPA POJO. Please use code gen to regenerate your POJO");
+        }
 
         Field pkFlield = em.getFieldMap().get(em.getPrimaryKeyNames()[0]);
 
-        if (pkFlield == null)
+        if (pkFlield == null) {
             throw new IllegalArgumentException(
                     "insertIdentityBack only support JPA POJO. Please use code gen to regenerate your POJO");
+        }
 
-        for (int i = 0; i < rawPojos.size(); i++)
+        for (int i = 0; i < rawPojos.size(); i++) {
             if (!isEmptyKey(keyHolder, i)) {
                 setPrimaryKey(pkFlield, rawPojos.get(i), keyHolder.getKey(i));
             }
+        }
     }
 
     private static boolean isEmptyKey(KeyHolder keyHolder, int index) throws DasException {

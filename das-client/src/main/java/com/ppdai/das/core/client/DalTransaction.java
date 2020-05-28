@@ -46,21 +46,26 @@ public class DalTransaction  {
     }
     
     public void validate(String desiganateLogicDbName, String desiganateShard) throws SQLException {
-		if(desiganateLogicDbName == null || desiganateLogicDbName.length() == 0)
+		if(desiganateLogicDbName == null || desiganateLogicDbName.length() == 0) {
 			throw new DasException(ErrorCode.LogicDbEmpty);
+		}
 		
-		if(!desiganateLogicDbName.equals(this.logicDbName))
+		if(!desiganateLogicDbName.equals(this.logicDbName)) {
 			throw new DasException(ErrorCode.TransactionDistributed, this.logicDbName, desiganateLogicDbName);
+		}
 		
 		String curShard = connHolder.getShardId();
-		if(curShard == null)
-		    return;
+		if(curShard == null) {
+			return;
+		}
 		
-		if(desiganateShard == null)
-		    return;
+		if(desiganateShard == null) {
+			return;
+		}
 		
-		if(!curShard.equals(desiganateShard))
-		    throw new DasException(ErrorCode.TransactionDistributedShard, curShard, desiganateShard);
+		if(!curShard.equals(desiganateShard)) {
+			throw new DasException(ErrorCode.TransactionDistributedShard, curShard, desiganateShard);
+		}
 	}
 	
 	public String getLogicDbName() {
@@ -84,8 +89,9 @@ public class DalTransaction  {
     }
 	
 	public void register(DalTransactionListener listener) {
-		if(listeners == null)
+		if(listeners == null) {
 			listeners = new ArrayList<>();
+		}
 			
 			listeners.add(listener);
 	}
@@ -103,15 +109,17 @@ public class DalTransaction  {
 	}
 
 	public int startTransaction() throws SQLException {
-		if(rolledBack.get() || completed.get())
+		if(rolledBack.get() || completed.get()) {
 			throw new DasException(ErrorCode.TransactionState);
+		}
 		
 		return level.getAndIncrement();
 	}
 	
 	public void endTransaction(int startLevel) throws SQLException {
-	    if(rolledBack.get() || completed.get())
+	    if(rolledBack.get() || completed.get()) {
 			throw new DasException(ErrorCode.TransactionState);
+		}
 
 	    int curLevel = level.get();
 		if(startLevel != (curLevel - 1)) {
@@ -133,8 +141,9 @@ public class DalTransaction  {
 	}
 	
 	public void rollbackTransaction() throws SQLException {
-		if(rolledBack.get())
+		if(rolledBack.get()) {
 			return;
+		}
 
 		beforeRollback();
 		rolledBack.set(true);
@@ -146,10 +155,11 @@ public class DalTransaction  {
 	private void cleanup(boolean commit) {
 		Connection conn = connHolder.getConn();
 		try {
-			if(commit)
+			if(commit) {
 				conn.commit();
-			else
+			} else {
 				conn.rollback();
+			}
 		} catch (Throwable e) {
 			logger.error("Can not commit or rollback on current connection", e);
 		}
@@ -165,17 +175,20 @@ public class DalTransaction  {
 	}
 	
 	private void beforeCommit() throws SQLException {
-		if(listeners == null)
+		if(listeners == null) {
 			return;
+		}
 		
 		// The before commit can cause transaction termination by throwing exception
-		for(DalTransactionListener listener: listeners)
+		for(DalTransactionListener listener: listeners) {
 			listener.beforeCommit();
+		}
 	}
 
 	private void beforeRollback() {
-		if(listeners == null)
+		if(listeners == null) {
 			return;
+		}
 		
 		for(DalTransactionListener listener: listeners) {
 			try{
@@ -186,8 +199,9 @@ public class DalTransaction  {
 		}
 	}
 	private void afterCommit() {
-		if(listeners == null)
+		if(listeners == null) {
 			return;
+		}
 		
 		for(DalTransactionListener listener: listeners) {
 			try{
@@ -198,8 +212,9 @@ public class DalTransaction  {
 		}
 	}
 	private void afterRollback() {
-		if(listeners == null)
+		if(listeners == null) {
 			return;
+		}
 		
 		for(DalTransactionListener listener: listeners) {
 			try{

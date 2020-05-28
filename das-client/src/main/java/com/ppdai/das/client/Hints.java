@@ -343,8 +343,9 @@ public class Hints {
 
         // Make sure we do deep copy for Map
         Map fields = (Map)newHints.get(HintEnum.fields);
-        if(fields != null)
+        if(fields != null) {
             newHints.setFields(new LinkedHashMap<String, Object>(fields));
+        }
 
         newHints.keyHolder = keyHolder;
         newHints.dasDiagnose = getDiagnose();
@@ -403,8 +404,9 @@ public class Hints {
      */
     public Integer getInt(HintEnum hint, int defaultValue) {
         Object value = hints.get(hint);
-        if(value == null)
+        if(value == null) {
             return defaultValue;
+        }
         return (Integer)value;
     }
 
@@ -426,11 +428,13 @@ public class Hints {
      */
     public String getString(HintEnum hint) {
         Object value = hints.get(hint);
-        if(value == null)
+        if(value == null) {
             return null;
+        }
 
-        if(value instanceof String)
+        if(value instanceof String) {
             return (String)value;
+        }
 
         return value.toString();
     }
@@ -487,8 +491,9 @@ public class Hints {
      * @see HintEnum#fields
      */
     public Hints setFields(Map<String, ?> fields) {
-        if(fields == null)
+        if(fields == null) {
             return this;
+        }
 
         return set(HintEnum.fields, fields);
     }
@@ -501,8 +506,9 @@ public class Hints {
      * @see HintEnum#parameters
      */
     public Hints setParameters(List<Parameter> parameters) {
-        if(parameters == null)
+        if(parameters == null) {
             return this;
+        }
 
         return set(HintEnum.parameters, parameters);
     }
@@ -612,8 +618,9 @@ public class Hints {
     public <T> Hints setSize(List<T> pojos) {
         keyHolder = vaidateKeyHolder();
 
-        if (keyHolder != null && pojos != null)
+        if (keyHolder != null && pojos != null) {
             keyHolder.initialize(pojos.size());
+        }
 
         return this;
     }
@@ -621,15 +628,17 @@ public class Hints {
     public <T> Hints setSize(T pojo) {
         keyHolder = vaidateKeyHolder();
 
-        if (keyHolder != null && pojo != null)
+        if (keyHolder != null && pojo != null) {
             keyHolder.initialize(1);
+        }
 
         return this;
     }
 
     private KeyHolder vaidateKeyHolder() {
-        if (is(HintEnum.setIdentityBack))
+        if (is(HintEnum.setIdentityBack)) {
             keyHolder = keyHolder == null ? new KeyHolder() : keyHolder;
+        }
         return keyHolder;
     }
 

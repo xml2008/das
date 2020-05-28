@@ -58,8 +58,9 @@ public class DasTransactionalEnabler implements ImportBeanDefinitionRegistrar, B
             BeanDefinition beanDef = getBeanDefinition(beanName);
             String beanClassName = beanDef.getBeanClassName();
 
-            if(beanClassName == null || beanClassName.equals(BEAN_FACTORY_NAME) || isSpringSmartClassLoader(beanDef))
+            if(beanClassName == null || beanClassName.equals(BEAN_FACTORY_NAME) || isSpringSmartClassLoader(beanDef)) {
                 continue;
+            }
 
             Class beanClass;
             try {
@@ -76,16 +77,18 @@ public class DasTransactionalEnabler implements ImportBeanDefinitionRegistrar, B
                 }
             }
 
-            if(!annotated)
+            if(!annotated) {
                 continue;
+            }
 
             beanDef.setBeanClassName(BEAN_FACTORY_NAME);
             beanDef.setFactoryMethodName(FACTORY_METHOD_NAME);
 
             ConstructorArgumentValues cav = beanDef.getConstructorArgumentValues();
 
-            if(cav.getArgumentCount() != 0)
+            if(cav.getArgumentCount() != 0) {
                 throw new BeanDefinitionValidationException("The transactional bean can only be instantiated with default constructor.");
+            }
 
             cav.addGenericArgumentValue(beanClass.getName());
         }
@@ -105,25 +108,29 @@ public class DasTransactionalEnabler implements ImportBeanDefinitionRegistrar, B
     private void registerValidator() {
         if(registry != null) {
             // Need to check here because bean name canbe low case
-            if(registry.containsBeanDefinition(BEAN_VALIDATOR_NAME))
+            if(registry.containsBeanDefinition(BEAN_VALIDATOR_NAME)) {
                 return;
+            }
 
             for(String beanName: registry.getBeanDefinitionNames()) {
                 BeanDefinition beanDef = registry.getBeanDefinition(beanName);
-                if(Objects.equals(beanDef.getBeanClassName(), BEAN_VALIDATOR_NAME))
+                if(Objects.equals(beanDef.getBeanClassName(), BEAN_VALIDATOR_NAME)) {
                     return;
+                }
             }
 
             registry.registerBeanDefinition(BEAN_VALIDATOR_NAME, BeanDefinitionBuilder.genericBeanDefinition(DasAnnotationValidator.class).getBeanDefinition());
         } else {
             // Need to check here because bean name canbe low case
-            if(beanFactory.containsBeanDefinition(BEAN_VALIDATOR_NAME))
+            if(beanFactory.containsBeanDefinition(BEAN_VALIDATOR_NAME)) {
                 return;
+            }
 
             for(String beanName: beanFactory.getBeanDefinitionNames()) {
                 BeanDefinition beanDef = beanFactory.getBeanDefinition(beanName);
-                if(Objects.equals(beanDef.getBeanClassName(), BEAN_VALIDATOR_NAME))
+                if(Objects.equals(beanDef.getBeanClassName(), BEAN_VALIDATOR_NAME)) {
                     return;
+                }
             }
 
             beanFactory.addBeanPostProcessor(new DasAnnotationValidator());

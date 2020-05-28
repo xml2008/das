@@ -38,9 +38,11 @@ public class QuerySqlBuilderTask<T> implements SqlBuilderTask<T>{
 
     public List<List<?>> getAllInParameters(List<Parameter> parameters) {
         List<List<?>> inParams = new ArrayList<>();
-        for(Parameter parameter: parameters)
-            if(parameter.isInParam())
-                inParams.add((List<?>)parameter.getValue());
+        for(Parameter parameter: parameters) {
+            if(parameter.isInParam()) {
+                inParams.add((List<?>) parameter.getValue());
+            }
+        }
 
         return inParams;
     }

@@ -72,11 +72,13 @@ public class CallBuilder implements Segment, ParameterProvider {
     
     public <T> T getOutput(String name) {
         for(Parameter p: parameters) {
-            if(p.getDirection() == ParameterDirection.Input)
+            if(p.getDirection() == ParameterDirection.Input) {
                 continue;
+            }
             
-            if(p.getName().equals(name))
+            if(p.getName().equals(name)) {
                 return (T)p.getValue();
+            }
         }
         
         throw new IllegalArgumentException("Parameter: " + name + " is not found or not registered as an output/inputoutput parameter.");

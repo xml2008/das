@@ -176,8 +176,9 @@ public class DataSourceConfigureParser implements DataSourceConfigureConstants {
         List<Node> nodes = new ArrayList<>();
         NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
-            if (!children.item(i).getNodeName().equalsIgnoreCase(name))
+            if (!children.item(i).getNodeName().equalsIgnoreCase(name)) {
                 continue;
+            }
             nodes.add(children.item(i));
         }
         return nodes;

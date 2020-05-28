@@ -42,8 +42,9 @@ public class InsertTaskAdapter<T> extends TaskAdapter<T> {
 	private List<String> buildValidColumnsForInsert() {
 		List<String> validColumns = new LinkedList<>(buildValidColumnsForInsertWithId());
 		
-		if(parser.isAutoIncrement())
-			validColumns.remove(parser.getPrimaryKeyNames()[0]);
+		if(parser.isAutoIncrement()) {
+            validColumns.remove(parser.getPrimaryKeyNames()[0]);
+        }
 		
 		return validColumns;
 	}	
@@ -62,8 +63,9 @@ public class InsertTaskAdapter<T> extends TaskAdapter<T> {
 	public Set<String> filterUnqualifiedColumns(Hints hints, List<Map<String, ?>> daoPojos, List<T> rawPojos) {
 		Set<String> unqualifiedColumns = new HashSet<>(notInsertableColumns);
 		
-		if(parser.isAutoIncrement() && hints.isIdentityInsertDisabled())
-			unqualifiedColumns.add(parser.getPrimaryKeyNames()[0]);
+		if(parser.isAutoIncrement() && hints.isIdentityInsertDisabled()) {
+            unqualifiedColumns.add(parser.getPrimaryKeyNames()[0]);
+        }
 
 		if(hints.isInsertNullField()) {
 			return unqualifiedColumns;
@@ -73,8 +75,9 @@ public class InsertTaskAdapter<T> extends TaskAdapter<T> {
 		String[] columnsToCheck = nullColumns.toArray(new String[nullColumns.size()]);
 		boolean changed = false;
 		for (Map<String, ?> pojo: daoPojos) {
-			if(nullColumns.isEmpty())
-				break;
+			if(nullColumns.isEmpty()) {
+                break;
+            }
 
 			if(changed) {
 				columnsToCheck = nullColumns.toArray(new String[nullColumns.size()]);
@@ -96,8 +99,9 @@ public class InsertTaskAdapter<T> extends TaskAdapter<T> {
 	}
 
 	public void removeUnqualifiedColumns(Map<String, ?> pojo, Set<String> unqualifiedColumns) {
-		if(unqualifiedColumns.size() == 0)
-			return;
+		if(unqualifiedColumns.size() == 0) {
+            return;
+        }
 		
 		for(String columName: unqualifiedColumns) {
 			pojo.remove(columName);

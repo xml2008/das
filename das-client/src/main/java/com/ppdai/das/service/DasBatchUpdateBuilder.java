@@ -59,7 +59,9 @@ public class DasBatchUpdateBuilder implements org.apache.thrift.TBase<DasBatchUp
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -307,44 +309,54 @@ public class DasBatchUpdateBuilder implements org.apache.thrift.TBase<DasBatchUp
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasBatchUpdateBuilder)
-      return this.equals((DasBatchUpdateBuilder)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasBatchUpdateBuilder) {
+        return this.equals((DasBatchUpdateBuilder)that);
+    }
     return false;
   }
 
   public boolean equals(DasBatchUpdateBuilder that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_statements = true && this.isSetStatements();
     boolean that_present_statements = true && that.isSetStatements();
     if (this_present_statements || that_present_statements) {
-      if (!(this_present_statements && that_present_statements))
-        return false;
-      if (!this.statements.equals(that.statements))
-        return false;
+      if (!(this_present_statements && that_present_statements)) {
+          return false;
+      }
+      if (!this.statements.equals(that.statements)) {
+          return false;
+      }
     }
 
     boolean this_present_valuesList = true && this.isSetValuesList();
     boolean that_present_valuesList = true && that.isSetValuesList();
     if (this_present_valuesList || that_present_valuesList) {
-      if (!(this_present_valuesList && that_present_valuesList))
-        return false;
-      if (!this.valuesList.equals(that.valuesList))
-        return false;
+      if (!(this_present_valuesList && that_present_valuesList)) {
+          return false;
+      }
+      if (!this.valuesList.equals(that.valuesList)) {
+          return false;
+      }
     }
 
     boolean this_present_hints = true && this.isSetHints();
     boolean that_present_hints = true && that.isSetHints();
     if (this_present_hints || that_present_hints) {
-      if (!(this_present_hints && that_present_hints))
-        return false;
-      if (!this.hints.equals(that.hints))
-        return false;
+      if (!(this_present_hints && that_present_hints)) {
+          return false;
+      }
+      if (!this.hints.equals(that.hints)) {
+          return false;
+      }
     }
 
     return true;
@@ -355,16 +367,19 @@ public class DasBatchUpdateBuilder implements org.apache.thrift.TBase<DasBatchUp
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetStatements()) ? 131071 : 524287);
-    if (isSetStatements())
-      hashCode = hashCode * 8191 + statements.hashCode();
+    if (isSetStatements()) {
+        hashCode = hashCode * 8191 + statements.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetValuesList()) ? 131071 : 524287);
-    if (isSetValuesList())
-      hashCode = hashCode * 8191 + valuesList.hashCode();
+    if (isSetValuesList()) {
+        hashCode = hashCode * 8191 + valuesList.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetHints()) ? 131071 : 524287);
-    if (isSetHints())
-      hashCode = hashCode * 8191 + hints.hashCode();
+    if (isSetHints()) {
+        hashCode = hashCode * 8191 + hints.hashCode();
+    }
 
     return hashCode;
   }
@@ -438,7 +453,9 @@ public class DasBatchUpdateBuilder implements org.apache.thrift.TBase<DasBatchUp
       first = false;
     }
     if (isSetValuesList()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("valuesList:");
       if (this.valuesList == null) {
         sb.append("null");
@@ -448,7 +465,9 @@ public class DasBatchUpdateBuilder implements org.apache.thrift.TBase<DasBatchUp
       first = false;
     }
     if (isSetHints()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("hints:");
       if (this.hints == null) {
         sb.append("null");

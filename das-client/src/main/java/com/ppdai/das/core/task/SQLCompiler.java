@@ -29,8 +29,9 @@ public class SQLCompiler {
 	 */
 	public static String compile(String original, List<List<?>> parms) throws SQLException
 	{
-		if(null == parms || parms.size() == 0)
-			return original;
+		if(null == parms || parms.size() == 0) {
+            return original;
+        }
 		StringBuffer temp = new StringBuffer();
 		Matcher m = inRegxPattern.matcher(original);
 		List<String> plains = new ArrayList<String>();
@@ -50,8 +51,9 @@ public class SQLCompiler {
 		int index = 0;
 		for (; index < parms.size(); index++) {
 			List<String> qus = new ArrayList<String>(parms.get(index).size());
-			for(int j = 0; j < parms.get(index).size(); j ++)
-				qus.add("?");
+			for(int j = 0; j < parms.get(index).size(); j ++) {
+                qus.add("?");
+            }
 			temp.append(plains.get(index))
 				.append(String.format("In (%s)", StringUtils.join(qus, ",")))
 				.append(" ");

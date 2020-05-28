@@ -38,8 +38,9 @@ public class TableDefinition implements TableReference, Segment {
     public void setColumnDefinitions(ColumnDefinition...columnDefinitions) {
         this.columnDefinitions = columnDefinitions;
         columnDefinitionMap.clear();
-        for(ColumnDefinition def: columnDefinitions)
+        for(ColumnDefinition def: columnDefinitions) {
             columnDefinitionMap.put(def.getColumnName(), def);
+        }
     }
 
     public String getName() {

@@ -54,7 +54,9 @@ public class Entity implements org.apache.thrift.TBase<Entity, Entity._Fields>, 
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -222,35 +224,43 @@ public class Entity implements org.apache.thrift.TBase<Entity, Entity._Fields>, 
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof Entity)
-      return this.equals((Entity)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof Entity) {
+        return this.equals((Entity)that);
+    }
     return false;
   }
 
   public boolean equals(Entity that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_value = true && this.isSetValue();
     boolean that_present_value = true && that.isSetValue();
     if (this_present_value || that_present_value) {
-      if (!(this_present_value && that_present_value))
-        return false;
-      if (!this.value.equals(that.value))
-        return false;
+      if (!(this_present_value && that_present_value)) {
+          return false;
+      }
+      if (!this.value.equals(that.value)) {
+          return false;
+      }
     }
 
     boolean this_present_entityMeta = true && this.isSetEntityMeta();
     boolean that_present_entityMeta = true && that.isSetEntityMeta();
     if (this_present_entityMeta || that_present_entityMeta) {
-      if (!(this_present_entityMeta && that_present_entityMeta))
-        return false;
-      if (!this.entityMeta.equals(that.entityMeta))
-        return false;
+      if (!(this_present_entityMeta && that_present_entityMeta)) {
+          return false;
+      }
+      if (!this.entityMeta.equals(that.entityMeta)) {
+          return false;
+      }
     }
 
     return true;
@@ -261,12 +271,14 @@ public class Entity implements org.apache.thrift.TBase<Entity, Entity._Fields>, 
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetValue()) ? 131071 : 524287);
-    if (isSetValue())
-      hashCode = hashCode * 8191 + value.hashCode();
+    if (isSetValue()) {
+        hashCode = hashCode * 8191 + value.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetEntityMeta()) ? 131071 : 524287);
-    if (isSetEntityMeta())
-      hashCode = hashCode * 8191 + entityMeta.hashCode();
+    if (isSetEntityMeta()) {
+        hashCode = hashCode * 8191 + entityMeta.hashCode();
+    }
 
     return hashCode;
   }
@@ -330,7 +342,9 @@ public class Entity implements org.apache.thrift.TBase<Entity, Entity._Fields>, 
       first = false;
     }
     if (isSetEntityMeta()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("entityMeta:");
       if (this.entityMeta == null) {
         sb.append("null");

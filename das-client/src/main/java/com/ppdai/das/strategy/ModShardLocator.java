@@ -36,12 +36,14 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
         
         Set<String> shards = new HashSet<>();
         // Illegal case for between
-        if(lowerValue > upperValue)
+        if(lowerValue > upperValue) {
             return shards;
+        }
         
         // Cross all shards case
-        if(upperValue - lowerValue >= (mod -1))
+        if(upperValue - lowerValue >= (mod -1)) {
             return ctx.getAllShards();
+        }
         
         //For same value
         if(upperValue == lowerValue) {
@@ -54,15 +56,18 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
         int upperShard = Integer.parseInt(mod(mod, ctx.getSecondValue()));
         
         if(lowerShard < upperShard) {
-            while(lowerShard <= upperShard)
+            while(lowerShard <= upperShard) {
                 shards.add(String.valueOf(lowerShard++));
+            }
         } else {
-            while(lowerShard < mod)
+            while(lowerShard < mod) {
                 shards.add(String.valueOf(lowerShard++));
+            }
             
             int shard = 0;
-            while(shard <= upperShard)
+            while(shard <= upperShard) {
                 shards.add(String.valueOf(shard++));
+            }
         }
 
         return shards;
@@ -74,17 +79,21 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
     }
 
     private Long getLongValue(Object value) {
-        if(value == null)
+        if(value == null) {
             throw new IllegalArgumentException("The shard column must not be null");
+        }
         
-        if(value instanceof Long)
+        if(value instanceof Long) {
             return (Long)value;
+        }
         
-        if(value instanceof Number)
+        if(value instanceof Number) {
             return ((Number)value).longValue();
+        }
         
-        if(value instanceof String)
+        if(value instanceof String) {
             return string2Long((String)value);
+        }
         
         throw new IllegalArgumentException(String.format("Shard value: %s can not be recoganized as int value", value.toString()));
     }
