@@ -13,7 +13,8 @@ import org.junit.runners.Suite.SuiteClasses;
     AbstractShardingStrategyTest.class,
     AdvancedModStrategyTest.class,
     ModShardLocatorTest.class,
-    HintsStrategyTest.class
+    HintsStrategyTest.class,
+    HashCRCModShardLocatorTest.class
 })
 public class AllStrategyTests {
 

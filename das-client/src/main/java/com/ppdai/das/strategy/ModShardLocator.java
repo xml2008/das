@@ -41,8 +41,8 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
 
     @Override
     public Set<String> locateForBetween(ConditionContext ctx) {
-        long lowerValue = getLongValue(ctx.getValue());
-        long upperValue = getLongValue(ctx.getSecondValue());
+        long lowerValue = (long) getNumberValue(ctx.getValue());
+        long upperValue = (long) getNumberValue(ctx.getSecondValue());
         
         Set<String> shards = new HashSet<>();
         // Illegal case for between
@@ -78,12 +78,12 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
         return applySuffix(shards);
     }
 
-    private String mod(int mod, Object value) {
-        Long id = getLongValue(value);
+    protected String mod(int mod, Object value) {
+        Long id = (Long) getNumberValue(value);
         return String.valueOf(id%mod);
     }
 
-    private Long getLongValue(Object value) {
+    protected Number getNumberValue(Object value) {
         if(value == null)
             throw new IllegalArgumentException("The shard column must not be null");
         
@@ -99,7 +99,7 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
         throw new IllegalArgumentException(String.format("Shard value: %s can not be recoganized as int value", value.toString()));
     }
 
-    protected Long string2Long(String s) {
+    protected Number string2Long(String s) {
         return new Long(s);
     }
 
