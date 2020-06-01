@@ -2,7 +2,6 @@ package com.ppdai.das.strategy;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommonShardLocator<CTX> {
@@ -38,19 +37,6 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
 
     public Set<String> locateForLessThan(CTX ctx) {
         return getAllShards(ctx);
-    }
-
-    @Override
-    public Set<String> locateForIn(CTX context) {
-        Set<String> allShards = getAllShards(context);
-        Set<String> range = new TreeSet<>();
-        for(Object value: context.getValues()) {
-            range.addAll(locateShards(createConditionContext(context, OperatorEnum.EQUAL, value)));
-            if(isAlreadyAllShards(allShards, range))
-                break;
-        }
-
-        return range;
     }
 
     @Override
