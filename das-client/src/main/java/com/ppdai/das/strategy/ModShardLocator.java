@@ -2,18 +2,29 @@ package com.ppdai.das.strategy;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommonShardLocator<CTX> {
     private Integer mod;
+    /**
+     * DB shard 0 padding format, default 1.
+     */
+    protected String zeroPaddingFormat = "%01d";
 
     public ModShardLocator(Integer mod) {
         this.mod = mod;
     }
 
+    public ModShardLocator(Integer mod, String zeroPaddingFormat) {
+        this(mod);
+        this.zeroPaddingFormat = zeroPaddingFormat;
+    }
+
     public Set<String> locateByValue(Object value) {
         Set<String> shards = new HashSet<>();
         shards.add(mod(mod, value));
-        return shards;
+        return applySuffix(shards);
     }
 
     @Override
@@ -28,7 +39,20 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
     public Set<String> locateForLessThan(CTX ctx) {
         return getAllShards(ctx);
     }
-    
+
+    @Override
+    public Set<String> locateForIn(CTX context) {
+        Set<String> allShards = getAllShards(context);
+        Set<String> range = new TreeSet<>();
+        for(Object value: context.getValues()) {
+            range.addAll(locateShards(createConditionContext(context, OperatorEnum.EQUAL, value)));
+            if(isAlreadyAllShards(allShards, range))
+                break;
+        }
+
+        return range;
+    }
+
     @Override
     public Set<String> locateForBetween(ConditionContext ctx) {
         long lowerValue = getLongValue(ctx.getValue());
@@ -47,7 +71,7 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
         if(upperValue == lowerValue) {
             int shard = Integer.parseInt(mod(mod, ctx.getValue()));
             shards.add(String.valueOf(shard));
-            return shards;
+            return applySuffix(shards);
         }
 
         int lowerShard = Integer.parseInt(mod(mod, ctx.getValue()));
@@ -65,7 +89,7 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
                 shards.add(String.valueOf(shard++));
         }
 
-        return shards;
+        return applySuffix(shards);
     }
 
     private String mod(int mod, Object value) {
@@ -91,5 +115,11 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
 
     protected Long string2Long(String s) {
         return new Long(s);
+    }
+
+    private Set<String> applySuffix(Set<String> original) {
+        return original.stream()
+                .map(s -> String.format(zeroPaddingFormat, Integer.parseInt(s)))
+                .collect(Collectors.toSet());
     }
 }

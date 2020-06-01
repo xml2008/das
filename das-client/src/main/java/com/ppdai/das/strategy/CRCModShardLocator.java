@@ -4,8 +4,8 @@ import java.util.zip.CRC32;
 
 public class CRCModShardLocator extends ModShardLocator {
 
-    public CRCModShardLocator(Integer mod) {
-        super(mod);
+    public CRCModShardLocator(Integer mod, String zeroPaddingFormat) {
+        super(mod, zeroPaddingFormat);
     }
 
     @Override

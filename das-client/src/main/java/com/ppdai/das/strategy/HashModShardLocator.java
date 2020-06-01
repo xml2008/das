@@ -5,8 +5,8 @@ import java.math.BigInteger;
 
 public class HashModShardLocator extends ModShardLocator {
 
-    public HashModShardLocator(Integer mod) {
-        super(mod);
+    public HashModShardLocator(Integer mod, String zeroPaddingFormat) {
+        super(mod, zeroPaddingFormat);
     }
 
     @Override
