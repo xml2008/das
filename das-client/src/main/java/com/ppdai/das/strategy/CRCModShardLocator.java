@@ -2,7 +2,7 @@ package com.ppdai.das.strategy;
 
 import java.util.zip.CRC32;
 
-public class CRCModShardLocator extends ModShardLocator {
+public class CRCModShardLocator<CTX extends ConditionContext> extends ModShardLocator<CTX> {
 
     public CRCModShardLocator(Integer mod, String zeroPaddingFormat) {
         super(mod, zeroPaddingFormat);

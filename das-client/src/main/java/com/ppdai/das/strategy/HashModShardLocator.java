@@ -3,7 +3,7 @@ package com.ppdai.das.strategy;
 import org.apache.commons.codec.digest.DigestUtils;
 import java.math.BigInteger;
 
-public class HashModShardLocator extends ModShardLocator {
+public class HashModShardLocator<CTX extends ConditionContext> extends ModShardLocator<CTX> {
 
     public HashModShardLocator(Integer mod, String zeroPaddingFormat) {
         super(mod, zeroPaddingFormat);

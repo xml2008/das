@@ -75,17 +75,17 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
         }
     }
 
-    protected ModShardLocator createLocator(String type, int mod, String zeroPaddingFormat) {
+    protected <T extends ConditionContext> ModShardLocator<T> createLocator(String type, int mod, String zeroPaddingFormat) {
         if(Strings.isNullOrEmpty(type)){ //for version compatibility
             return new ModShardLocator<>(mod, zeroPaddingFormat);
         }
 
         if(type.equalsIgnoreCase("crc")) {
-            return new CRCModShardLocator(mod, zeroPaddingFormat);
+            return new CRCModShardLocator<>(mod, zeroPaddingFormat);
         }
 
         if(type.equalsIgnoreCase("md5")) {
-            return new HashModShardLocator(mod, zeroPaddingFormat);
+            return new HashModShardLocator<>(mod, zeroPaddingFormat);
         }
 
         throw new IllegalArgumentException("Property " + TYPE + " is required 'crc' or 'md5'.");
@@ -93,25 +93,21 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
 
     @Override
     public Set<String> locateDbShardsByValue(ShardingContext ctx, Object shardValue) {
-        Set<String> original = dbLoactor.locateByValue(shardValue);
-        return original;
+        return dbLoactor.locateByValue(shardValue);
     }
 
     @Override
     public Set<String> locateDbShards(ConditionContext ctx) {
-        Set<String> original = dbLoactor.locateShards(ctx);
-        return original;
+        return dbLoactor.locateShards(ctx);
     }
 
     @Override
     public Set<String> locateTableShardsByValue(TableShardingContext ctx, Object tableShardValue) {
-        Set<String> original = tableLoactor.locateByValue(tableShardValue);
-        return original;
+        return tableLoactor.locateByValue(tableShardValue);
     }
 
     @Override
     public Set<String> locateTableShards(TableConditionContext ctx) {
-        Set<String> original = tableLoactor.locateShards(ctx);
-        return original;
+        return tableLoactor.locateShards(ctx);
     }
 }
