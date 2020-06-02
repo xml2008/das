@@ -2,18 +2,28 @@ package com.ppdai.das.strategy;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommonShardLocator<CTX> {
     private Integer mod;
+    /**
+     * DB shard 0 padding format, default 1.
+     */
+    protected String zeroPaddingFormat = "%01d";
 
     public ModShardLocator(Integer mod) {
         this.mod = mod;
     }
 
+    public ModShardLocator(Integer mod, String zeroPaddingFormat) {
+        this(mod);
+        this.zeroPaddingFormat = zeroPaddingFormat;
+    }
+
     public Set<String> locateByValue(Object value) {
         Set<String> shards = new HashSet<>();
         shards.add(mod(mod, value));
-        return shards;
+        return applySuffix(shards);
     }
 
     @Override
@@ -30,11 +40,11 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
     public Set<String> locateForLessThan(CTX ctx) {
         return getAllShards(ctx);
     }
-    
+
     @Override
     public Set<String> locateForBetween(ConditionContext ctx) {
-        long lowerValue = getLongValue(ctx.getValue());
-        long upperValue = getLongValue(ctx.getSecondValue());
+        long lowerValue = (long) getNumberValue(ctx.getValue());
+        long upperValue = (long) getNumberValue(ctx.getSecondValue());
         
         Set<String> shards = new HashSet<>();
         // Illegal case for between
@@ -51,7 +61,7 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
         if(upperValue == lowerValue) {
             int shard = Integer.parseInt(mod(mod, ctx.getValue()));
             shards.add(String.valueOf(shard));
-            return shards;
+            return applySuffix(shards);
         }
 
         int lowerShard = Integer.parseInt(mod(mod, ctx.getValue()));
@@ -72,15 +82,15 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
             }
         }
 
-        return shards;
+        return applySuffix(shards);
     }
 
-    private String mod(int mod, Object value) {
-        Long id = getLongValue(value);
+    protected String mod(int mod, Object value) {
+        Long id = (Long) getNumberValue(value);
         return String.valueOf(id%mod);
     }
 
-    private Long getLongValue(Object value) {
+    protected Number getNumberValue(Object value) {
         if(value == null) {
             throw new IllegalArgumentException("The shard column must not be null");
         }
@@ -100,7 +110,13 @@ public class ModShardLocator<CTX extends ConditionContext> extends AbstractCommo
         throw new IllegalArgumentException(String.format("Shard value: %s can not be recoganized as int value", value.toString()));
     }
 
-    protected Long string2Long(String s) {
+    protected Number string2Long(String s) {
         return new Long(s);
+    }
+
+    private Set<String> applySuffix(Set<String> original) {
+        return original.stream()
+                .map(s -> String.format(zeroPaddingFormat, Integer.parseInt(s)))
+                .collect(Collectors.toSet());
     }
 }

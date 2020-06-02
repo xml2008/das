@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 
@@ -34,19 +33,9 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
     private static final String TABLE_ZERO_PADDING = "tableZeroPadding";
 
     /**
-     * Table shard 0 padding format, default 1.
-     */
-    private String tableZeroPaddingFormat = "%01d";
-
-    /**
      * Key used to declared DB shard 0 padding
      */
     private static final String ZERO_PADDING = "zeroPadding";
-
-    /**
-     * DB shard 0 padding format, default 1.
-     */
-    private String zeroPaddingFormat = "%01d";
     
     private ModShardLocator<ConditionContext> dbLoactor;
     private ModShardLocator<TableConditionContext> tableLoactor;
@@ -61,11 +50,12 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
                 throw new IllegalArgumentException("Property " + MOD + " is required for shard by database");
             }
 
+            String zeroPaddingFormat = "%01d";
             if(settings.containsKey(ZERO_PADDING)) {
                 zeroPaddingFormat = "%0" + Integer.parseInt(settings.get(ZERO_PADDING)) + "d";
             }
 
-            dbLoactor = createLocator(type, Integer.parseInt(settings.get(MOD)));
+            dbLoactor = createLocator(type, Integer.parseInt(settings.get(MOD)), zeroPaddingFormat);
         }
         
         if(isShardByTable()) {
@@ -73,12 +63,13 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
                 throw new IllegalArgumentException("Property " + TABLE_MOD + " is required for shard by table");
             }
 
+            String tableZeroPaddingFormat = "%01d";
             if(settings.containsKey(TABLE_ZERO_PADDING)) {
                 tableZeroPaddingFormat = "%0" + Integer.parseInt(settings.get(TABLE_ZERO_PADDING)) + "d";
             }
 
             Integer mod = Integer.parseInt(settings.get(TABLE_MOD));
-            tableLoactor = createLocator(type, mod);
+            tableLoactor = createLocator(type, mod, tableZeroPaddingFormat);
             
             Set<String> allShards = new HashSet<>();
             for(int i = 0; i < mod; i++) {
@@ -89,17 +80,17 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
         }
     }
 
-    protected ModShardLocator createLocator(String type, int mod) {
+    protected <T extends ConditionContext> ModShardLocator<T> createLocator(String type, int mod, String zeroPaddingFormat) {
         if(Strings.isNullOrEmpty(type)){ //for version compatibility
-            return new ModShardLocator<>(mod);
+            return new ModShardLocator<>(mod, zeroPaddingFormat);
         }
 
         if(type.equalsIgnoreCase("crc")) {
-            return new CRCModShardLocator(mod);
+            return new CRCModShardLocator<>(mod, zeroPaddingFormat);
         }
 
         if(type.equalsIgnoreCase("md5")) {
-            return new HashModShardLocator(mod);
+            return new HashModShardLocator<>(mod, zeroPaddingFormat);
         }
 
         throw new IllegalArgumentException("Property " + TYPE + " is required 'crc' or 'md5'.");
@@ -107,31 +98,21 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
 
     @Override
     public Set<String> locateDbShardsByValue(ShardingContext ctx, Object shardValue) {
-        Set<String> original = dbLoactor.locateByValue(shardValue);
-        return applySuffix(original, zeroPaddingFormat);
+        return dbLoactor.locateByValue(shardValue);
     }
 
     @Override
     public Set<String> locateDbShards(ConditionContext ctx) {
-        Set<String> original = dbLoactor.locateShards(ctx);
-        return applySuffix(original, zeroPaddingFormat);
+        return dbLoactor.locateShards(ctx);
     }
 
     @Override
     public Set<String> locateTableShardsByValue(TableShardingContext ctx, Object tableShardValue) {
-        Set<String> original = tableLoactor.locateByValue(tableShardValue);
-        return applySuffix(original, tableZeroPaddingFormat);
+        return tableLoactor.locateByValue(tableShardValue);
     }
 
     @Override
     public Set<String> locateTableShards(TableConditionContext ctx) {
-        Set<String> original = tableLoactor.locateShards(ctx);
-        return applySuffix(original, tableZeroPaddingFormat);
-    }
-
-    private Set<String> applySuffix(Set<String> original, String format) {
-        return original.stream()
-                .map(s -> String.format(format, Integer.parseInt(s)))
-                .collect(Collectors.toSet());
+        return tableLoactor.locateShards(ctx);
     }
 }

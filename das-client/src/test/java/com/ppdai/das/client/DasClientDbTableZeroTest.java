@@ -1197,6 +1197,22 @@ public class DasClientDbTableZeroTest extends DataPreparer {
     }
 
     @Test
+    public void testQueryIn() throws Exception {
+        Person.PersonDefinition p = Person.PERSON;
+        List<Integer> dbs = new ArrayList<>();
+        for (int i = 0; i < DB_MODE; i++) {
+            dbs.add(i);
+            List<Integer> tables = new ArrayList<>();
+            for (int j = 0; j < TABLE_MODE; j++) {
+                tables.add(j);
+                SqlBuilder builder = selectAllFrom(p).where().allOf(p.CountryID.in(dbs), p.CityID.in(tables)).into(Person.class);
+                List<Person> plist = dao.query(builder.orderBy(p.PeopleID.asc()));
+                assertEquals((i + 1) * (j + 1) * 4, plist.size());
+            }
+        }
+    }
+
+    @Test
     public void testTransaction() throws Exception {
         Person.PersonDefinition p = Person.PERSON;
         for (int i = 0; i < DB_MODE; i++) {
