@@ -92,8 +92,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
 
     @Override
     public void addDataSourceConfigureKeySet(Set<String> names) {
-        if (names == null || names.isEmpty())
+        if (names == null || names.isEmpty()) {
             return;
+        }
 
         for (String name : names) {
             dataSourceConfigureKeySet.add(name);
@@ -118,8 +119,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
 
     @Override
     public void setConnectionStrings(Map<String, ConnectionString> map) {
-        if (map == null || map.isEmpty())
+        if (map == null || map.isEmpty()) {
             return;
+        }
 
         for (Map.Entry<String, ConnectionString> entry : map.entrySet()) {
             String keyName = ConnectionStringKeyHelper.getKeyName(entry.getKey());
@@ -130,8 +132,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
 
     @Override
     public void setPoolProperties(PoolPropertiesConfigure configure) {
-        if (configure == null)
+        if (configure == null) {
             return;
+        }
 
         Properties properties = configure.getProperties();
         Properties originalProperties = new Properties(properties);
@@ -146,8 +149,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
 
     private void processProperties(Properties properties, Properties appProperties,
             Map<String, Properties> datasourceProperties) {
-        if (properties == null || properties.isEmpty())
+        if (properties == null || properties.isEmpty()) {
             return;
+        }
 
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             String[] array = entry.getKey().toString().split(SEPARATOR);
@@ -168,8 +172,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
     @Override
     public DataSourceConfigure mergeDataSourceConfigure(ConnectionString connectionString) {
         ConnectionStringConfigure connectionStringConfigure = getConnectionStringConfigure(connectionString);
-        if (connectionStringConfigure == null)
+        if (connectionStringConfigure == null) {
             return null;
+        }
 
         String name = connectionStringConfigure.getName();
         DataSourceConfigure c = cloneDataSourceConfigure(null);
@@ -244,8 +249,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
     }
 
     protected ConnectionStringConfigure getConnectionStringConfigure(ConnectionString connectionString) {
-        if (connectionString == null)
+        if (connectionString == null) {
             return null;
+        }
 
         ConnectionStringConfigure configure = null;
         IPDomainStatus status = getIPDomainStatus();
@@ -268,8 +274,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
 
     protected DataSourceConfigure cloneDataSourceConfigure(DataSourceConfigure configure) {
         DataSourceConfigure dataSourceConfigure = new DataSourceConfigure();
-        if (configure == null)
+        if (configure == null) {
             return dataSourceConfigure;
+        }
 
         dataSourceConfigure.setName(configure.getName());
         dataSourceConfigure.setProperties(deepCopyProperties(configure.getProperties()));
@@ -279,8 +286,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
     }
 
     private Properties deepCopyProperties(Properties properties) {
-        if (properties == null)
+        if (properties == null) {
             return null;
+        }
 
         Properties p = new Properties();
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
@@ -292,8 +300,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
 
     protected void mergeConnectionStringConfigure(DataSourceConfigure dataSourceConfigure,
             ConnectionStringConfigure connectionStringConfigure) {
-        if (dataSourceConfigure == null || connectionStringConfigure == null)
+        if (dataSourceConfigure == null || connectionStringConfigure == null) {
             return;
+        }
 
         dataSourceConfigure.setName(connectionStringConfigure.getName());
         dataSourceConfigure.setConnectionUrl(connectionStringConfigure.getConnectionUrl());
@@ -304,8 +313,9 @@ public class DefaultDataSourceConfigureLocator implements DataSourceConfigureLoc
     }
 
     protected void overrideProperties(Properties lowLevel, Properties highLevel) {
-        if (lowLevel == null || highLevel == null)
+        if (lowLevel == null || highLevel == null) {
             return;
+        }
 
         for (Map.Entry<Object, Object> entry : highLevel.entrySet()) {
             lowLevel.setProperty(entry.getKey().toString(), entry.getValue().toString());

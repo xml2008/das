@@ -35,8 +35,9 @@ public class ColumnValueExpression extends ColumnExpression implements Parameter
 
     @Override
     public  List<Parameter> buildParameters() {
-        if(value instanceof ParameterDefinition)
+        if(value instanceof ParameterDefinition) {
             throw new IllegalArgumentException("What you specified is definition instead of value");
+        }
         
         
         List<Parameter> pl = new ArrayList<>();
@@ -50,6 +51,7 @@ public class ColumnValueExpression extends ColumnExpression implements Parameter
     /**
      * Mark this expression as optional when expression's value is null.
      */
+    @Override
     public ColumnExpression nullable() {
         when(value != null);
         return this;

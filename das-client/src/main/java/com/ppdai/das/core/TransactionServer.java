@@ -4,11 +4,14 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ppdai.das.client.Hints;
 import com.ppdai.das.core.client.DalConnection;
 import com.ppdai.das.core.client.DalConnectionManager;
@@ -19,11 +22,16 @@ import com.ppdai.das.core.datasource.DataSourceLocator;
 
 public class TransactionServer implements DataSourceConfigureConstants {
     private static final Map<String, DalTransaction> transactionMap = new ConcurrentHashMap<>();
-    private Timer cleanupTimer = new Timer("DAS Server Transaction Cleanup Timer", true);
+
+    private ScheduledExecutorService cleanupTimer = new ScheduledThreadPoolExecutor(1,
+            new ThreadFactoryBuilder()
+                    .setNameFormat("DAS Server Transaction Cleanup Timer")
+                    .setDaemon(true)
+                    .build());
     private TransactionIdGenerator generator;
     private final String hostAddress;
     private final String workId;
-    
+
     private static final long SECOND = 1000;
     private static final long INITIAL_DELAY = 1 * SECOND;
     public static final long CLEAN_UP_INTERVAL = 10 * SECOND;
@@ -38,12 +46,14 @@ public class TransactionServer implements DataSourceConfigureConstants {
             Set<String> ids = new HashSet<>(transactionMap.keySet());
             
             for(String id: ids) {
-                if(!transactionMap.containsKey(id))
+                if(!transactionMap.containsKey(id)) {
                     continue;
+                }
                 
                 DalTransaction trans = transactionMap.get(id);
-                if(isTimeout(trans))
+                if(isTimeout(trans)) {
                     cleanUp(id, trans);
+                }
             }
         }
         
@@ -73,7 +83,7 @@ public class TransactionServer implements DataSourceConfigureConstants {
         this.hostAddress = hostAddress;
         this.workId = workId;
         this.generator = new TransactionIdGenerator();
-        cleanupTimer.schedule(new CleanupTimerTask(), INITIAL_DELAY, CLEAN_UP_INTERVAL);
+        cleanupTimer.scheduleAtFixedRate(new CleanupTimerTask(), INITIAL_DELAY, CLEAN_UP_INTERVAL, TimeUnit.MILLISECONDS);
     }
     
     public int getCurrentCount() {
@@ -105,8 +115,9 @@ public class TransactionServer implements DataSourceConfigureConstants {
     public void commit(String transactionId) throws SQLException {
        DalTransaction transaction = transactionMap.get(transactionId);
         
-        if(transaction == null)
+        if(transaction == null) {
             throw new SQLException("calling endTransaction with empty ConnectionCache");
+        }
 
         try {
             transaction.endTransaction(0);//always 0
@@ -119,8 +130,9 @@ public class TransactionServer implements DataSourceConfigureConstants {
         DalTransaction transaction = transactionMap.get(transactionId);
         
         // Already handled in deeper level
-        if(transaction == null)
+        if(transaction == null) {
             return;
+        }
 
         try {
             transaction.rollbackTransaction();
@@ -130,8 +142,9 @@ public class TransactionServer implements DataSourceConfigureConstants {
     }
 
     public <T> T doInTransaction(String transactionId, Callable<T> transaction) throws Exception {
-        if(transactionId == null)
+        if(transactionId == null) {
             return transaction.call();
+        }
         
         prepareTransaction(transactionId);
         try {

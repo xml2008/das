@@ -93,12 +93,14 @@ public class ClientDasDelegate implements DasDelegate {
         return query(builder.setHints(hints));
     }
 
+    @Override
     public <T> List<T> queryBySample(T sample, PageRange range, Hints hints) throws SQLException {
         TableDefinition table = getTableDefinition(sample);
         SqlBuilder builder = SqlBuilder.selectAllFrom(table).where(SegmentConstants.match(table, sample)).into(sample.getClass());
 
-        if(range.hasOrders())
+        if(range.hasOrders()) {
             builder.orderBy(range.getOrders());
+        }
 
         builder.atPage(range.getPageNo(), range.getPageSize());
 
@@ -191,8 +193,9 @@ public class ClientDasDelegate implements DasDelegate {
     }
 
     private <T> T queryObject(SqlBuilder builder, boolean nullable) throws SQLException {
-        if(builder.isSelectCount())
+        if(builder.isSelectCount()) {
             return executeRequest(SqlBuilderProvider.queryObject(builder, ResultMerger.LongNumberSummary::new), nullable);
+        }
         return executeQuery(builder, nullable, null);
     }
     
@@ -226,8 +229,9 @@ public class ClientDasDelegate implements DasDelegate {
     }
 
     private <K, T> K exectuteBatch(List<T> entities, Hints hints, K defaultValue, BulkTask<K, T> bulkTask) throws SQLException {
-        if(isInvalid(entities))
+        if(isInvalid(entities)) {
             return defaultValue;
+        }
 
         BulkTaskRequest<K, T> request = new BulkTaskRequest<>(appId, logicDbName, hints, entities, bulkTask);
         return execute(request, NOT_NULLABLE);
@@ -248,17 +252,20 @@ public class ClientDasDelegate implements DasDelegate {
     }
 
     private int getSafeResult(Integer value) {
-        if (value == null)
+        if (value == null) {
             return 0;
+        }
         return value;
     }
 
     private <T> void validatePk(T pk) throws SQLException {
         Map<String, ?> pkFields = getParser(pk).getPrimaryKeys(pk);
 
-        for(Map.Entry<String, ?> keyEntry: pkFields.entrySet())
-            if(keyEntry.getValue() == null)
+        for(Map.Entry<String, ?> keyEntry: pkFields.entrySet()) {
+            if(keyEntry.getValue() == null) {
                 throw new IllegalArgumentException(String.format("Primary key field %s is null", keyEntry.getKey()));
+            }
+        }
     }
 
     private <T> TableDefinition getTableDefinition(T sample) {

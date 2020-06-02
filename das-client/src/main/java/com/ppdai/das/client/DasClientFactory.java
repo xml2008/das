@@ -57,18 +57,21 @@ public class DasClientFactory {
 	}
 	
     public static void initClientFactory() {
-        if(initialzed.get())
+        if(initialzed.get()) {
             return;
+        }
 
         synchronized(initialzed) {
-            if(initialzed.get())
+            if(initialzed.get()) {
                 return;
+            }
 
             logger.info("Start initialize DAS client");
             try {
                 ClientConfigureLoader loader = ServiceLoaderHelper.getInstance(ClientConfigureLoader.class, DefaultClientConfigLoader.class);
-                if(loader == null)
+                if(loader == null) {
                     throw new IllegalStateException("Can not find ClientConfigureLoader");
+                }
                 
                 clientLoaderRef.set(loader);
                 

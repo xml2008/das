@@ -11,13 +11,15 @@ public class DalSingleResultMerger<T> implements ResultMerger<T>{
 	
 	@Override
 	public void addPartial(String shard, T partial) throws SQLException {
-		if(partial == null)
-			return;
+		if(partial == null) {
+            return;
+        }
 		
-		if(result == null)
-			result = partial;
-		else
-			throw new DasException(ErrorCode.AssertSingle);
+		if(result == null) {
+            result = partial;
+        } else {
+            throw new DasException(ErrorCode.AssertSingle);
+        }
 	}
 
 	@Override

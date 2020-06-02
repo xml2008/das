@@ -47,11 +47,13 @@ public class BulkTaskRequest<K, T> implements SqlRequest<K>{
 
     @Override
     public void validate() throws SQLException {
-        if(null == rawPojos)
+        if(null == rawPojos) {
             throw new DasException(ErrorCode.ValidatePojoList);
+        }
 
-        if(bulkTask == null)
+        if(bulkTask == null) {
             throw new DasException(ErrorCode.ValidateTask);
+        }
 
         dbShardMerger = bulkTask.createMerger();
         daoPojos = bulkTask.getPojosFields(rawPojos);
@@ -60,9 +62,9 @@ public class BulkTaskRequest<K, T> implements SqlRequest<K>{
         // Locate shard id and check for distributed transaction 
         if(isShardingEnabled(appId, logicDbName)) {
             shardId = locateShardId(appId, logicDbName, hints);
-            if(shardId != null)
+            if(shardId != null) {
                 detectDistributedTransaction(shardId);
-            else {
+            } else {
                 shuffled = shuffleEntities(appId, logicDbName, rawTableName, daoPojos);
                 detectDistributedTransaction(shuffled.keySet());
             }
@@ -71,12 +73,14 @@ public class BulkTaskRequest<K, T> implements SqlRequest<K>{
     
     @Override
     public boolean isCrossShard() throws SQLException {
-        if(!isShardingEnabled(appId, logicDbName))
+        if(!isShardingEnabled(appId, logicDbName)) {
             return false;
+        }
         
         // If we already located shard id from hints
-        if(shardId != null)
+        if(shardId != null) {
             return false;
+        }
 
         return shuffled.size() > 1;
     }
@@ -89,11 +93,13 @@ public class BulkTaskRequest<K, T> implements SqlRequest<K>{
         if(shuffled == null) {
             // Convert to index map
             Map<Integer, Map<String, ?>> daoPojosMap = new HashMap<>();
-            for(int i = 0; i < daoPojos.size(); i++)
+            for(int i = 0; i < daoPojos.size(); i++) {
                 daoPojosMap.put(i, daoPojos.get(i));
+            }
 
-            if(shardId != null)
+            if(shardId != null) {
                 hints.inShard(shardId);
+            }
 
             return new BulkTaskCallable<>(appId, logicDbName, rawTableName, hints, daoPojosMap, bulkTask, taskContext);
         }else {
@@ -126,8 +132,9 @@ public class BulkTaskRequest<K, T> implements SqlRequest<K>{
     }
     
     private void handleKeyHolder(boolean requireMerge) {
-        if(hints.getKeyHolder() == null)
+        if(hints.getKeyHolder() == null) {
             return;
+        }
 
         hints.getKeyHolder().requireMerge();
     }
@@ -163,17 +170,19 @@ public class BulkTaskRequest<K, T> implements SqlRequest<K>{
 
         @Override
         public K call() throws Exception {
-            if(shaffled.isEmpty())
+            if(shaffled.isEmpty()) {
                 return task.getEmptyValue();
+            }
             
             if(isTableShardingEnabled(appId, logicDbName, rawTableName)) {
                 String tableShardId = locateTableShardId(appId, logicDbName, hints);
                 
                 // If there is user defined table shards id
-                if(tableShardId != null)
+                if(tableShardId != null) {
                     return execute(hints.inTableShard(tableShardId), shaffled, taskContext);
-                else
+                } else {
                     return executeByTableShards();
+                }
             }else{
                 return execute(hints, shaffled, taskContext);
             }
@@ -194,8 +203,9 @@ public class BulkTaskRequest<K, T> implements SqlRequest<K>{
             mergePartial(task, hints.getKeyHolder(), indexList, localHints.getKeyHolder(), error);
 
             // Upper level may handle continue on error
-            if(error != null)
+            if(error != null) {
                 throw DasException.wrap(error);
+            }
 
             return partial;
         }

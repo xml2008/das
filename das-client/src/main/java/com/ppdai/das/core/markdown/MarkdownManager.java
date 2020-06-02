@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -28,19 +28,21 @@ public class MarkdownManager {
 	private static ConcurrentLinkedQueue<ErrorContext> exqueue = new ConcurrentLinkedQueue<ErrorContext>();
 
 	public static void init() {
-		if(managerRef.get() !=null)
-			return;
+		if(managerRef.get() !=null) {
+            return;
+        }
 		
 		synchronized (MarkdownManager.class) {
-			if(managerRef.get() !=null)
-				return;
+			if(managerRef.get() !=null) {
+                return;
+            }
 			
 			ArrayList<ErrorDetector> detectors = new ArrayList<ErrorDetector>();
 			// We currently only have Timeout case
 			detectors.add(new TimeoutDetector());
 
 			detectorsRef.set(detectors);
-			ScheduledExecutorService manager = Executors.newSingleThreadScheduledExecutor();
+			ScheduledExecutorService manager = new ScheduledThreadPoolExecutor(1);
 			manager.scheduleAtFixedRate(new CollectExceptionTask(), durations,
 					durations, TimeUnit.MICROSECONDS);
 
@@ -49,12 +51,14 @@ public class MarkdownManager {
 	}
 
 	public static void shutdown(){
-		if(managerRef.get() ==null)
-			return;
+		if(managerRef.get() ==null) {
+            return;
+        }
 		
 		synchronized (MarkdownManager.class) {
-			if(managerRef.get() ==null)
-				return;
+			if(managerRef.get() ==null) {
+                return;
+            }
 			
 			managerRef.get().shutdownNow();
 			managerRef.set(null);
@@ -78,24 +82,29 @@ public class MarkdownManager {
 
 	public static boolean isMarkdown(String key) {
 		MarkdownStatus mcb = StatusManager.getMarkdownStatus();
-		if (mcb.isAppMarkdown())
-			return true;
+		if (mcb.isAppMarkdown()) {
+            return true;
+        }
 		
 		DataSourceStatus item = StatusManager.getDataSourceStatus(key);
 
 		// Manual markdown can only be markup manually.
-		if (item.isManualMarkdown())
-			return true;
+		if (item.isManualMarkdown()) {
+            return true;
+        }
 
-		if(!mcb.isEnableAutoMarkdown())
-			return false;
+		if(!mcb.isEnableAutoMarkdown()) {
+            return false;
+        }
 		
-		if (!item.isAutoMarkdown())
-			return false;
+		if (!item.isAutoMarkdown()) {
+            return false;
+        }
 
 		// Timeout is not reached
-		if ((System.currentTimeMillis() - item.getAutoMarkdownTime().getTime()) <= mcb.getAutoMarkupDelay() * 1000)
-			return true;
+		if ((System.currentTimeMillis() - item.getAutoMarkdownTime().getTime()) <= mcb.getAutoMarkupDelay() * 1000) {
+            return true;
+        }
 	
 		autoMarkup(new MarkupInfo(key, DasClientVersion.getVersion(), 0));
 
@@ -106,13 +115,15 @@ public class MarkdownManager {
 	 * Clear all auto markdown
 	 */
 	public static void resetAutoMarkdowns() {
-		for(String dbName: StatusManager.getDataSourceNames())
-			StatusManager.getDataSourceStatus(dbName).setAutoMarkdown(false);
+		for(String dbName: StatusManager.getDataSourceNames()) {
+            StatusManager.getDataSourceStatus(dbName).setAutoMarkdown(false);
+        }
 	}
 
 	public static void detect(DalConnection conn, long start, Throwable e) {
-		if (conn == null || conn.getMeta() == null || !(e instanceof SQLException))
-			return;
+		if (conn == null || conn.getMeta() == null || !(e instanceof SQLException)) {
+            return;
+        }
 			
 		ErrorContext ctx = new ErrorContext(
 				conn.getMeta().getDataBaseKeyName(), 

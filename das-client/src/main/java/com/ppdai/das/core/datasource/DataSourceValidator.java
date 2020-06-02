@@ -54,11 +54,12 @@ public class DataSourceValidator implements Validator {
                     stmt.execute(query);
                     isValid = true;
                 } finally {
-                    if (stmt != null)
+                    if (stmt != null) {
                         try {
                             stmt.close();
                         } catch (Exception ignore2) {
                             /* NOOP */}
+                    }
                 }
             }
         } catch (Throwable ex) {

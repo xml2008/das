@@ -18,8 +18,9 @@ public class PageRange {
      * @param orders
      */
     public PageRange(int pageNo, int pageSize, Object...orders){
-        if(pageNo < 1 || pageSize < 1)
+        if(pageNo < 1 || pageSize < 1) {
             throw new IllegalArgumentException("pageNo or pageSize is invalid");
+        }
         
         this.pageNo = pageNo;
         this.pageSize = pageSize;

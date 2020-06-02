@@ -51,8 +51,9 @@ public class DalConnectionManager {
 		String realDbName = logicDbName;
 		try
 		{
-			if(StatusManager.getDatabaseSetStatus(config.getAppId(), logicDbName).isMarkdown())
-				throw new DasException(ErrorCode.MarkdownLogicDb, logicDbName);
+			if(StatusManager.getDatabaseSetStatus(config.getAppId(), logicDbName).isMarkdown()) {
+                throw new DasException(ErrorCode.MarkdownLogicDb, logicDbName);
+            }
 
 			boolean isMaster = hints.is(HintEnum.masterOnly) || useMaster;
 			boolean isSelect = operation == EventEnum.QUERY;
@@ -76,12 +77,14 @@ public class DalConnectionManager {
 		DatabaseSet dbSet = config.getDatabaseSet(logicDbName);
 		String shardId;
 
-		if(!dbSet.isShardingSupported())
-			return null;
+		if(!dbSet.isShardingSupported()) {
+            return null;
+        }
 
 		shardId = hints.getShard();
-		if(shardId == null)
-			shardId = getShardId(hints);
+		if(shardId == null) {
+            shardId = getShardId(hints);
+        }
 
 		// We allow this happen
 //		if(shardId == null)
@@ -94,11 +97,13 @@ public class DalConnectionManager {
 	
 	private String getShardId(Hints hints) throws SQLException {
 	    Set<String> shards = config.getDatabaseSet(logicDbName).getStrategy().locateDbShards(new ShardingContext(config, logicDbName, hints, ConditionList.andList()));
-	    if(shards.isEmpty())
-	        return null;
+	    if(shards.isEmpty()) {
+            return null;
+        }
 
-	    if(shards.size() == 1) 
-	        return shards.iterator().next();
+	    if(shards.size() == 1) {
+            return shards.iterator().next();
+        }
 	    
 	    throw new IllegalStateException("More than one shards detected" + shards);
 	}
@@ -112,10 +117,12 @@ public class DalConnectionManager {
 
 		if(dbSet.isShardingSupported()){
 			shardId = hints.getShard();
-			if(shardId == null)
-				shardId = getShardId(hints);
-			if(shardId == null)
-				throw new DasException(ErrorCode.ShardLocated, logicDbName);
+			if(shardId == null) {
+                shardId = getShardId(hints);
+            }
+			if(shardId == null) {
+                throw new DasException(ErrorCode.ShardLocated, logicDbName);
+            }
 			dbSet.validate(shardId);
 		}
 
@@ -150,8 +157,9 @@ public class DalConnectionManager {
 	    // If HA disabled or not query, we just directly call _doInConnnection
 
 		if(!StatusManager.getHaStatus().isEnabled()
-				|| action.operation != EventEnum.QUERY)
-			return _doInConnection(action, hints);
+				|| action.operation != EventEnum.QUERY) {
+            return _doInConnection(action, hints);
+        }
 
 		HaContext highAvalible = new HaContext();
 		highAvalible.setDatabaseCategory(config.getDatabaseSet(logicDbName).getDatabaseCategory());

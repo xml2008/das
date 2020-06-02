@@ -18,6 +18,7 @@ public class ColumnReference implements Segment {
         return column.getReference(helper);
     }
     
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

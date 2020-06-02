@@ -39,27 +39,32 @@ public class SingleTaskRequest<T> implements SqlRequest<Integer> {
 
     @Override
     public void validate() throws SQLException {
-        if (rawPojo == null)
+        if (rawPojo == null) {
             throw new DasException(ErrorCode.ValidatePojo);
+        }
 
-        if (task == null)
+        if (task == null) {
             throw new DasException(ErrorCode.ValidateTask);
+        }
 
         daoPojo = task.getPojoFields(rawPojo);
 
         // Locate shard id and check for distributed transaction 
-        if(!isShardingEnabled(appId, logicDbName))
+        if(!isShardingEnabled(appId, logicDbName)) {
             return;
+        }
         
         //Locate from hints
         shardId = locateShardId(appId, logicDbName, hints);
 
         //Locate from pojo
-        if(shardId == null)
+        if(shardId == null) {
             shardId = locateShardId(appId, logicDbName, logicTableName, daoPojo);
+        }
 
-        if(shardId == null)
+        if(shardId == null) {
             throw new IllegalArgumentException("Can not locate shard for pojo: " + daoPojo);
+        }
         
         detectDistributedTransaction(shardId);
     }

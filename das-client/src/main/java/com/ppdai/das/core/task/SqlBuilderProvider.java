@@ -40,8 +40,9 @@ public class SqlBuilderProvider implements StatementConditionProvider {
     }
 
     public static <T> SqlBuilderProvider queryObject(SqlBuilder builder, Supplier<?> mergerFactory) {
-        if(mergerFactory == null)
+        if(mergerFactory == null) {
             mergerFactory = DalSingleResultMerger::new;
+        }
 
         DalResultSetExtractor<T> extractor = new DalSingleResultExtractor<>(StatementConditionProvider.getMapper(builder), true);
         return new SqlBuilderProvider(builder, true, extractor, mergerFactory);
@@ -99,17 +100,20 @@ public class SqlBuilderProvider implements StatementConditionProvider {
         int shardDecidedCount = 0;
 
         for(Segment entry: builder.getFilteredSegments()) {
-            if(!(entry instanceof TableReference))
+            if(!(entry instanceof TableReference)) {
                 continue;
+            }
 
             TableReference tabRef = (TableReference)entry;
-            if(ShardingManager.isTableShardingEnabled(appId, logicDbName, tabRef.getName()) == false)
+            if(ShardingManager.isTableShardingEnabled(appId, logicDbName, tabRef.getName()) == false) {
                 continue;
+            }
 
             shardTableCount++;
 
-            if(tabRef.getShardId() != null || tabRef.getShardValue() != null)
+            if(tabRef.getShardId() != null || tabRef.getShardValue() != null) {
                 shardDecidedCount++;
+            }
         }
 
         return shardTableCount == shardDecidedCount;

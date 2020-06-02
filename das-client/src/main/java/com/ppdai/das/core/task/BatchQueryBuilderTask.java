@@ -36,8 +36,9 @@ public class BatchQueryBuilderTask implements SqlBuilderTask<List<?>>{
             BuilderContext bc = new DasBuilderContext(appId, logicDbName, hints, tempParameters, conditions, entry);
             String sql = entry.build(bc);
             sb.append(sql);
-            if(!sql.endsWith(";"))
+            if(!sql.endsWith(";")) {
                 sb.append(';');
+            }
         }
         
         String sql = sb.toString();
@@ -53,9 +54,11 @@ public class BatchQueryBuilderTask implements SqlBuilderTask<List<?>>{
 
     public List<List<?>> getAllInParameters(List<Parameter> parameters) {
         List<List<?>> inParams = new ArrayList<>();
-        for(Parameter parameter: parameters)
-            if(parameter.isInParam())
-                inParams.add((List<?>)parameter.getValue());
+        for(Parameter parameter: parameters) {
+            if(parameter.isInParam()) {
+                inParams.add((List<?>) parameter.getValue());
+            }
+        }
 
         return inParams;
     }

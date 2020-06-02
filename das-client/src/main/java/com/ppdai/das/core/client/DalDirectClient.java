@@ -59,11 +59,12 @@ public class DalDirectClient implements DalClient {
 
                 T result;
 
-                if (extractor instanceof HintsAwareExtractor)
+                if (extractor instanceof HintsAwareExtractor) {
                     result = ((DalResultSetExtractor<T>) ((HintsAwareExtractor) extractor).extractWith(hints))
                             .extract(rs);
-                else
+                } else {
                     result = extractor.extract(rs);
+                }
 
                 entry.setResultCount(fetchSize(rs, result));
 
@@ -93,11 +94,12 @@ public class DalDirectClient implements DalClient {
                 for (DalResultSetExtractor<?> extractor : extractors) {
                     ResultSet resultSet = preparedStatement.getResultSet();
                     Object partResult;
-                    if (extractor instanceof HintsAwareExtractor)
+                    if (extractor instanceof HintsAwareExtractor) {
                         partResult = ((DalResultSetExtractor) ((HintsAwareExtractor) extractor).extractWith(hints))
                                 .extract(resultSet);
-                    else
+                    } else {
                         partResult = extractor.extract(resultSet);
+                    }
                     result.add(partResult);
 
                     count += fetchSize(resultSet, partResult);
@@ -126,17 +128,19 @@ public class DalDirectClient implements DalClient {
                 conn = getConnection(hints, this);
                 // For old generated free update, the parameters is not compiled before invoke direct client
                 Parameter.compile(parameters);
-                if (generatedKeyHolder == null)
+                if (generatedKeyHolder == null) {
                     preparedStatement = createPreparedStatement(conn, sql, parameters, hints);
-                else
+                } else {
                     preparedStatement = createPreparedStatement(conn, sql, parameters, hints, generatedKeyHolder);
+                }
 
                 beginExecute();
                 int rows = executeUpdate(preparedStatement, entry);
                 endExectue();
 
-                if (generatedKeyHolder == null)
+                if (generatedKeyHolder == null) {
                     return rows;
+                }
 
                 rs = preparedStatement.getGeneratedKeys();
                 int actualKeySize = 0;
@@ -167,8 +171,9 @@ public class DalDirectClient implements DalClient {
                 conn = getConnection(hints, this);
 
                 statement = createStatement(conn, hints);
-                for (String sql : sqls)
+                for (String sql : sqls) {
                     statement.addBatch(sql);
+                }
 
                 beginExecute();
                 int[] ret = executeBatch(statement, entry);
@@ -226,8 +231,9 @@ public class DalDirectClient implements DalClient {
             @Override
             public Object execute() throws Exception {
                 for (DalCommand cmd : commands) {
-                    if (!cmd.execute(client))
+                    if (!cmd.execute(client)) {
                         break;
+                    }
                 }
 
                 return null;
@@ -254,9 +260,10 @@ public class DalDirectClient implements DalClient {
                     }
                 }
 
-                if (hints.is(HintEnum.retrieveAllSpResults) && resultParameters.size() > 0)
+                if (hints.is(HintEnum.retrieveAllSpResults) && resultParameters.size() > 0) {
                     throw new DasException(
                             "Dal hint 'autoRetrieveAllResults' should only be used when there is no special result parameter specified");
+                }
 
                 conn = getConnection(hints, this);
 
@@ -327,11 +334,13 @@ public class DalDirectClient implements DalClient {
         // if(rowCount > 0)
         // return rowCount;
         //
-        if (result == null)
+        if (result == null) {
             return 0;
+        }
 
-        if (result instanceof Collection<?>)
+        if (result instanceof Collection<?>) {
             return ((Collection<?>) result).size();
+        }
 
         return 1;
     }
@@ -339,14 +348,17 @@ public class DalDirectClient implements DalClient {
     private Map<String, Object> extractReturnedResults(CallableStatement statement,
             List<Parameter> resultParameters, int updateCount, Hints hints) throws SQLException {
         Map<String, Object> returnedResults = new LinkedHashMap<String, Object>();
-        if (hints.is(HintEnum.skipResultsProcessing))
+        if (hints.is(HintEnum.skipResultsProcessing)) {
             return returnedResults;
+        }
 
-        if (hints.is(HintEnum.retrieveAllSpResults))
+        if (hints.is(HintEnum.retrieveAllSpResults)) {
             return autoExtractReturnedResults(statement, updateCount);
+        }
 
-        if (resultParameters.size() == 0)
+        if (resultParameters.size() == 0) {
             return returnedResults;
+        }
 
         boolean moreResults;
         int index = 0;
@@ -464,6 +476,7 @@ public class DalDirectClient implements DalClient {
 
     private ResultSet executeQuery(final PreparedStatement preparedStatement, final LogEntry entry) throws Exception {
         return execute(new Callable<ResultSet>() {
+            @Override
             public ResultSet call() throws Exception {
                 return preparedStatement.executeQuery();
             }
@@ -472,6 +485,7 @@ public class DalDirectClient implements DalClient {
 
     private void executeMultiple(final PreparedStatement preparedStatement, final LogEntry entry) throws Exception {
         execute(new Callable<Object>() {
+            @Override
             public Object call() throws Exception {
                 preparedStatement.execute();
                 return null;
@@ -481,6 +495,7 @@ public class DalDirectClient implements DalClient {
 
     private int executeUpdate(final PreparedStatement preparedStatement, final LogEntry entry) throws Exception {
         return execute(new Callable<Integer>() {
+            @Override
             public Integer call() throws Exception {
                 return entry.setAffectedRows(preparedStatement.executeUpdate());
             }
@@ -489,6 +504,7 @@ public class DalDirectClient implements DalClient {
 
     private int[] executeBatch(final Statement statement, final LogEntry entry) throws Exception {
         return execute(new Callable<int[]>() {
+            @Override
             public int[] call() throws Exception {
                 return entry.setAffectedRowsArray(statement.executeBatch());
             }
@@ -497,6 +513,7 @@ public class DalDirectClient implements DalClient {
 
     private Boolean executeCall(final CallableStatement callableStatement, final LogEntry entry) throws Exception {
         return execute(new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
                 return callableStatement.execute();
             }
@@ -505,6 +522,7 @@ public class DalDirectClient implements DalClient {
 
     private int[] executeBatch(final CallableStatement callableStatement, final LogEntry entry) throws Exception {
         return execute(new Callable<int[]>() {
+            @Override
             public int[] call() throws Exception {
                 return entry.setAffectedRowsArray(callableStatement.executeBatch());
             }

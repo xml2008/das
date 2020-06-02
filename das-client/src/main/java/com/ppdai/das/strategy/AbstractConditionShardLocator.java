@@ -46,8 +46,9 @@ public abstract class AbstractConditionShardLocator<CTX extends ConditionContext
         // Wrap into a new Set in case what return is read-only.
         Set<String> range = new HashSet<>(locateShards(createConditionContext(context, op1, value1)));
         
-        if(isAlreadyAllShards(getAllShards(context), range))
+        if(isAlreadyAllShards(getAllShards(context), range)) {
             return range;
+        }
         
         range.addAll(locateShards(createConditionContext(context, op2, value2)));
         return range;
@@ -68,8 +69,9 @@ public abstract class AbstractConditionShardLocator<CTX extends ConditionContext
     }
 
     protected boolean isAlreadyAllShards(Set<String> allShards, Set<String> shards) {
-        if(shards == null || shards.isEmpty())
+        if(shards == null || shards.isEmpty()) {
             return false;
+        }
         
         if(!allShards.containsAll(shards)) {
             shards.removeAll(allShards);

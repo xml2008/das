@@ -33,37 +33,44 @@ public class DefaultDatabaseSelector implements DatabaseSelector, DasComponent {
 		    secondary = context.getMasters();
 		}
 
-		if(isNullOrEmpty(primary) && isNullOrEmpty(secondary))
-			throw new DasException(ErrorCode.NullLogicDbName);
+		if(isNullOrEmpty(primary) && isNullOrEmpty(secondary)) {
+            throw new DasException(ErrorCode.NullLogicDbName);
+        }
 		
 		if(designatedDatasource != null){
-			if(!StatusManager.containsDataSourceStatus(designatedDatasource))
-				throw new DasException(ErrorCode.InvalidDatabaseKeyName, designatedDatasource);
+			if(!StatusManager.containsDataSourceStatus(designatedDatasource)) {
+                throw new DasException(ErrorCode.InvalidDatabaseKeyName, designatedDatasource);
+            }
 		
-			if(MarkdownManager.isMarkdown(designatedDatasource))
-				throw new DasException(ErrorCode.MarkdownConnection, designatedDatasource);
+			if(MarkdownManager.isMarkdown(designatedDatasource)) {
+                throw new DasException(ErrorCode.MarkdownConnection, designatedDatasource);
+            }
 			
 			if(ha != null && ha.contains(designatedDatasource)) {
 				ha.setOver(true);
 				throw new DasException(ErrorCode.NoMoreConnectionToFailOver);
 			}
 			
-			if(containsDesignatedDatasource(designatedDatasource, primary))
-				return designatedDatasource;
+			if(containsDesignatedDatasource(designatedDatasource, primary)) {
+                return designatedDatasource;
+            }
 
-			if(containsDesignatedDatasource(designatedDatasource, secondary))
-				return designatedDatasource;
+			if(containsDesignatedDatasource(designatedDatasource, secondary)) {
+                return designatedDatasource;
+            }
 			
 			throw new DasException(ErrorCode.InvalidDatabaseKeyName, designatedDatasource);
 		}
 		
 		String dbName = getAvailableDb(ha, primary);
-		if(dbName != null)
-			return dbName;
+		if(dbName != null) {
+            return dbName;
+        }
 
 		dbName = getAvailableDb(ha, secondary);
-		if(dbName != null)
-			return dbName;
+		if(dbName != null) {
+            return dbName;
+        }
 		
 		if(ha != null) {
 			ha.setOver(true);
@@ -71,18 +78,21 @@ public class DefaultDatabaseSelector implements DatabaseSelector, DasComponent {
 		}
 
 		StringBuilder sb = new StringBuilder(toDbNames(primary));
-		if(isNullOrEmpty(secondary))
-			sb.append(", " + toDbNames(secondary));
+		if(isNullOrEmpty(secondary)) {
+            sb.append(", " + toDbNames(secondary));
+        }
 		
 		throw new DasException(ErrorCode.MarkdownConnection, sb.toString());
 	}
 	
 	private String getAvailableDb(HaContext ha, List<DataBase> candidates) throws DasException{
-		if(isNullOrEmpty(candidates))
-			return null;
+		if(isNullOrEmpty(candidates)) {
+            return null;
+        }
 		List<String> dbNames = this.selectValidDbNames(candidates);
-		if(dbNames.isEmpty())
-			return null;
+		if(dbNames.isEmpty()) {
+            return null;
+        }
 		return this.getRandomRealDbName(ha, dbNames);
 	}
 	
@@ -92,8 +102,9 @@ public class DefaultDatabaseSelector implements DatabaseSelector, DasComponent {
 		}else{
 			List<String> dbNames = new ArrayList<String>();
 			for (String database : dbs) {
-				if(!ha.contains(database))
-					dbNames.add(database);
+				if(!ha.contains(database)) {
+                    dbNames.add(database);
+                }
 			}
 			if(dbNames.isEmpty()){
 				return null;
@@ -114,8 +125,9 @@ public class DefaultDatabaseSelector implements DatabaseSelector, DasComponent {
 		List<String> dbNames = new ArrayList<String>();
 		if(!this.isNullOrEmpty(dbs)){
 			for (DataBase database : dbs) {
-				if(MarkdownManager.isMarkdown(database.getConnectionString()))
-					continue;
+				if(MarkdownManager.isMarkdown(database.getConnectionString())) {
+                    continue;
+                }
 
 				dbNames.add(database.getConnectionString());
 			}
@@ -124,12 +136,15 @@ public class DefaultDatabaseSelector implements DatabaseSelector, DasComponent {
 	}
 	
 	private boolean containsDesignatedDatasource(String designatedDatasource, List<DataBase> dbs){
-		if(isNullOrEmpty(dbs))
-			return false;
+		if(isNullOrEmpty(dbs)) {
+            return false;
+        }
 
-		for (DataBase database : dbs)
-			if(designatedDatasource.equals(database.getConnectionString()))
-				return true;
+		for (DataBase database : dbs) {
+            if(designatedDatasource.equals(database.getConnectionString())) {
+                return true;
+            }
+        }
 
 		return false;
 	}

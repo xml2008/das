@@ -92,8 +92,9 @@ public class DataSourceLocator {
 
     public static DataSourceConfigure getDataSourceConfigure(String name) throws SQLException {
         DataSourceConfigure config = providerRef.get().getDataSourceConfigure(name);
-        if (config == null)
+        if (config == null) {
             throw new SQLException("Can not find connection configure for " + name);
+        }
         return config;
     }
 }

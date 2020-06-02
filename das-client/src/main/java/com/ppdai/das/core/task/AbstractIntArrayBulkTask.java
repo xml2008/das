@@ -8,7 +8,8 @@ import com.ppdai.das.core.DasException;
 
 
 public abstract class AbstractIntArrayBulkTask<T> extends TaskAdapter<T> implements BulkTask<int[], T> {
-	public int[] getEmptyValue() {
+	@Override
+    public int[] getEmptyValue() {
 		return new int[0];
 	}
 	

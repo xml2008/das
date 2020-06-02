@@ -74,7 +74,9 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -94,10 +96,12 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -165,6 +169,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
     }
   }
 
+  @Override
   public DasSqlBuilder deepCopy() {
     return new DasSqlBuilder(this);
   }
@@ -344,6 +349,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case PARTIALS:
@@ -397,6 +403,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -423,6 +430,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -447,71 +455,87 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasSqlBuilder)
-      return this.equals((DasSqlBuilder)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasSqlBuilder) {
+        return this.equals((DasSqlBuilder)that);
+    }
     return false;
   }
 
   public boolean equals(DasSqlBuilder that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_partials = true && this.isSetPartials();
     boolean that_present_partials = true && that.isSetPartials();
     if (this_present_partials || that_present_partials) {
-      if (!(this_present_partials && that_present_partials))
-        return false;
-      if (!this.partials.equals(that.partials))
-        return false;
+      if (!(this_present_partials && that_present_partials)) {
+          return false;
+      }
+      if (!this.partials.equals(that.partials)) {
+          return false;
+      }
     }
 
     boolean this_present_parameters = true && this.isSetParameters();
     boolean that_present_parameters = true && that.isSetParameters();
     if (this_present_parameters || that_present_parameters) {
-      if (!(this_present_parameters && that_present_parameters))
-        return false;
-      if (!this.parameters.equals(that.parameters))
-        return false;
+      if (!(this_present_parameters && that_present_parameters)) {
+          return false;
+      }
+      if (!this.parameters.equals(that.parameters)) {
+          return false;
+      }
     }
 
     boolean this_present_definitions = true && this.isSetDefinitions();
     boolean that_present_definitions = true && that.isSetDefinitions();
     if (this_present_definitions || that_present_definitions) {
-      if (!(this_present_definitions && that_present_definitions))
-        return false;
-      if (!this.definitions.equals(that.definitions))
-        return false;
+      if (!(this_present_definitions && that_present_definitions)) {
+          return false;
+      }
+      if (!this.definitions.equals(that.definitions)) {
+          return false;
+      }
     }
 
     boolean this_present_entityMeta = true && this.isSetEntityMeta();
     boolean that_present_entityMeta = true && that.isSetEntityMeta();
     if (this_present_entityMeta || that_present_entityMeta) {
-      if (!(this_present_entityMeta && that_present_entityMeta))
-        return false;
-      if (!this.entityMeta.equals(that.entityMeta))
-        return false;
+      if (!(this_present_entityMeta && that_present_entityMeta)) {
+          return false;
+      }
+      if (!this.entityMeta.equals(that.entityMeta)) {
+          return false;
+      }
     }
 
     boolean this_present_nullable = true;
     boolean that_present_nullable = true;
     if (this_present_nullable || that_present_nullable) {
-      if (!(this_present_nullable && that_present_nullable))
-        return false;
-      if (this.nullable != that.nullable)
-        return false;
+      if (!(this_present_nullable && that_present_nullable)) {
+          return false;
+      }
+      if (this.nullable != that.nullable) {
+          return false;
+      }
     }
 
     boolean this_present_entityType = true && this.isSetEntityType();
     boolean that_present_entityType = true && that.isSetEntityType();
     if (this_present_entityType || that_present_entityType) {
-      if (!(this_present_entityType && that_present_entityType))
-        return false;
-      if (!this.entityType.equals(that.entityType))
-        return false;
+      if (!(this_present_entityType && that_present_entityType)) {
+          return false;
+      }
+      if (!this.entityType.equals(that.entityType)) {
+          return false;
+      }
     }
 
     return true;
@@ -522,26 +546,31 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetPartials()) ? 131071 : 524287);
-    if (isSetPartials())
-      hashCode = hashCode * 8191 + partials.hashCode();
+    if (isSetPartials()) {
+        hashCode = hashCode * 8191 + partials.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetParameters()) ? 131071 : 524287);
-    if (isSetParameters())
-      hashCode = hashCode * 8191 + parameters.hashCode();
+    if (isSetParameters()) {
+        hashCode = hashCode * 8191 + parameters.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetDefinitions()) ? 131071 : 524287);
-    if (isSetDefinitions())
-      hashCode = hashCode * 8191 + definitions.hashCode();
+    if (isSetDefinitions()) {
+        hashCode = hashCode * 8191 + definitions.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetEntityMeta()) ? 131071 : 524287);
-    if (isSetEntityMeta())
-      hashCode = hashCode * 8191 + entityMeta.hashCode();
+    if (isSetEntityMeta()) {
+        hashCode = hashCode * 8191 + entityMeta.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((nullable) ? 131071 : 524287);
 
     hashCode = hashCode * 8191 + ((isSetEntityType()) ? 131071 : 524287);
-    if (isSetEntityType())
-      hashCode = hashCode * 8191 + entityType.hashCode();
+    if (isSetEntityType()) {
+        hashCode = hashCode * 8191 + entityType.hashCode();
+    }
 
     return hashCode;
   }
@@ -617,15 +646,18 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -645,7 +677,9 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
       first = false;
     }
     if (isSetParameters()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("parameters:");
       if (this.parameters == null) {
         sb.append("null");
@@ -655,7 +689,9 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
       first = false;
     }
     if (isSetDefinitions()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("definitions:");
       if (this.definitions == null) {
         sb.append("null");
@@ -665,7 +701,9 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
       first = false;
     }
     if (isSetEntityMeta()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("entityMeta:");
       if (this.entityMeta == null) {
         sb.append("null");
@@ -674,12 +712,16 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
       }
       first = false;
     }
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("nullable:");
     sb.append(this.nullable);
     first = false;
     if (isSetEntityType()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("entityType:");
       if (this.entityType == null) {
         sb.append("null");
@@ -720,6 +762,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
   }
 
   private static class DasSqlBuilderStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasSqlBuilderStandardScheme getScheme() {
       return new DasSqlBuilderStandardScheme();
     }
@@ -727,6 +770,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
 
   private static class DasSqlBuilderStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasSqlBuilder> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasSqlBuilder struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -812,6 +856,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasSqlBuilder struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -868,6 +913,7 @@ public class DasSqlBuilder implements org.apache.thrift.TBase<DasSqlBuilder, Das
   }
 
   private static class DasSqlBuilderTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasSqlBuilderTupleScheme getScheme() {
       return new DasSqlBuilderTupleScheme();
     }

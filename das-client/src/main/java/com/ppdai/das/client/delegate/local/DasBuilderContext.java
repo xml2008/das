@@ -62,16 +62,18 @@ public class DasBuilderContext implements BuilderContext {
 
     @Override
     public String locateTableName(TableDefinition definition) {
-        if(!tableMap.containsKey(definition))
+        if(!tableMap.containsKey(definition)) {
             tableMap.put(definition, locate(definition.getName(), definition.getShardId(), definition.getShardValue()));
+        }
         
         return tableMap.get(definition);
     }
 
     @Override
     public String locateTableName(Table table) {
-        if(!tableMap.containsKey(table))
+        if(!tableMap.containsKey(table)) {
             tableMap.put(table, locate(table.getName(), table.getShardId(), table.getShardValue()));
+        }
         
         return tableMap.get(table);
     }
@@ -82,6 +84,7 @@ public class DasBuilderContext implements BuilderContext {
      * @param name
      * @return
      */
+    @Override
     public String wrapName(String name) {
         return wrapField(dbCategory, name);
     }
@@ -96,8 +99,9 @@ public class DasBuilderContext implements BuilderContext {
 
     @Override
     public String declareTableName(String name) {
-        if(dbCategory != DatabaseCategory.SqlServer || builder == null)
+        if(dbCategory != DatabaseCategory.SqlServer || builder == null) {
             return name;
+        }
         
         return builder.isWithLock()? name : name + " " + SegmentConstants.WITH_NO_LOCK.getText();
     }
@@ -114,12 +118,13 @@ public class DasBuilderContext implements BuilderContext {
      */
     public String locate(String rawTableName, String tableShardId, Object tableShardValue) {
         try {
-            if(!isTableShardingEnabled(appId, logicDbName, rawTableName))
+            if(!isTableShardingEnabled(appId, logicDbName, rawTableName)) {
                 return wrapField(dbCategory, rawTableName);
+            }
 
-            if(tableShardId == null && tableShardValue == null)
+            if(tableShardId == null && tableShardValue == null) {
                 tableShardId = locateTableShardId(appId, logicDbName, ctripHints.setParameters(parameters), conditions);
-            else {
+            } else {
                 Hints tmpHints = new Hints();
                 tmpHints = tableShardId == null ? tmpHints : tmpHints.inTableShard(tableShardId);
                 tmpHints = tableShardValue == null ? tmpHints : tmpHints.setTableShardValue(tableShardValue);

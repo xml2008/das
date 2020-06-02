@@ -164,8 +164,9 @@ public interface SegmentConstants {
         List<Object> l = new ArrayList<>();
         l.add(leftBracket);
 
-        for(Object seg: segs)
+        for(Object seg: segs) {
             add(l, seg);
+        }
 
         l.add(rightBracket);
         return l.toArray(new Object[segs.length + 2]);
@@ -178,7 +179,9 @@ public interface SegmentConstants {
             l.add(separator);
         }
 
-        if(segs.length > 0) l.removeLast();
+        if(segs.length > 0) {
+            l.removeLast();
+        }
         return l.toArray();
     }
 
@@ -200,19 +203,23 @@ public interface SegmentConstants {
             for(Object val: values ) {
                 add(list, val);
             }
-        }else
+        }else {
             list.add(value);
+        }
     }
 
     static Object[] match(TableDefinition table, Object sample, DalParser parser) throws SQLException {
         Map<String, ?> fields = parser.getFields(sample);
 
-        for (String columnName : parser.getColumnNames())
-            if (fields.get(columnName) == null)
+        for (String columnName : parser.getColumnNames()) {
+            if (fields.get(columnName) == null) {
                 fields.remove(columnName);
+            }
+        }
 
-        if (fields.isEmpty())
+        if (fields.isEmpty()) {
             throw new IllegalArgumentException("All fields in sample are null");
+        }
 
         List<Object> conditions = new ArrayList<>();
         for(String columnName: fields.keySet()) {

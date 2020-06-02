@@ -22,13 +22,15 @@ public final class Column extends AbstractColumn implements Segment {
     }
     
     public Column as(String alias) {
-        if(this.alias.isPresent())
+        if(this.alias.isPresent()) {
             throw new IllegalStateException("Alias can only be set once for column" + getColumnName());
+        }
 
         this.alias = Optional.of(alias);
         return this;
     }
     
+    @Override
     public Optional<String> getAlias() {
         return alias;
     }

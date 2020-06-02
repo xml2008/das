@@ -99,8 +99,9 @@ public class DefaultDataSourceTerminateTask implements Runnable {
         }
 
         ConnectionPool pool = ds.getPool();
-        if (pool == null)
+        if (pool == null) {
             return success;
+        }
 
         int idle = pool.getIdle();
         if (idle > 0) {
@@ -127,7 +128,7 @@ public class DefaultDataSourceTerminateTask implements Runnable {
     }
 
     private long getElapsedMilliSeconds() {
-        return new Date().getTime() - enqueueTime.getTime();
+        return System.currentTimeMillis() - enqueueTime.getTime();
     }
 
     private int getElapsedSeconds() {

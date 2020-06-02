@@ -37,8 +37,9 @@ public class DataSourceConfigure
     }
 
     public void merge(Map<String, String> propertyMap) {
-        for (Map.Entry<String, String> entry : propertyMap.entrySet())
+        for (Map.Entry<String, String> entry : propertyMap.entrySet()) {
             properties.setProperty(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
@@ -163,12 +164,14 @@ public class DataSourceConfigure
     }
 
     public boolean dynamicPoolPropertiesEnabled() {
-        if (properties == null || properties.isEmpty())
+        if (properties == null || properties.isEmpty()) {
             return false;
+        }
 
         String value = properties.getProperty(ENABLE_DYNAMIC_POOL_PROPERTIES);
-        if (value == null)
+        if (value == null) {
             return false;
+        }
 
         return Boolean.parseBoolean(value);
     }
@@ -188,8 +191,12 @@ public class DataSourceConfigure
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         DataSourceConfigure that = (DataSourceConfigure) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(properties, that.properties) &&

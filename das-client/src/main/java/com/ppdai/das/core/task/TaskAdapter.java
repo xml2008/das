@@ -64,6 +64,7 @@ public class TaskAdapter<T> implements DaoTask<T> {
 	public boolean tableShardingEnabled;
 	protected String rawTableName;
 
+	@Override
 	public void initialize(DalParser<T> parser) {
 	    this.appId = parser.getAppId();
         this.logicDbName = parser.getDatabaseName();
@@ -97,8 +98,9 @@ public class TaskAdapter<T> implements DaoTask<T> {
 		isVersionUpdatable = hasVersion ? defaultUpdateColumnNames.contains(parser.getVersionColumn()) : false;
 
 		// Remove Version from updatable columns
-		if(hasVersion)
-			defaultUpdateColumnNames.remove(parser.getVersionColumn());
+		if(hasVersion) {
+            defaultUpdateColumnNames.remove(parser.getVersionColumn());
+        }
 	}
 	
 	/**
@@ -108,14 +110,16 @@ public class TaskAdapter<T> implements DaoTask<T> {
 		String versionColumn = parser.getVersionColumn();
 		updateCriteriaTmpl = pkSql;
 
-		if(versionColumn == null)
-			return;
+		if(versionColumn == null) {
+            return;
+        }
 		
 		String quotedVersionColumn = quote(parser.getVersionColumn());
 		updateCriteriaTmpl += AND + String.format(TMPL_SET_VALUE, quotedVersionColumn);
 		
-		if(!isVersionUpdatable)
-			return;
+		if(!isVersionUpdatable) {
+            return;
+        }
 
 		JDBCType versionType = getColumnType(versionColumn);
 
@@ -180,10 +184,11 @@ public class TaskAdapter<T> implements DaoTask<T> {
 	}
 
 	public void addParameter(List<Parameter> parameters, int index, String columnName, Object value) {
-		if(isSensitive(columnName))
-			setSensitive(parameters, index, columnName, getColumnType(columnName), value);
-		else
-			set(parameters, index, columnName, getColumnType(columnName), value);
+		if(isSensitive(columnName)) {
+            setSensitive(parameters, index, columnName, getColumnType(columnName), value);
+        } else {
+            set(parameters, index, columnName, getColumnType(columnName), value);
+        }
 	}
 
 	private List<Parameter> setSensitive(List<Parameter> parameters, int index, String name, JDBCType type, Object value) {
@@ -214,11 +219,13 @@ public class TaskAdapter<T> implements DaoTask<T> {
 
 	public Set<String> filterColumns(Hints hints) {
 		Set<String> qulifiedColumns = new HashSet<>(defaultUpdateColumnNames);
-		if(hints.is(HintEnum.includedColumns))
-			qulifiedColumns.retainAll(hints.getIncluded());
+		if(hints.is(HintEnum.includedColumns)) {
+            qulifiedColumns.retainAll(hints.getIncluded());
+        }
 			
-		if(hints.is(HintEnum.excludedColumns))
-			qulifiedColumns.removeAll(hints.getExcluded());
+		if(hints.is(HintEnum.excludedColumns)) {
+            qulifiedColumns.removeAll(hints.getExcluded());
+        }
 			
 		return qulifiedColumns;
 	}
@@ -226,15 +233,18 @@ public class TaskAdapter<T> implements DaoTask<T> {
 	public Map<String, ?> removeAutoIncrementPrimaryFields(Map<String, ?> fields){
 		// This is bug here, for My Sql, auto incremental id can be part of the joint primary key.
 		// But for Ctrip, a table must have a pk defined by single column as mandatory, so we don't have problem here
-		if(parser.isAutoIncrement())
-			fields.remove(parser.getPrimaryKeyNames()[0]);
+		if(parser.isAutoIncrement()) {
+            fields.remove(parser.getPrimaryKeyNames()[0]);
+        }
 		return fields;
 	}
 
+	@Override
 	public List<Map<String, ?>> getPojosFields(List<T> daoPojos) {
 		List<Map<String, ?>> pojoFields = new LinkedList<Map<String, ?>>();
-		if (null == daoPojos || daoPojos.size() < 1)
-			return pojoFields;
+		if (null == daoPojos || daoPojos.size() < 1) {
+            return pojoFields;
+        }
 		
 		for (T pojo: daoPojos){
 			pojoFields.add(parser.getFields(pojo));
@@ -248,8 +258,9 @@ public class TaskAdapter<T> implements DaoTask<T> {
 	}
 	
 	public boolean isSensitive(String fieldName){
-		if(sensitiveColumns.isEmpty())
-			return false;
+		if(sensitiveColumns.isEmpty()) {
+            return false;
+        }
 		
 		return sensitiveColumns.contains(fieldName);
 	}
@@ -266,8 +277,9 @@ public class TaskAdapter<T> implements DaoTask<T> {
 
 	public void initSensitiveColumns() {
 		sensitiveColumns = new HashSet<String>();
-		if(parser.getSensitiveColumnNames() != null)
-			Collections.addAll(sensitiveColumns, parser.getSensitiveColumnNames());
+		if(parser.getSensitiveColumnNames() != null) {
+            Collections.addAll(sensitiveColumns, parser.getSensitiveColumnNames());
+        }
 	}
 
 	// Build a lookup table
@@ -281,8 +293,9 @@ public class TaskAdapter<T> implements DaoTask<T> {
 	
 	public Map<String, ?> getPrimaryKeys(Map<String, ?> fields) {
 		Map<String, Object> pks = new LinkedHashMap<>();
-		for(String pkName: parser.getPrimaryKeyNames())
-			pks.put(pkName, fields.get(pkName));
+		for(String pkName: parser.getPrimaryKeyNames()) {
+            pks.put(pkName, fields.get(pkName));
+        }
 		return pks;
 	}
 
@@ -291,8 +304,9 @@ public class TaskAdapter<T> implements DaoTask<T> {
 		int i = 0;
 		for (String value : values) {
 			quote(valuesSb, value);
-			if (++i < values.size())
-				valuesSb.append(separator);
+			if (++i < values.size()) {
+                valuesSb.append(separator);
+            }
 		}
 		return valuesSb.toString();
 	}
@@ -302,8 +316,9 @@ public class TaskAdapter<T> implements DaoTask<T> {
 
 		for (int i = 1; i <= count; i++) {
 			valuesSb.append(value);
-			if (i < count)
-				valuesSb.append(separator);
+			if (i < count) {
+                valuesSb.append(separator);
+            }
 		}
 		return valuesSb.toString();
 	}
@@ -318,15 +333,17 @@ public class TaskAdapter<T> implements DaoTask<T> {
 	
 	public Object[] quote(Set<String> columns) {
 		Object[] quatedColumns = columns.toArray();
-		for(int i = 0; i < quatedColumns.length; i++)
-			quatedColumns[i] = quote((String)quatedColumns[i]);
+		for(int i = 0; i < quatedColumns.length; i++) {
+            quatedColumns[i] = quote((String)quatedColumns[i]);
+        }
 		return quatedColumns;
 	}
 	
 	public String[] quote(String[] columns) {
 		String[] quatedColumns = new String[columns.length];
-		for(int i = 0; i < columns.length; i++)
-			quatedColumns[i] = quote(columns[i]);
+		for(int i = 0; i < columns.length; i++) {
+            quatedColumns[i] = quote(columns[i]);
+        }
 		return quatedColumns;
 	}
 

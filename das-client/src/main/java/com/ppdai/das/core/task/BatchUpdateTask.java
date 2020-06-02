@@ -27,8 +27,9 @@ public class BatchUpdateTask<T> extends AbstractIntArrayBulkTask<T> {
 				filterUpdatableEntity(hints, rawPojos) :
 					filterNullColumns(hints, daoPojos);
 
-		if(pojoFieldStatus.size() == 0)
-			throw new DasException(ErrorCode.ValidateFieldCount);
+		if(pojoFieldStatus.size() == 0) {
+            throw new DasException(ErrorCode.ValidateFieldCount);
+        }
 		
 		taskContext.setPojoFieldStatus(pojoFieldStatus);
 		return taskContext;
@@ -48,10 +49,11 @@ public class BatchUpdateTask<T> extends AbstractIntArrayBulkTask<T> {
 			Map<String, ?> pojo = daoPojos.get(index);
 			List<Parameter> parameters = new ArrayList<>();
 
-			if(isUpdatableEntity && !hints.isUpdateUnchangedField())
-				addParameters(parameters, pojo, updateColumnNames, ((UpdatableEntity)rawPojos.get(index)).getUpdatedColumns());
-			else
-				addParameters(parameters, pojo, updateColumnNames);
+			if(isUpdatableEntity && !hints.isUpdateUnchangedField()) {
+                addParameters(parameters, pojo, updateColumnNames, ((UpdatableEntity)rawPojos.get(index)).getUpdatedColumns());
+            } else {
+                addParameters(parameters, pojo, updateColumnNames);
+            }
 			
 			addParameters(parameters, pojo, parser.getPrimaryKeyNames());
 			addVersion(parameters, pojo);
@@ -92,8 +94,9 @@ public class BatchUpdateTask<T> extends AbstractIntArrayBulkTask<T> {
 	private Map<String, Boolean> filterUpdatableEntity(Hints hints, List<T> rawPojos) {
 		Set<String> qualifiedColumns = filterColumns(hints);
 		Map<String, Boolean> columnStatus = new HashMap<String, Boolean>();
-		for(String column: qualifiedColumns)
-			columnStatus.put(column, false);
+		for(String column: qualifiedColumns) {
+            columnStatus.put(column, false);
+        }
 		
 		if(hints.isUpdateUnchangedField()) {
 			return columnStatus;
@@ -103,25 +106,29 @@ public class BatchUpdateTask<T> extends AbstractIntArrayBulkTask<T> {
 		Set<String> changedFields = new HashSet<>(qualifiedColumns);
 		
 		for (T pojo: rawPojos) {
-			if(unChangedFields.isEmpty())
-				break;
+			if(unChangedFields.isEmpty()) {
+                break;
+            }
 			
 			Set<String> updatedColumns = getUpdatedColumns(pojo);
-			if(updatedColumns.size() == 0)
-				continue;
+			if(updatedColumns.size() == 0) {
+                continue;
+            }
 			
 			unChangedFields.removeAll(updatedColumns);
 			changedFields.retainAll(updatedColumns);
 		}
 		
-		for(String unChangedField: unChangedFields)
-			columnStatus.remove(unChangedField);
+		for(String unChangedField: unChangedFields) {
+            columnStatus.remove(unChangedField);
+        }
 		
 		Set<String> remain = new HashSet<>(columnStatus.keySet());
 		remain.removeAll(changedFields);
 		
-		for(String maybeChangedField: remain)
-			columnStatus.put(maybeChangedField, true);
+		for(String maybeChangedField: remain) {
+            columnStatus.put(maybeChangedField, true);
+        }
 
 		return columnStatus;
 	}
@@ -129,8 +136,9 @@ public class BatchUpdateTask<T> extends AbstractIntArrayBulkTask<T> {
 	private Map<String, Boolean> filterNullColumns(Hints hints, List<Map<String, ?>> daoPojos) {
 		Set<String> qualifiedColumns = filterColumns(hints);
 		Map<String, Boolean> columnStatus = new HashMap<String, Boolean>();
-		for(String column: qualifiedColumns)
-			columnStatus.put(column, false);
+		for(String column: qualifiedColumns) {
+            columnStatus.put(column, false);
+        }
 		
 		if(hints.isUpdateNullField()) {
 			return columnStatus;
@@ -141,8 +149,9 @@ public class BatchUpdateTask<T> extends AbstractIntArrayBulkTask<T> {
 		Set<String> notNullFields = new HashSet<>(nullFields);
 		
 		for (Map<String, ?> pojo: daoPojos) {
-			if(notNullFields.isEmpty() && nullFields.isEmpty())
-				break;
+			if(notNullFields.isEmpty() && nullFields.isEmpty()) {
+                break;
+            }
 			
 			for (int i = 0; i < columnsToCheck.length; i++) {
 				String colName = columnsToCheck[i];
@@ -150,19 +159,22 @@ public class BatchUpdateTask<T> extends AbstractIntArrayBulkTask<T> {
 				
 				Set<String> check = isNull ? notNullFields : nullFields;
 				
-				if(!check.isEmpty() && check.contains(colName))
-					check.remove(colName);
+				if(!check.isEmpty() && check.contains(colName)) {
+                    check.remove(colName);
+                }
 			}
 		}
 		
-		for(String nullField: nullFields)
-			columnStatus.remove(nullField);
+		for(String nullField: nullFields) {
+            columnStatus.remove(nullField);
+        }
 		
 		Set<String> remain = new HashSet<>(columnStatus.keySet());
 		remain.removeAll(notNullFields);
 		
-		for(String maybeNullField: remain)
-			columnStatus.put(maybeNullField, true);
+		for(String maybeNullField: remain) {
+            columnStatus.put(maybeNullField, true);
+        }
 
 		return columnStatus;
 	}
@@ -175,26 +187,30 @@ public class BatchUpdateTask<T> extends AbstractIntArrayBulkTask<T> {
 			String quotedColumnName = quote(columnName);
 			
 			// If the field contains null value
-			if(fieldStatus.getValue())
-				updateColumnTmpls.add(String.format(setValueTmpl, quotedColumnName, quotedColumnName));
-			else
-				updateColumnTmpls.add(String.format(TMPL_SET_VALUE, quotedColumnName));
+			if(fieldStatus.getValue()) {
+                updateColumnTmpls.add(String.format(setValueTmpl, quotedColumnName, quotedColumnName));
+            } else {
+                updateColumnTmpls.add(String.format(TMPL_SET_VALUE, quotedColumnName));
+            }
 		}
 		
-		if(isVersionUpdatable)
-			updateColumnTmpls.add(setVersionValueTmpl);
+		if(isVersionUpdatable) {
+            updateColumnTmpls.add(setVersionValueTmpl);
+        }
 		
 		String updateColumnsTmpl = StringUtils.join(updateColumnTmpls, COLUMN_SEPARATOR);
 		return String.format(TMPL_SQL_UPDATE, tableName, updateColumnsTmpl, updateCriteriaTmpl);
 	}
 	
 	private void addVersion(List<Parameter> parameters, Map<String, ?> pojo) throws DasException {
-		if(!hasVersion)
-			return;
+		if(!hasVersion) {
+            return;
+        }
 		
 		Object version = pojo.get(parser.getVersionColumn());
-		if(version == null)
-			throw new DasException(ErrorCode.ValidateVersion);
+		if(version == null) {
+            throw new DasException(ErrorCode.ValidateVersion);
+        }
 		
 		addParameter(parameters, parameters.size() + 1, parser.getVersionColumn(), version);
 	}	

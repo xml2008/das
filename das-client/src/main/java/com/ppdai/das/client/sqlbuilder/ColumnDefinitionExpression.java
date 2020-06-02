@@ -15,8 +15,9 @@ public class ColumnDefinitionExpression extends ColumnExpression implements Para
 
     public ColumnDefinitionExpression(String template, AbstractColumn column, ParameterDefinition definition) {
         this(template, column);
-        if(column.getType() != definition.getType())
+        if(column.getType() != definition.getType()) {
             throw new IllegalArgumentException("The parameter definition's type does not match column type");
+        }
         
         Objects.requireNonNull(definition);
         this.definition = ParameterDefinition.defineByVAR(definition, column, false);
@@ -29,11 +30,13 @@ public class ColumnDefinitionExpression extends ColumnExpression implements Para
         return pd;
     }
     
+    @Override
     public void validate(BuilderContext context) {}
     
     /**
      * Mark this expression as optional when expression's value is null.
      */
+    @Override
     public ColumnExpression nullable() {
         throw new IllegalStateException("The method should not be invoked for parameter definition!");
     }

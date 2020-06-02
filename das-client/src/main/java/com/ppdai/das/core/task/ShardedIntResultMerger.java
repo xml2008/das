@@ -10,7 +10,8 @@ import java.sql.SQLException;
 public class ShardedIntResultMerger implements BulkTaskResultMerger<Integer>{
 	private int total;
 	
-	public void recordPartial(String shard, Integer[] partialIndex) {
+	@Override
+    public void recordPartial(String shard, Integer[] partialIndex) {
 	}
 	
 	@Override

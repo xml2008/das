@@ -38,10 +38,12 @@ public class TableDefinition implements TableReference, Segment {
     public void setColumnDefinitions(ColumnDefinition...columnDefinitions) {
         this.columnDefinitions = columnDefinitions;
         columnDefinitionMap.clear();
-        for(ColumnDefinition def: columnDefinitions)
+        for(ColumnDefinition def: columnDefinitions) {
             columnDefinitionMap.put(def.getColumnName(), def);
+        }
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -50,10 +52,12 @@ public class TableDefinition implements TableReference, Segment {
         return alias;
     }
     
+    @Override
     public String getShardId() {
         return shardId;
     }
 
+    @Override
     public String getShardValue() {
         return shardValue;
     }
@@ -116,6 +120,7 @@ public class TableDefinition implements TableReference, Segment {
         return alias == null ? realName : realName + " " + alias;
     }
     
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

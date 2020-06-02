@@ -37,10 +37,12 @@ public class BatchQueryBuilder {
         return this;
     }
     
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for(SqlBuilder query: queries)
+        for(SqlBuilder query: queries) {
             sb.append(query.build(new DefaultBuilderContext())).append("\n");
+        }
         return sb.toString();
     }
 }

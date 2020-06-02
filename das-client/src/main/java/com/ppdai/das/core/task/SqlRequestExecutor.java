@@ -45,20 +45,24 @@ public class SqlRequestExecutor {
 	private final static String NA = "N/A";
 	        
 	public static void init(String maxPoolSizeStr, String keepAliveTimeStr){
-		if(serviceRef.get() != null)
+		if(serviceRef.get() != null) {
 			return;
+		}
 		
 		synchronized (SqlRequestExecutor.class) {
-			if(serviceRef.get() != null)
+			if(serviceRef.get() != null) {
 				return;
+			}
 			
 			int maxPoolSize = DEFAULT_MAX_POOL_SIZE;
-			if(maxPoolSizeStr != null)
+			if(maxPoolSizeStr != null) {
 				maxPoolSize = Integer.parseInt(maxPoolSizeStr);
+			}
 			
 			int keepAliveTime = DEFAULT_KEEP_ALIVE_TIME;
-            if(keepAliveTimeStr != null)
-                keepAliveTime = Integer.parseInt(keepAliveTimeStr);
+            if(keepAliveTimeStr != null) {
+				keepAliveTime = Integer.parseInt(keepAliveTimeStr);
+			}
 			
             ThreadPoolExecutor executer = new ThreadPoolExecutor(maxPoolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
                 AtomicInteger atomic = new AtomicInteger();
@@ -74,12 +78,14 @@ public class SqlRequestExecutor {
 	} 
 	
 	public static void shutdown() {
-		if (serviceRef.get() == null)
+		if (serviceRef.get() == null) {
 			return;
+		}
 		
 		synchronized (SqlRequestExecutor.class) {
-			if (serviceRef.get() == null)
+			if (serviceRef.get() == null) {
 				return;
+			}
 			
 			serviceRef.get().shutdown();
 			serviceRef.set(null);
@@ -101,13 +107,15 @@ public class SqlRequestExecutor {
 		try {
 			request.validate();
 			
-			if(request.isCrossShard())
+			if(request.isCrossShard()) {
 				result = crossShardExecute(logContext, hints, request);
-			else
+			} else {
 				result = nonCrossShardExecute(logContext, hints, request);
+			}
 
-			if(result == null && !nullable)
+			if(result == null && !nullable) {
 				throw new DasException(ErrorCode.AssertNull);
+			}
 
 			request.endExecution();
 		} catch (Throwable e) {
@@ -117,8 +125,9 @@ public class SqlRequestExecutor {
 		logger.end(logContext, error);
 		
 		handleCallback(hints, result, error);
-		if(error != null)
+		if(error != null) {
 			throw DasException.wrap(error);
+		}
 		
 		return result;
 	}
@@ -154,8 +163,9 @@ public class SqlRequestExecutor {
 		
 		logger.endCrossShards(logContext, error);
 
-		if(error != null)
-            throw DasException.wrap(error);
+		if(error != null) {
+			throw DasException.wrap(error);
+		}
 		
 		return result;
 
@@ -163,20 +173,23 @@ public class SqlRequestExecutor {
 
 	private <T> void handleCallback(final Hints hints, T result, Throwable error) {
 		DalResultCallback qc = (DalResultCallback)hints.get(HintEnum.resultCallback);
-		if (qc == null)
+		if (qc == null) {
 			return;
+		}
 		
-		if(error == null)
+		if(error == null) {
 			qc.onResult(result);
-		else
+		} else {
 			qc.onError(error);
+		}
 	}
 
 	private <T> T parallelExecute(Hints hints, Map<String, Callable<T>> tasks, ResultMerger<T> merger, LogContext logContext) throws SQLException {
 		Map<String, Future<T>> resultFutures = new HashMap<>();
 		
-		for(final String shard: tasks.keySet())
+		for(final String shard: tasks.keySet()) {
 			resultFutures.put(shard, serviceRef.get().submit(new RequestTaskWrapper<T>(shard, tasks.get(shard), logContext)));
+		}
 
 		for(Map.Entry<String, Future<T>> entry: resultFutures.entrySet()) {
 			try {
@@ -203,8 +216,9 @@ public class SqlRequestExecutor {
 	
 	public static int getPoolSize() {
 	    ThreadPoolExecutor executer = (ThreadPoolExecutor)serviceRef.get();
-	    if (serviceRef.get() == null)
-            return 0;
+	    if (serviceRef.get() == null) {
+			return 0;
+		}
 	    
 	    return executer.getPoolSize();
 	}

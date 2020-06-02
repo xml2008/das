@@ -62,15 +62,18 @@ public abstract class AbstractDalParser<T> implements DalParser<T> {
 		return sensitiveColumnNames;
 	}
 	
-	public String getVersionColumn() {
+	@Override
+    public String getVersionColumn() {
 		return versionColumn;
 	}
 	
-	public String[] getUpdatableColumnNames() {
+	@Override
+    public String[] getUpdatableColumnNames() {
 		return updatableColumnNames;
 	}
 	
-	public String[] getInsertableColumnNames() {
+	@Override
+    public String[] getInsertableColumnNames() {
 		return insertableColumnNames;
 	}
 }

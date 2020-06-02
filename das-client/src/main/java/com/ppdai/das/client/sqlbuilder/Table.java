@@ -47,13 +47,15 @@ public class Table implements TableReference, Segment{
     }
     
     public Table as(String alias) {
-        if(this.alias != null)
+        if(this.alias != null) {
             throw new IllegalArgumentException("Table ca not be alias twice.");
+        }
 
         this.alias = alias;
         return this;
     }
     
+    @Override
     public String getName() {
         return name;
     }
@@ -62,10 +64,12 @@ public class Table implements TableReference, Segment{
         return alias;
     }
 
+    @Override
     public String getShardId() {
         return shardId;
     }
 
+    @Override
     public String getShardValue() {
         return shardValue;
     }
@@ -85,14 +89,16 @@ public class Table implements TableReference, Segment{
     }
 
     public Column column(String name, JDBCType type) {
-        if(columns.containsKey(name))
+        if(columns.containsKey(name)) {
             throw new IllegalArgumentException("Duplicate name detected.");
+        }
 
         Column newCol = new Column(this, name, type);
         columns.put(name, newCol);
         return newCol;
     }
     
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

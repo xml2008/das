@@ -22,6 +22,7 @@ public enum DasParameterDirection implements org.apache.thrift.TEnum {
   /**
    * Get the integer value of this enum value, as defined in the Thrift IDL.
    */
+  @Override
   public int getValue() {
     return value;
   }

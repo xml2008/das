@@ -39,34 +39,41 @@ public class Template implements Segment, Includable<Template>, ParameterProvide
     
     private void validate(int size) {
         int placeHolderCount = 0;
-        for(char c: template.toCharArray())
-            if(c == '?')
+        for(char c: template.toCharArray()) {
+            if(c == '?') {
                 placeHolderCount++;
+            }
+        }
         
-        if(size != placeHolderCount)
+        if(size != placeHolderCount) {
             throw new IllegalStateException("This count of parameter place holder ? does not match the count of parameters or definition for " + template);
+        }
     }
     
     /**
      * Mark this expression as as optional when condition is not meet.
      */
+    @Override
     public Template when(boolean condition) {
         included = condition;
         return this;
     }
     
+    @Override
     public boolean isIncluded() {
         return included;
     }
 
     @Override
     public String build(BuilderContext helper) {
-        if(included == false)
+        if(included == false) {
             throw new IllegalStateException(template + " should not be included in final statement.");
+        }
         
         return template;
     }
 
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

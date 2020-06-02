@@ -49,7 +49,9 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -69,10 +71,12 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -121,6 +125,7 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
     }
   }
 
+  @Override
   public DasHints deepCopy() {
     return new DasHints(this);
   }
@@ -166,6 +171,7 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case HINTS:
@@ -179,6 +185,7 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -190,6 +197,7 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -204,26 +212,32 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasHints)
-      return this.equals((DasHints)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasHints) {
+        return this.equals((DasHints)that);
+    }
     return false;
   }
 
   public boolean equals(DasHints that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_hints = true && this.isSetHints();
     boolean that_present_hints = true && that.isSetHints();
     if (this_present_hints || that_present_hints) {
-      if (!(this_present_hints && that_present_hints))
-        return false;
-      if (!this.hints.equals(that.hints))
-        return false;
+      if (!(this_present_hints && that_present_hints)) {
+          return false;
+      }
+      if (!this.hints.equals(that.hints)) {
+          return false;
+      }
     }
 
     return true;
@@ -234,8 +248,9 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetHints()) ? 131071 : 524287);
-    if (isSetHints())
-      hashCode = hashCode * 8191 + hints.hashCode();
+    if (isSetHints()) {
+        hashCode = hashCode * 8191 + hints.hashCode();
+    }
 
     return hashCode;
   }
@@ -261,15 +276,18 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -315,6 +333,7 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
   }
 
   private static class DasHintsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasHintsStandardScheme getScheme() {
       return new DasHintsStandardScheme();
     }
@@ -322,6 +341,7 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
 
   private static class DasHintsStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasHints> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasHints struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -366,6 +386,7 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasHints struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -390,6 +411,7 @@ public class DasHints implements org.apache.thrift.TBase<DasHints, DasHints._Fie
   }
 
   private static class DasHintsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasHintsTupleScheme getScheme() {
       return new DasHintsTupleScheme();
     }

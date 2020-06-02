@@ -62,8 +62,9 @@ public abstract class AbstractCommonShardLocator<CTX extends ConditionContext> e
         Set<String> range = new TreeSet<>();
         for(Object value: context.getValues()) {
             range.addAll(locateShards(createConditionContext(context, OperatorEnum.EQUAL, value)));
-            if(isAlreadyAllShards(allShards, range))
+            if(isAlreadyAllShards(allShards, range)) {
                 break;
+            }
         }
         
         return range;

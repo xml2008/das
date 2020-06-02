@@ -84,7 +84,9 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -104,10 +106,12 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -193,6 +197,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
     this.transactionCount = other.transactionCount;
   }
 
+  @Override
   public DasServerStatus deepCopy() {
     return new DasServerStatus(this);
   }
@@ -401,6 +406,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TRANSACTIONCOUNT_ISSET_ID, value);
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case ONLINE:
@@ -470,6 +476,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -502,6 +509,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -530,89 +538,109 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasServerStatus)
-      return this.equals((DasServerStatus)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasServerStatus) {
+        return this.equals((DasServerStatus)that);
+    }
     return false;
   }
 
   public boolean equals(DasServerStatus that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_online = true;
     boolean that_present_online = true;
     if (this_present_online || that_present_online) {
-      if (!(this_present_online && that_present_online))
-        return false;
-      if (this.online != that.online)
-        return false;
+      if (!(this_present_online && that_present_online)) {
+          return false;
+      }
+      if (this.online != that.online) {
+          return false;
+      }
     }
 
     boolean this_present_cpuRate = true;
     boolean that_present_cpuRate = true;
     if (this_present_cpuRate || that_present_cpuRate) {
-      if (!(this_present_cpuRate && that_present_cpuRate))
-        return false;
-      if (this.cpuRate != that.cpuRate)
-        return false;
+      if (!(this_present_cpuRate && that_present_cpuRate)) {
+          return false;
+      }
+      if (this.cpuRate != that.cpuRate) {
+          return false;
+      }
     }
 
     boolean this_present_memRate = true;
     boolean that_present_memRate = true;
     if (this_present_memRate || that_present_memRate) {
-      if (!(this_present_memRate && that_present_memRate))
-        return false;
-      if (this.memRate != that.memRate)
-        return false;
+      if (!(this_present_memRate && that_present_memRate)) {
+          return false;
+      }
+      if (this.memRate != that.memRate) {
+          return false;
+      }
     }
 
     boolean this_present_clientCount = true;
     boolean that_present_clientCount = true;
     if (this_present_clientCount || that_present_clientCount) {
-      if (!(this_present_clientCount && that_present_clientCount))
-        return false;
-      if (this.clientCount != that.clientCount)
-        return false;
+      if (!(this_present_clientCount && that_present_clientCount)) {
+          return false;
+      }
+      if (this.clientCount != that.clientCount) {
+          return false;
+      }
     }
 
     boolean this_present_avgResponse = true;
     boolean that_present_avgResponse = true;
     if (this_present_avgResponse || that_present_avgResponse) {
-      if (!(this_present_avgResponse && that_present_avgResponse))
-        return false;
-      if (this.avgResponse != that.avgResponse)
-        return false;
+      if (!(this_present_avgResponse && that_present_avgResponse)) {
+          return false;
+      }
+      if (this.avgResponse != that.avgResponse) {
+          return false;
+      }
     }
 
     boolean this_present_avgThroughput = true;
     boolean that_present_avgThroughput = true;
     if (this_present_avgThroughput || that_present_avgThroughput) {
-      if (!(this_present_avgThroughput && that_present_avgThroughput))
-        return false;
-      if (this.avgThroughput != that.avgThroughput)
-        return false;
+      if (!(this_present_avgThroughput && that_present_avgThroughput)) {
+          return false;
+      }
+      if (this.avgThroughput != that.avgThroughput) {
+          return false;
+      }
     }
 
     boolean this_present_healthyPoint = true;
     boolean that_present_healthyPoint = true;
     if (this_present_healthyPoint || that_present_healthyPoint) {
-      if (!(this_present_healthyPoint && that_present_healthyPoint))
-        return false;
-      if (this.healthyPoint != that.healthyPoint)
-        return false;
+      if (!(this_present_healthyPoint && that_present_healthyPoint)) {
+          return false;
+      }
+      if (this.healthyPoint != that.healthyPoint) {
+          return false;
+      }
     }
 
     boolean this_present_transactionCount = true;
     boolean that_present_transactionCount = true;
     if (this_present_transactionCount || that_present_transactionCount) {
-      if (!(this_present_transactionCount && that_present_transactionCount))
-        return false;
-      if (this.transactionCount != that.transactionCount)
-        return false;
+      if (!(this_present_transactionCount && that_present_transactionCount)) {
+          return false;
+      }
+      if (this.transactionCount != that.transactionCount) {
+          return false;
+      }
     }
 
     return true;
@@ -732,15 +760,18 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -753,31 +784,45 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
     sb.append("online:");
     sb.append(this.online);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("cpuRate:");
     sb.append(this.cpuRate);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("memRate:");
     sb.append(this.memRate);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("clientCount:");
     sb.append(this.clientCount);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("avgResponse:");
     sb.append(this.avgResponse);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("avgThroughput:");
     sb.append(this.avgThroughput);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("healthyPoint:");
     sb.append(this.healthyPoint);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("transactionCount:");
     sb.append(this.transactionCount);
     first = false;
@@ -817,6 +862,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
   }
 
   private static class DasServerStatusStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasServerStatusStandardScheme getScheme() {
       return new DasServerStatusStandardScheme();
     }
@@ -824,6 +870,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
 
   private static class DasServerStatusStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasServerStatus> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasServerStatus struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -933,6 +980,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasServerStatus struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -968,6 +1016,7 @@ public class DasServerStatus implements org.apache.thrift.TBase<DasServerStatus,
   }
 
   private static class DasServerStatusTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasServerStatusTupleScheme getScheme() {
       return new DasServerStatusTupleScheme();
     }

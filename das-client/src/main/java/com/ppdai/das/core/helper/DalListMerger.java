@@ -60,8 +60,9 @@ public class DalListMerger<T> implements ResultMerger<List<T>> {
 
 	@Override
 	public void addPartial(String shard, List<T> partial) {
-		if(partial!=null && !partial.isEmpty())
-			result.addAll(partial);
+		if(partial!=null && !partial.isEmpty()) {
+            result.addAll(partial);
+        }
 	}
 
 	@Override

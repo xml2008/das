@@ -17,12 +17,14 @@ public class TimeoutDetector implements ErrorDetector{
 	public void detect(ErrorContext ctx) {	
 		TimeoutMarkdown tmb = StatusManager.getTimeoutMarkdown();
 
-		if(!tmb.isEnabled())
-			return;
+		if(!tmb.isEnabled()) {
+            return;
+        }
 
 		long duration = tmb.getSamplingDuration() * 1000 + 10;
-		if(!data.containsKey(ctx.getName()))
-			data.put(ctx.getName(), new DetectorCounter(duration));
+		if(!data.containsKey(ctx.getName())) {
+            data.put(ctx.getName(), new DetectorCounter(duration));
+        }
 		DetectorCounter dt = data.get(ctx.getName());
 		if(dt.getDuration() != duration){
 			dt.reset(duration);

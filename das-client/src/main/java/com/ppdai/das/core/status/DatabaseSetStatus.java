@@ -18,19 +18,23 @@ public class DatabaseSetStatus extends BaseStatus implements DatabaseSetStatusMB
         return appId;
     }
 
+    @Override
     public boolean isMarkdown() {
 		return markdown;
 	}
-	public void setMarkdown(boolean markdown) {
+	@Override
+    public void setMarkdown(boolean markdown) {
 		this.markdown = markdown;
 		markdownTime = Calendar.getInstance().getTime();
 		changed();
 	}
 	
-	public String getName() {
+	@Override
+    public String getName() {
 		return name;
 	}
-	public Date getMarkdownTime() {
+	@Override
+    public Date getMarkdownTime() {
 		return markdownTime;
 	}
 }

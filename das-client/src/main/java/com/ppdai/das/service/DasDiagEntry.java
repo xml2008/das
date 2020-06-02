@@ -59,7 +59,9 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -79,10 +81,12 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -135,6 +139,7 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
     }
   }
 
+  @Override
   public DasDiagEntry deepCopy() {
     return new DasDiagEntry(this);
   }
@@ -231,6 +236,7 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case STAGE:
@@ -260,6 +266,7 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -277,6 +284,7 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -295,44 +303,54 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasDiagEntry)
-      return this.equals((DasDiagEntry)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasDiagEntry) {
+        return this.equals((DasDiagEntry)that);
+    }
     return false;
   }
 
   public boolean equals(DasDiagEntry that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_stage = true && this.isSetStage();
     boolean that_present_stage = true && that.isSetStage();
     if (this_present_stage || that_present_stage) {
-      if (!(this_present_stage && that_present_stage))
-        return false;
-      if (!this.stage.equals(that.stage))
-        return false;
+      if (!(this_present_stage && that_present_stage)) {
+          return false;
+      }
+      if (!this.stage.equals(that.stage)) {
+          return false;
+      }
     }
 
     boolean this_present_cost = true;
     boolean that_present_cost = true;
     if (this_present_cost || that_present_cost) {
-      if (!(this_present_cost && that_present_cost))
-        return false;
-      if (this.cost != that.cost)
-        return false;
+      if (!(this_present_cost && that_present_cost)) {
+          return false;
+      }
+      if (this.cost != that.cost) {
+          return false;
+      }
     }
 
     boolean this_present_contexts = true && this.isSetContexts();
     boolean that_present_contexts = true && that.isSetContexts();
     if (this_present_contexts || that_present_contexts) {
-      if (!(this_present_contexts && that_present_contexts))
-        return false;
-      if (!this.contexts.equals(that.contexts))
-        return false;
+      if (!(this_present_contexts && that_present_contexts)) {
+          return false;
+      }
+      if (!this.contexts.equals(that.contexts)) {
+          return false;
+      }
     }
 
     return true;
@@ -343,14 +361,16 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetStage()) ? 131071 : 524287);
-    if (isSetStage())
-      hashCode = hashCode * 8191 + stage.hashCode();
+    if (isSetStage()) {
+        hashCode = hashCode * 8191 + stage.hashCode();
+    }
 
     hashCode = hashCode * 8191 + org.apache.thrift.TBaseHelper.hashCode(cost);
 
     hashCode = hashCode * 8191 + ((isSetContexts()) ? 131071 : 524287);
-    if (isSetContexts())
-      hashCode = hashCode * 8191 + contexts.hashCode();
+    if (isSetContexts()) {
+        hashCode = hashCode * 8191 + contexts.hashCode();
+    }
 
     return hashCode;
   }
@@ -396,15 +416,18 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -421,12 +444,16 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
       sb.append(this.stage);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("cost:");
     sb.append(this.cost);
     first = false;
     if (isSetContexts()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("contexts:");
       if (this.contexts == null) {
         sb.append("null");
@@ -467,6 +494,7 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
   }
 
   private static class DasDiagEntryStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasDiagEntryStandardScheme getScheme() {
       return new DasDiagEntryStandardScheme();
     }
@@ -474,6 +502,7 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
 
   private static class DasDiagEntryStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasDiagEntry> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasDiagEntry struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -534,6 +563,7 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasDiagEntry struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -568,6 +598,7 @@ public class DasDiagEntry implements org.apache.thrift.TBase<DasDiagEntry, DasDi
   }
 
   private static class DasDiagEntryTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasDiagEntryTupleScheme getScheme() {
       return new DasDiagEntryTupleScheme();
     }

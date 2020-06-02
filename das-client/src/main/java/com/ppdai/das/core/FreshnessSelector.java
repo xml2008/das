@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,6 +37,7 @@ public class FreshnessSelector implements DatabaseSelector {
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
             public void run() {
                 shutdown();
             }
@@ -79,10 +80,12 @@ public class FreshnessSelector implements DatabaseSelector {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o)
+            if (this == o) {
                 return true;
-            if (o == null || getClass() != o.getClass())
+            }
+            if (o == null || getClass() != o.getClass()) {
                 return false;
+            }
             ConnectShard that = (ConnectShard) o;
             return Objects.equals(connectionString, that.connectionString) && Objects.equals(shard, that.shard);
         }
@@ -99,12 +102,14 @@ public class FreshnessSelector implements DatabaseSelector {
      * @param configure
      */
     private void initialize() {
-        if (freshnessUpdatorRef.get() != null)
+        if (freshnessUpdatorRef.get() != null) {
             return;
+        }
 
         synchronized (FreshnessReader.class) {
-            if (freshnessUpdatorRef.get() != null)
+            if (freshnessUpdatorRef.get() != null) {
                 return;
+            }
 
             appFreshnessCache.clear();
             for (String appId : DasConfigureFactory.getAppIds()) {
@@ -118,20 +123,22 @@ public class FreshnessSelector implements DatabaseSelector {
                     if (dbSet.getDatabaseCategory() == MySql) {
                         for (Map.Entry<String, DataBase> dbEntry : dbSet.getDatabases().entrySet()) {
                             DataBase db = dbEntry.getValue();
-                            if (!db.isMaster())
+                            if (!db.isMaster()) {
                                 logicDbFreshnessMap.put(new ConnectShard(db.getConnectionString(), db.getSharding()),
                                         INVALID);
+                            }
                         }
                     }
                 }
                 appFreshnessCache.put(appId, freshnessCache);
             }
 
-            if (reader == null)
+            if (reader == null) {
                 return;
+            }
 
             // Init task
-            ScheduledExecutorService executer = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+            ScheduledExecutorService executer = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
                 AtomicInteger atomic = new AtomicInteger();
 
                 @Override
@@ -145,12 +152,14 @@ public class FreshnessSelector implements DatabaseSelector {
     }
 
     private static void shutdown() {
-        if (freshnessUpdatorRef.get() == null)
+        if (freshnessUpdatorRef.get() == null) {
             return;
+        }
 
         synchronized (FreshnessReader.class) {
-            if (freshnessUpdatorRef.get() == null)
+            if (freshnessUpdatorRef.get() == null) {
                 return;
+            }
 
             freshnessUpdatorRef.get().shutdown();
             freshnessUpdatorRef.set(null);
@@ -190,18 +199,21 @@ public class FreshnessSelector implements DatabaseSelector {
     private List<DataBase> filterQualifiedSlaves(String appId, String logicDbName, List<DataBase> slaves,
             int qualifiedFreshness) {
         List<DataBase> qualifiedSlaves = new ArrayList<>();
-        if (!appFreshnessCache.get(appId).containsKey(logicDbName))
+        if (!appFreshnessCache.get(appId).containsKey(logicDbName)) {
             return qualifiedSlaves;
+        }
 
         Map<ConnectShard, Integer> logicDbFreshnessMap = appFreshnessCache.get(appId).get(logicDbName);
         for (DataBase slaveDb : slaves) {
             Integer freshness = logicDbFreshnessMap
                     .get(new ConnectShard(slaveDb.getConnectionString(), slaveDb.getSharding()));
-            if (freshness == null || freshness.equals(INVALID))
+            if (freshness == null || freshness.equals(INVALID)) {
                 continue;
+            }
 
-            if (freshness <= qualifiedFreshness)
+            if (freshness <= qualifiedFreshness) {
                 qualifiedSlaves.add(slaveDb);
+            }
         }
 
         return qualifiedSlaves;
@@ -216,8 +228,9 @@ public class FreshnessSelector implements DatabaseSelector {
         List<DataBase> slaves = context.getSlaves();
 
         // Not specified
-        if (freshness == null || slaves == null || slaves.isEmpty())
+        if (freshness == null || slaves == null || slaves.isEmpty()) {
             return defaultSelector.select(context);
+        }
 
         context.setSlaves(filterQualifiedSlaves(context.getAppId(), context.getLogicDbName(), slaves, freshness));
 

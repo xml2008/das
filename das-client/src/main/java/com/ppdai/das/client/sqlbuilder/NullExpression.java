@@ -23,6 +23,7 @@ public class NullExpression extends ColumnExpression implements ConditionProvide
     /**
      * Not supported
      */
+    @Override
     public ColumnExpression nullable() {
         throw new IllegalStateException("nullable should not be used on IS/IS NOT NULL expression");
     }

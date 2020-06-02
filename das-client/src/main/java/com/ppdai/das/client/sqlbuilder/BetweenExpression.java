@@ -32,17 +32,22 @@ public class BetweenExpression extends ColumnExpression implements ParameterDefi
     }
     
     private Object checkDefinition(AbstractColumn column, Object value) {
-        if(value == null) return null;
+        if(value == null) {
+            return null;
+        }
         
-        if(value instanceof ParameterDefinition.Builder)
+        if(value instanceof ParameterDefinition.Builder) {
             return ((ParameterDefinition.Builder)value).of(column);
+        }
 
-        if(value instanceof ParameterDefinition)
+        if(value instanceof ParameterDefinition) {
             return ParameterDefinition.defineByVAR((ParameterDefinition)value, column, false);
+        }
         
         return value;
     }
     
+    @Override
     public void validate(BuilderContext context) {
         Objects.requireNonNull(firstValue, "lower value for column :" + rightColumn.getReference(context) + 
                 " is null for BETWEEN. If you want this expression to be removed when value is null, please call nullable() before build");
@@ -61,8 +66,9 @@ public class BetweenExpression extends ColumnExpression implements ParameterDefi
     public List<Parameter> buildParameters() {
         List<Parameter> params = new ArrayList<>();
         
-        if(firstValue instanceof ParameterDefinition || secondValue instanceof ParameterDefinition)
+        if(firstValue instanceof ParameterDefinition || secondValue instanceof ParameterDefinition) {
             throw new IllegalArgumentException("Instance of Parameter or actual values should be used for BETWEEN parameter");
+        }
         
         Parameter p1 = firstValue instanceof Parameter ? (Parameter)firstValue : new Parameter(getRightColumn().getColumnName(), getRightColumn().getType(), firstValue);
         Parameter p2 = secondValue instanceof Parameter ? (Parameter)secondValue : new Parameter(getRightColumn().getColumnName(), getRightColumn().getType(), secondValue);
@@ -77,8 +83,9 @@ public class BetweenExpression extends ColumnExpression implements ParameterDefi
     public List<ParameterDefinition> buildDefinitions() {
         List<ParameterDefinition> defs = new ArrayList<>();
 
-        if(!(firstValue instanceof ParameterDefinition || secondValue instanceof ParameterDefinition))
+        if(!(firstValue instanceof ParameterDefinition || secondValue instanceof ParameterDefinition)) {
             throw new IllegalArgumentException("ParameterDefinition should be used for BETWEEN parameter definition");
+        }
         
         defs.add((ParameterDefinition)firstValue);
         defs.add((ParameterDefinition)secondValue);

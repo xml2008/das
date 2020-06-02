@@ -97,8 +97,9 @@ public class TransactionClient {
     private void endTransaction(int startLevel) throws Exception {
         DasTransactionId transactionId = transactionHolder.get();
         
-        if(transactionId == null)
+        if(transactionId == null) {
             throw new SQLException("calling endTransaction with empty ConnectionCache");
+        }
 
         checkState(transactionId);
 
@@ -123,10 +124,11 @@ public class TransactionClient {
     private void cleanup(DasTransactionId transactionId, boolean commit) {
         Throwable ex = null;
         try {
-            if(commit)
+            if(commit) {
                 serverSelector.commit(transactionId);
-            else
+            } else {
                 serverSelector.rollback(transactionId);
+            }
         } catch (Throwable e) {
             logger.error("Can not commit or rollback on current connection", e);
             ex = e;
@@ -135,24 +137,28 @@ public class TransactionClient {
         clearCurrentTransaction();
         serverSelector.removeStick();
         
-        if(ex != null)
+        if(ex != null) {
             throw new RuntimeException(ex);
+        }
     }
 
     private void checkState(DasTransactionId transactionId) throws DasException {
-        if(transactionId.rolledBack || transactionId.completed)
+        if(transactionId.rolledBack || transactionId.completed) {
             throw new DasException(ErrorCode.TransactionState);
+        }
     }
 
     private void rollbackTransaction() throws SQLException {
         DasTransactionId transactionId = transactionHolder.get();
         
         // Already handled in deeper level
-        if(transactionId == null)
+        if(transactionId == null) {
             return;
+        }
 
-        if(transactionId.rolledBack)
+        if(transactionId.rolledBack) {
             return;
+        }
 
         transactionId.rolledBack = true;
         // Even the rollback fails, we still set the flag to true;
@@ -182,7 +188,8 @@ public class TransactionClient {
     }
 
     private void handleException(Throwable e) throws SQLException {
-        if(e != null)
+        if(e != null) {
             throw e instanceof SQLException ? (SQLException)e : DasException.wrap(e);
+        }
     }
 }

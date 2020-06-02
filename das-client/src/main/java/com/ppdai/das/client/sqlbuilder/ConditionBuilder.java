@@ -53,10 +53,11 @@ public class ConditionBuilder {
         
         List<Segment> conditionList = new ArrayList<>();
         for(Segment entry: filtered) {
-            if(isConditionCandidate(entry))
+            if(isConditionCandidate(entry)) {
                 conditionList.add(entry);
-            else
+            } else {
                 parseCondition(providers, conditionList);
+            }
         }
 
         //For the potential last one
@@ -122,8 +123,9 @@ public class ConditionBuilder {
                 level--;
                 bracketContents.add(entry);
                 
-                if(level > 0) 
-                    continue;    
+                if(level > 0) {
+                    continue;
+                }
 
                 //If it is not about column reference, we should add  back this content
                 if(isColumnList(bracketContents) == false) {
@@ -136,8 +138,9 @@ public class ConditionBuilder {
 
             if(level > 0) {
                 bracketContents.add(entry);
-            }else
+            }else {
                 finalList.add(entry);
+            }
         }
         
         return finalList;
@@ -224,15 +227,17 @@ public class ConditionBuilder {
     
     private void combine(Segment entry, LinkedList<Condition> providers) {
         if(isNot(entry)) {
-            if(providers.size() <1)
+            if(providers.size() <1) {
                 throw new IllegalArgumentException("The expressions are not well formated, there is no operant to match 'NOT'");
+            }
 
             providers.getLast().reverse();
         }else {
             ConditionList temproviders = new ConditionList(isAnd(entry));
             
-            if(providers.size() <2)
+            if(providers.size() <2) {
                 throw new IllegalArgumentException("The expressions are not well formated, please check if there is any missing ')' or dangling 'AND', 'OR' without operant");
+            }
             
             Condition rp2 = providers.removeLast();
             Condition rp1 = providers.removeLast();

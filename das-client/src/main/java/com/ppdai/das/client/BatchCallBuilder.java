@@ -79,6 +79,7 @@ public class BatchCallBuilder implements Segment, ParameterDefinitionProvider {
         return sb.build(context);
     }
 
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

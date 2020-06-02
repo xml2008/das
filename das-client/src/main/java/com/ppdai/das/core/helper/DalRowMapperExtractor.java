@@ -35,8 +35,9 @@ public class DalRowMapperExtractor <T> implements DalResultSetExtractor<List<T>>
 	@Override
 	public List<T> extract(ResultSet rs) throws SQLException {
 		List<T> result = count == 0 ? new ArrayList<T>() : new ArrayList<T>(count);
-		if(start != 0)
-			rs.absolute(start);
+		if(start != 0) {
+            rs.absolute(start);
+        }
 		int i = 0;
 		int rowNum = 0;
 		

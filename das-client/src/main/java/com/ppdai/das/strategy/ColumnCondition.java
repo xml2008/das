@@ -65,6 +65,7 @@ public class ColumnCondition implements Condition {
         return (List<Object>)value;
     }
     
+    @Override
     public Set<String> getTables() {
         Set<String> tables = new HashSet<>();
         tables.add(tableName);
@@ -85,6 +86,7 @@ public class ColumnCondition implements Condition {
         return new ColumnCondition(newOperator, tableName, columnName, value);
     }
     
+    @Override
     public String toString() {
         return String.format(operator.getTemplate(), tableName+"."+columnName);
     }

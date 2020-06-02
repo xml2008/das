@@ -40,12 +40,14 @@ public class StatusManager {
 	private static Map<String, DataSourceStatus> dataSources = new ConcurrentHashMap<>();
 	
 	public static void initializeGlobal() throws Exception {
-		if(initialized.get() == true)
-			return;
+		if(initialized.get() == true) {
+            return;
+        }
 		
 		synchronized (StatusManager.class) {
-			if(initialized.get() == true)
-				return;
+			if(initialized.get() == true) {
+                return;
+            }
 
 			verifyRegistration();
 			registerGlobal();
@@ -74,8 +76,9 @@ public class StatusManager {
 	
 	private static void registerMBean(Object mBean, ObjectName name) throws Exception{
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-		if(mbs.isRegistered(name))
-			mbs.unregisterMBean(name);
+		if(mbs.isRegistered(name)) {
+            mbs.unregisterMBean(name);
+        }
 
 		mbs.registerMBean(mBean, name);
 	}
@@ -112,26 +115,30 @@ public class StatusManager {
 	}
 	
 	public static void shutdown() throws Exception {
-		if(initialized.get() == false)
-			return;
+		if(initialized.get() == false) {
+            return;
+        }
 		
 		synchronized (StatusManager.class) {
-			if(initialized.get() == false)
-				return;
+			if(initialized.get() == false) {
+                return;
+            }
 			MarkdownManager.shutdown();
 			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 			mbs.unregisterMBean(getGlobalName(HAStatus.class));
 			mbs.unregisterMBean(getGlobalName(TimeoutMarkdown.class));
 			mbs.unregisterMBean(getGlobalName(MarkdownStatus.class));
 			
-			for(String name: dataSources.keySet())
-				mbs.unregisterMBean(new ObjectName(DATASOURCE_CONFIG_DOMAIN_PREFIX, TYPE, name));
+			for(String name: dataSources.keySet()) {
+                mbs.unregisterMBean(new ObjectName(DATASOURCE_CONFIG_DOMAIN_PREFIX, TYPE, name));
+            }
 			dataSources.clear();
 			
 			for(String appId: appLogicDbs.keySet()) {
 			    Map<String, DatabaseSetStatus> logicDbs = appLogicDbs.get(appId);
-    			for(String name: logicDbs.keySet())
-    				mbs.unregisterMBean(new ObjectName(String.format(APP_LOGIC_DB_CONFIG_DOMAIN_PREFIX, appId), TYPE, name));
+    			for(String name: logicDbs.keySet()) {
+                    mbs.unregisterMBean(new ObjectName(String.format(APP_LOGIC_DB_CONFIG_DOMAIN_PREFIX, appId), TYPE, name));
+                }
                 logicDbs.clear();
 			}
 			

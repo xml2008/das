@@ -38,18 +38,20 @@ public class ConditionList implements Condition, Iterable<Condition> {
         ConditionList condList = ConditionList.andList();
         for(Map.Entry<String, ?> entry: pojo.entrySet()) {
             //We omit empty fields
-            if(entry.getValue() != null)
+            if(entry.getValue() != null) {
                 condList.add(new ColumnCondition(OperatorEnum.EQUAL, tableName, entry.getKey(), entry.getValue()));
+            }
         }
         return condList;
     }
     
     public void add(Condition condition) {
         //Merge conditions with same intersection mode
-        if(condition instanceof ConditionList && ((ConditionList)condition).isIntersected() == intersected)
+        if(condition instanceof ConditionList && ((ConditionList)condition).isIntersected() == intersected) {
             conditions.addAll(((ConditionList)condition).getConditions());
-        else
+        } else {
             conditions.add(condition);
+        }
     }
     
     /**
@@ -84,21 +86,25 @@ public class ConditionList implements Condition, Iterable<Condition> {
         return conditions.iterator();
     }
 
+    @Override
     public Set<String> getTables() {
         Set<String> tables = new HashSet<>();
-        for(Condition c: conditions)
+        for(Condition c: conditions) {
             tables.addAll(c.getTables());
+        }
         return tables;
     }
 
     @Override
     public Condition reverse() {
         intersected = !intersected;
-        for(Condition c: conditions)
+        for(Condition c: conditions) {
             c.reverse();
+        }
         return this;
     }
     
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(intersected ? SegmentConstants.AND : SegmentConstants.OR).append("(");

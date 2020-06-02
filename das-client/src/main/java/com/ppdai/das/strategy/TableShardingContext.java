@@ -14,6 +14,7 @@ public class TableShardingContext extends ShardingContext {
         this.logicTableName = logicTableName;
     }
 
+    @Override
     public TableConditionContext create(ColumnCondition condition) {
         return new TableConditionContext(this, condition);
     }

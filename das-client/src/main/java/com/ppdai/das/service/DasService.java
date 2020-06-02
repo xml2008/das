@@ -41,9 +41,11 @@ public class DasService {
   public static class Client extends org.apache.thrift.TServiceClient implements Iface {
     public static class Factory implements org.apache.thrift.TServiceClientFactory<Client> {
       public Factory() {}
+      @Override
       public Client getClient(org.apache.thrift.protocol.TProtocol prot) {
         return new Client(prot);
       }
+      @Override
       public Client getClient(org.apache.thrift.protocol.TProtocol iprot, org.apache.thrift.protocol.TProtocol oprot) {
         return new Client(iprot, oprot);
       }
@@ -58,6 +60,7 @@ public class DasService {
       super(iprot, oprot);
     }
 
+    @Override
     public DasResult execute(DasRequest request) throws DasException, org.apache.thrift.TException
     {
       send_execute(request);
@@ -84,6 +87,7 @@ public class DasService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "execute failed: unknown result");
     }
 
+    @Override
     public DasTransactionId start(String appId, String database, DasHints hints) throws DasException, org.apache.thrift.TException
     {
       send_start(appId, database, hints);
@@ -112,6 +116,7 @@ public class DasService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "start failed: unknown result");
     }
 
+    @Override
     public void commit(DasTransactionId tranId) throws DasException, org.apache.thrift.TException
     {
       send_commit(tranId);
@@ -135,6 +140,7 @@ public class DasService {
       return;
     }
 
+    @Override
     public void rollback(DasTransactionId tranId) throws DasException, org.apache.thrift.TException
     {
       send_rollback(tranId);
@@ -158,6 +164,7 @@ public class DasService {
       return;
     }
 
+    @Override
     public DasServerStatus check(DasCheckRequest request) throws DasException, org.apache.thrift.TException
     {
       send_check(request);
@@ -193,6 +200,7 @@ public class DasService {
         this.clientManager = clientManager;
         this.protocolFactory = protocolFactory;
       }
+      @Override
       public AsyncClient getAsyncClient(org.apache.thrift.transport.TNonblockingTransport transport) {
         return new AsyncClient(protocolFactory, clientManager, transport);
       }
@@ -202,6 +210,7 @@ public class DasService {
       super(protocolFactory, clientManager, transport);
     }
 
+    @Override
     public void execute(DasRequest request, org.apache.thrift.async.AsyncMethodCallback<DasResult> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       execute_call method_call = new execute_call(request, resultHandler, this, ___protocolFactory, ___transport);
@@ -216,6 +225,7 @@ public class DasService {
         this.request = request;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("execute", org.apache.thrift.protocol.TMessageType.CALL, 0));
         execute_args args = new execute_args();
@@ -224,6 +234,7 @@ public class DasService {
         prot.writeMessageEnd();
       }
 
+      @Override
       public DasResult getResult() throws DasException, org.apache.thrift.TException {
         if (getState() != State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
@@ -234,6 +245,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void start(String appId, String database, DasHints hints, org.apache.thrift.async.AsyncMethodCallback<DasTransactionId> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       start_call method_call = new start_call(appId, database, hints, resultHandler, this, ___protocolFactory, ___transport);
@@ -252,6 +264,7 @@ public class DasService {
         this.hints = hints;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("start", org.apache.thrift.protocol.TMessageType.CALL, 0));
         start_args args = new start_args();
@@ -262,6 +275,7 @@ public class DasService {
         prot.writeMessageEnd();
       }
 
+      @Override
       public DasTransactionId getResult() throws DasException, org.apache.thrift.TException {
         if (getState() != State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
@@ -272,6 +286,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void commit(DasTransactionId tranId, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       commit_call method_call = new commit_call(tranId, resultHandler, this, ___protocolFactory, ___transport);
@@ -286,6 +301,7 @@ public class DasService {
         this.tranId = tranId;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("commit", org.apache.thrift.protocol.TMessageType.CALL, 0));
         commit_args args = new commit_args();
@@ -294,6 +310,7 @@ public class DasService {
         prot.writeMessageEnd();
       }
 
+      @Override
       public Void getResult() throws DasException, org.apache.thrift.TException {
         if (getState() != State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
@@ -304,6 +321,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void rollback(DasTransactionId tranId, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       rollback_call method_call = new rollback_call(tranId, resultHandler, this, ___protocolFactory, ___transport);
@@ -318,6 +336,7 @@ public class DasService {
         this.tranId = tranId;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("rollback", org.apache.thrift.protocol.TMessageType.CALL, 0));
         rollback_args args = new rollback_args();
@@ -326,6 +345,7 @@ public class DasService {
         prot.writeMessageEnd();
       }
 
+      @Override
       public Void getResult() throws DasException, org.apache.thrift.TException {
         if (getState() != State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
@@ -336,6 +356,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void check(DasCheckRequest request, org.apache.thrift.async.AsyncMethodCallback<DasServerStatus> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       check_call method_call = new check_call(request, resultHandler, this, ___protocolFactory, ___transport);
@@ -350,6 +371,7 @@ public class DasService {
         this.request = request;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("check", org.apache.thrift.protocol.TMessageType.CALL, 0));
         check_args args = new check_args();
@@ -358,6 +380,7 @@ public class DasService {
         prot.writeMessageEnd();
       }
 
+      @Override
       public DasServerStatus getResult() throws DasException, org.apache.thrift.TException {
         if (getState() != State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
@@ -394,10 +417,12 @@ public class DasService {
         super("execute");
       }
 
+      @Override
       public execute_args getEmptyArgsInstance() {
         return new execute_args();
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
@@ -407,6 +432,7 @@ public class DasService {
         return false;
       }
 
+      @Override
       public execute_result getResult(I iface, execute_args args) throws org.apache.thrift.TException {
         execute_result result = new execute_result();
         try {
@@ -423,10 +449,12 @@ public class DasService {
         super("start");
       }
 
+      @Override
       public start_args getEmptyArgsInstance() {
         return new start_args();
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
@@ -436,6 +464,7 @@ public class DasService {
         return false;
       }
 
+      @Override
       public start_result getResult(I iface, start_args args) throws org.apache.thrift.TException {
         start_result result = new start_result();
         try {
@@ -452,10 +481,12 @@ public class DasService {
         super("commit");
       }
 
+      @Override
       public commit_args getEmptyArgsInstance() {
         return new commit_args();
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
@@ -465,6 +496,7 @@ public class DasService {
         return false;
       }
 
+      @Override
       public commit_result getResult(I iface, commit_args args) throws org.apache.thrift.TException {
         commit_result result = new commit_result();
         try {
@@ -481,10 +513,12 @@ public class DasService {
         super("rollback");
       }
 
+      @Override
       public rollback_args getEmptyArgsInstance() {
         return new rollback_args();
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
@@ -494,6 +528,7 @@ public class DasService {
         return false;
       }
 
+      @Override
       public rollback_result getResult(I iface, rollback_args args) throws org.apache.thrift.TException {
         rollback_result result = new rollback_result();
         try {
@@ -510,10 +545,12 @@ public class DasService {
         super("check");
       }
 
+      @Override
       public check_args getEmptyArgsInstance() {
         return new check_args();
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
@@ -523,6 +560,7 @@ public class DasService {
         return false;
       }
 
+      @Override
       public check_result getResult(I iface, check_args args) throws org.apache.thrift.TException {
         check_result result = new check_result();
         try {
@@ -560,13 +598,16 @@ public class DasService {
         super("execute");
       }
 
+      @Override
       public execute_args getEmptyArgsInstance() {
         return new execute_args();
       }
 
+      @Override
       public org.apache.thrift.async.AsyncMethodCallback<DasResult> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new org.apache.thrift.async.AsyncMethodCallback<DasResult>() { 
+          @Override
           public void onComplete(DasResult o) {
             execute_result result = new execute_result();
             result.success = o;
@@ -580,6 +621,7 @@ public class DasService {
               onError(e);
             }
           }
+          @Override
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
@@ -611,10 +653,12 @@ public class DasService {
         };
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
 
+      @Override
       public void start(I iface, execute_args args, org.apache.thrift.async.AsyncMethodCallback<DasResult> resultHandler) throws org.apache.thrift.TException {
         iface.execute(args.request,resultHandler);
       }
@@ -625,13 +669,16 @@ public class DasService {
         super("start");
       }
 
+      @Override
       public start_args getEmptyArgsInstance() {
         return new start_args();
       }
 
+      @Override
       public org.apache.thrift.async.AsyncMethodCallback<DasTransactionId> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new org.apache.thrift.async.AsyncMethodCallback<DasTransactionId>() { 
+          @Override
           public void onComplete(DasTransactionId o) {
             start_result result = new start_result();
             result.success = o;
@@ -645,6 +692,7 @@ public class DasService {
               onError(e);
             }
           }
+          @Override
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
@@ -676,10 +724,12 @@ public class DasService {
         };
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
 
+      @Override
       public void start(I iface, start_args args, org.apache.thrift.async.AsyncMethodCallback<DasTransactionId> resultHandler) throws org.apache.thrift.TException {
         iface.start(args.appId, args.database, args.hints,resultHandler);
       }
@@ -690,13 +740,16 @@ public class DasService {
         super("commit");
       }
 
+      @Override
       public commit_args getEmptyArgsInstance() {
         return new commit_args();
       }
 
+      @Override
       public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+          @Override
           public void onComplete(Void o) {
             commit_result result = new commit_result();
             try {
@@ -709,6 +762,7 @@ public class DasService {
               onError(e);
             }
           }
+          @Override
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
@@ -740,10 +794,12 @@ public class DasService {
         };
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
 
+      @Override
       public void start(I iface, commit_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
         iface.commit(args.tranId,resultHandler);
       }
@@ -754,13 +810,16 @@ public class DasService {
         super("rollback");
       }
 
+      @Override
       public rollback_args getEmptyArgsInstance() {
         return new rollback_args();
       }
 
+      @Override
       public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+          @Override
           public void onComplete(Void o) {
             rollback_result result = new rollback_result();
             try {
@@ -773,6 +832,7 @@ public class DasService {
               onError(e);
             }
           }
+          @Override
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
@@ -804,10 +864,12 @@ public class DasService {
         };
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
 
+      @Override
       public void start(I iface, rollback_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
         iface.rollback(args.tranId,resultHandler);
       }
@@ -818,13 +880,16 @@ public class DasService {
         super("check");
       }
 
+      @Override
       public check_args getEmptyArgsInstance() {
         return new check_args();
       }
 
+      @Override
       public org.apache.thrift.async.AsyncMethodCallback<DasServerStatus> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new org.apache.thrift.async.AsyncMethodCallback<DasServerStatus>() { 
+          @Override
           public void onComplete(DasServerStatus o) {
             check_result result = new check_result();
             result.success = o;
@@ -838,6 +903,7 @@ public class DasService {
               onError(e);
             }
           }
+          @Override
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
@@ -869,10 +935,12 @@ public class DasService {
         };
       }
 
+      @Override
       protected boolean isOneway() {
         return false;
       }
 
+      @Override
       public void start(I iface, check_args args, org.apache.thrift.async.AsyncMethodCallback<DasServerStatus> resultHandler) throws org.apache.thrift.TException {
         iface.check(args.request,resultHandler);
       }
@@ -921,7 +989,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -941,10 +1011,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -979,6 +1051,7 @@ public class DasService {
       }
     }
 
+    @Override
     public execute_args deepCopy() {
       return new execute_args(this);
     }
@@ -1013,6 +1086,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case REQUEST:
@@ -1026,6 +1100,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -1037,6 +1112,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -1051,26 +1127,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof execute_args)
-        return this.equals((execute_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof execute_args) {
+          return this.equals((execute_args)that);
+      }
       return false;
     }
 
     public boolean equals(execute_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_request = true && this.isSetRequest();
       boolean that_present_request = true && that.isSetRequest();
       if (this_present_request || that_present_request) {
-        if (!(this_present_request && that_present_request))
-          return false;
-        if (!this.request.equals(that.request))
-          return false;
+        if (!(this_present_request && that_present_request)) {
+            return false;
+        }
+        if (!this.request.equals(that.request)) {
+            return false;
+        }
       }
 
       return true;
@@ -1081,8 +1163,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetRequest()) ? 131071 : 524287);
-      if (isSetRequest())
-        hashCode = hashCode * 8191 + request.hashCode();
+      if (isSetRequest()) {
+          hashCode = hashCode * 8191 + request.hashCode();
+      }
 
       return hashCode;
     }
@@ -1108,15 +1191,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
     }
@@ -1162,6 +1248,7 @@ public class DasService {
     }
 
     private static class execute_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public execute_argsStandardScheme getScheme() {
         return new execute_argsStandardScheme();
       }
@@ -1169,6 +1256,7 @@ public class DasService {
 
     private static class execute_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<execute_args> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, execute_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -1199,6 +1287,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, execute_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -1215,6 +1304,7 @@ public class DasService {
     }
 
     private static class execute_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public execute_argsTupleScheme getScheme() {
         return new execute_argsTupleScheme();
       }
@@ -1298,7 +1388,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -1318,10 +1410,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -1363,6 +1457,7 @@ public class DasService {
       }
     }
 
+    @Override
     public execute_result deepCopy() {
       return new execute_result(this);
     }
@@ -1423,6 +1518,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case SUCCESS:
@@ -1444,6 +1540,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -1458,6 +1555,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -1474,35 +1572,43 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof execute_result)
-        return this.equals((execute_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof execute_result) {
+          return this.equals((execute_result)that);
+      }
       return false;
     }
 
     public boolean equals(execute_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_success = true && this.isSetSuccess();
       boolean that_present_success = true && that.isSetSuccess();
       if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
+        if (!(this_present_success && that_present_success)) {
+            return false;
+        }
+        if (!this.success.equals(that.success)) {
+            return false;
+        }
       }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -1513,12 +1619,14 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
+      if (isSetSuccess()) {
+          hashCode = hashCode * 8191 + success.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -1554,15 +1662,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
       }
@@ -1579,7 +1690,9 @@ public class DasService {
         sb.append(this.success);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("e:");
       if (this.e == null) {
         sb.append("null");
@@ -1616,6 +1729,7 @@ public class DasService {
     }
 
     private static class execute_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public execute_resultStandardScheme getScheme() {
         return new execute_resultStandardScheme();
       }
@@ -1623,6 +1737,7 @@ public class DasService {
 
     private static class execute_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<execute_result> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, execute_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -1662,6 +1777,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, execute_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -1683,6 +1799,7 @@ public class DasService {
     }
 
     private static class execute_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public execute_resultTupleScheme getScheme() {
         return new execute_resultTupleScheme();
       }
@@ -1782,7 +1899,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -1802,10 +1921,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -1854,6 +1975,7 @@ public class DasService {
       }
     }
 
+    @Override
     public start_args deepCopy() {
       return new start_args(this);
     }
@@ -1940,6 +2062,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case APP_ID:
@@ -1969,6 +2092,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -1986,6 +2110,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -2004,44 +2129,54 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof start_args)
-        return this.equals((start_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof start_args) {
+          return this.equals((start_args)that);
+      }
       return false;
     }
 
     public boolean equals(start_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_appId = true && this.isSetAppId();
       boolean that_present_appId = true && that.isSetAppId();
       if (this_present_appId || that_present_appId) {
-        if (!(this_present_appId && that_present_appId))
-          return false;
-        if (!this.appId.equals(that.appId))
-          return false;
+        if (!(this_present_appId && that_present_appId)) {
+            return false;
+        }
+        if (!this.appId.equals(that.appId)) {
+            return false;
+        }
       }
 
       boolean this_present_database = true && this.isSetDatabase();
       boolean that_present_database = true && that.isSetDatabase();
       if (this_present_database || that_present_database) {
-        if (!(this_present_database && that_present_database))
-          return false;
-        if (!this.database.equals(that.database))
-          return false;
+        if (!(this_present_database && that_present_database)) {
+            return false;
+        }
+        if (!this.database.equals(that.database)) {
+            return false;
+        }
       }
 
       boolean this_present_hints = true && this.isSetHints();
       boolean that_present_hints = true && that.isSetHints();
       if (this_present_hints || that_present_hints) {
-        if (!(this_present_hints && that_present_hints))
-          return false;
-        if (!this.hints.equals(that.hints))
-          return false;
+        if (!(this_present_hints && that_present_hints)) {
+            return false;
+        }
+        if (!this.hints.equals(that.hints)) {
+            return false;
+        }
       }
 
       return true;
@@ -2052,16 +2187,19 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetAppId()) ? 131071 : 524287);
-      if (isSetAppId())
-        hashCode = hashCode * 8191 + appId.hashCode();
+      if (isSetAppId()) {
+          hashCode = hashCode * 8191 + appId.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetDatabase()) ? 131071 : 524287);
-      if (isSetDatabase())
-        hashCode = hashCode * 8191 + database.hashCode();
+      if (isSetDatabase()) {
+          hashCode = hashCode * 8191 + database.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetHints()) ? 131071 : 524287);
-      if (isSetHints())
-        hashCode = hashCode * 8191 + hints.hashCode();
+      if (isSetHints()) {
+          hashCode = hashCode * 8191 + hints.hashCode();
+      }
 
       return hashCode;
     }
@@ -2107,15 +2245,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
     }
@@ -2132,7 +2273,9 @@ public class DasService {
         sb.append(this.appId);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("database:");
       if (this.database == null) {
         sb.append("null");
@@ -2140,7 +2283,9 @@ public class DasService {
         sb.append(this.database);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("hints:");
       if (this.hints == null) {
         sb.append("null");
@@ -2177,6 +2322,7 @@ public class DasService {
     }
 
     private static class start_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public start_argsStandardScheme getScheme() {
         return new start_argsStandardScheme();
       }
@@ -2184,6 +2330,7 @@ public class DasService {
 
     private static class start_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<start_args> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, start_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -2230,6 +2377,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, start_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -2256,6 +2404,7 @@ public class DasService {
     }
 
     private static class start_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public start_argsTupleScheme getScheme() {
         return new start_argsTupleScheme();
       }
@@ -2359,7 +2508,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -2379,10 +2530,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -2424,6 +2577,7 @@ public class DasService {
       }
     }
 
+    @Override
     public start_result deepCopy() {
       return new start_result(this);
     }
@@ -2484,6 +2638,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case SUCCESS:
@@ -2505,6 +2660,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -2519,6 +2675,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -2535,35 +2692,43 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof start_result)
-        return this.equals((start_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof start_result) {
+          return this.equals((start_result)that);
+      }
       return false;
     }
 
     public boolean equals(start_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_success = true && this.isSetSuccess();
       boolean that_present_success = true && that.isSetSuccess();
       if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
+        if (!(this_present_success && that_present_success)) {
+            return false;
+        }
+        if (!this.success.equals(that.success)) {
+            return false;
+        }
       }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -2574,12 +2739,14 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
+      if (isSetSuccess()) {
+          hashCode = hashCode * 8191 + success.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -2615,15 +2782,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
       }
@@ -2640,7 +2810,9 @@ public class DasService {
         sb.append(this.success);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("e:");
       if (this.e == null) {
         sb.append("null");
@@ -2677,6 +2849,7 @@ public class DasService {
     }
 
     private static class start_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public start_resultStandardScheme getScheme() {
         return new start_resultStandardScheme();
       }
@@ -2684,6 +2857,7 @@ public class DasService {
 
     private static class start_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<start_result> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, start_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -2723,6 +2897,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, start_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -2744,6 +2919,7 @@ public class DasService {
     }
 
     private static class start_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public start_resultTupleScheme getScheme() {
         return new start_resultTupleScheme();
       }
@@ -2833,7 +3009,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -2853,10 +3031,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -2891,6 +3071,7 @@ public class DasService {
       }
     }
 
+    @Override
     public commit_args deepCopy() {
       return new commit_args(this);
     }
@@ -2925,6 +3106,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case TRAN_ID:
@@ -2938,6 +3120,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -2949,6 +3132,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -2963,26 +3147,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof commit_args)
-        return this.equals((commit_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof commit_args) {
+          return this.equals((commit_args)that);
+      }
       return false;
     }
 
     public boolean equals(commit_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_tranId = true && this.isSetTranId();
       boolean that_present_tranId = true && that.isSetTranId();
       if (this_present_tranId || that_present_tranId) {
-        if (!(this_present_tranId && that_present_tranId))
-          return false;
-        if (!this.tranId.equals(that.tranId))
-          return false;
+        if (!(this_present_tranId && that_present_tranId)) {
+            return false;
+        }
+        if (!this.tranId.equals(that.tranId)) {
+            return false;
+        }
       }
 
       return true;
@@ -2993,8 +3183,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetTranId()) ? 131071 : 524287);
-      if (isSetTranId())
-        hashCode = hashCode * 8191 + tranId.hashCode();
+      if (isSetTranId()) {
+          hashCode = hashCode * 8191 + tranId.hashCode();
+      }
 
       return hashCode;
     }
@@ -3020,15 +3211,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
     }
@@ -3074,6 +3268,7 @@ public class DasService {
     }
 
     private static class commit_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public commit_argsStandardScheme getScheme() {
         return new commit_argsStandardScheme();
       }
@@ -3081,6 +3276,7 @@ public class DasService {
 
     private static class commit_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<commit_args> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, commit_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -3111,6 +3307,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, commit_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -3127,6 +3324,7 @@ public class DasService {
     }
 
     private static class commit_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public commit_argsTupleScheme getScheme() {
         return new commit_argsTupleScheme();
       }
@@ -3205,7 +3403,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -3225,10 +3425,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -3263,6 +3465,7 @@ public class DasService {
       }
     }
 
+    @Override
     public commit_result deepCopy() {
       return new commit_result(this);
     }
@@ -3297,6 +3500,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case E:
@@ -3310,6 +3514,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -3321,6 +3526,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -3335,26 +3541,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof commit_result)
-        return this.equals((commit_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof commit_result) {
+          return this.equals((commit_result)that);
+      }
       return false;
     }
 
     public boolean equals(commit_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -3365,8 +3577,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -3392,15 +3605,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
       }
@@ -3443,6 +3659,7 @@ public class DasService {
     }
 
     private static class commit_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public commit_resultStandardScheme getScheme() {
         return new commit_resultStandardScheme();
       }
@@ -3450,6 +3667,7 @@ public class DasService {
 
     private static class commit_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<commit_result> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, commit_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -3480,6 +3698,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, commit_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -3496,6 +3715,7 @@ public class DasService {
     }
 
     private static class commit_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public commit_resultTupleScheme getScheme() {
         return new commit_resultTupleScheme();
       }
@@ -3574,7 +3794,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -3594,10 +3816,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -3632,6 +3856,7 @@ public class DasService {
       }
     }
 
+    @Override
     public rollback_args deepCopy() {
       return new rollback_args(this);
     }
@@ -3666,6 +3891,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case TRAN_ID:
@@ -3679,6 +3905,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -3690,6 +3917,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -3704,26 +3932,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof rollback_args)
-        return this.equals((rollback_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof rollback_args) {
+          return this.equals((rollback_args)that);
+      }
       return false;
     }
 
     public boolean equals(rollback_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_tranId = true && this.isSetTranId();
       boolean that_present_tranId = true && that.isSetTranId();
       if (this_present_tranId || that_present_tranId) {
-        if (!(this_present_tranId && that_present_tranId))
-          return false;
-        if (!this.tranId.equals(that.tranId))
-          return false;
+        if (!(this_present_tranId && that_present_tranId)) {
+            return false;
+        }
+        if (!this.tranId.equals(that.tranId)) {
+            return false;
+        }
       }
 
       return true;
@@ -3734,8 +3968,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetTranId()) ? 131071 : 524287);
-      if (isSetTranId())
-        hashCode = hashCode * 8191 + tranId.hashCode();
+      if (isSetTranId()) {
+          hashCode = hashCode * 8191 + tranId.hashCode();
+      }
 
       return hashCode;
     }
@@ -3761,15 +3996,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
     }
@@ -3815,6 +4053,7 @@ public class DasService {
     }
 
     private static class rollback_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public rollback_argsStandardScheme getScheme() {
         return new rollback_argsStandardScheme();
       }
@@ -3822,6 +4061,7 @@ public class DasService {
 
     private static class rollback_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<rollback_args> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, rollback_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -3852,6 +4092,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, rollback_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -3868,6 +4109,7 @@ public class DasService {
     }
 
     private static class rollback_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public rollback_argsTupleScheme getScheme() {
         return new rollback_argsTupleScheme();
       }
@@ -3946,7 +4188,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -3966,10 +4210,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -4004,6 +4250,7 @@ public class DasService {
       }
     }
 
+    @Override
     public rollback_result deepCopy() {
       return new rollback_result(this);
     }
@@ -4038,6 +4285,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case E:
@@ -4051,6 +4299,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -4062,6 +4311,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -4076,26 +4326,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof rollback_result)
-        return this.equals((rollback_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof rollback_result) {
+          return this.equals((rollback_result)that);
+      }
       return false;
     }
 
     public boolean equals(rollback_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -4106,8 +4362,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -4133,15 +4390,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
       }
@@ -4184,6 +4444,7 @@ public class DasService {
     }
 
     private static class rollback_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public rollback_resultStandardScheme getScheme() {
         return new rollback_resultStandardScheme();
       }
@@ -4191,6 +4452,7 @@ public class DasService {
 
     private static class rollback_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<rollback_result> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, rollback_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -4221,6 +4483,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, rollback_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -4237,6 +4500,7 @@ public class DasService {
     }
 
     private static class rollback_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public rollback_resultTupleScheme getScheme() {
         return new rollback_resultTupleScheme();
       }
@@ -4315,7 +4579,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -4335,10 +4601,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -4373,6 +4641,7 @@ public class DasService {
       }
     }
 
+    @Override
     public check_args deepCopy() {
       return new check_args(this);
     }
@@ -4407,6 +4676,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case REQUEST:
@@ -4420,6 +4690,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -4431,6 +4702,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -4445,26 +4717,32 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof check_args)
-        return this.equals((check_args)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof check_args) {
+          return this.equals((check_args)that);
+      }
       return false;
     }
 
     public boolean equals(check_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_request = true && this.isSetRequest();
       boolean that_present_request = true && that.isSetRequest();
       if (this_present_request || that_present_request) {
-        if (!(this_present_request && that_present_request))
-          return false;
-        if (!this.request.equals(that.request))
-          return false;
+        if (!(this_present_request && that_present_request)) {
+            return false;
+        }
+        if (!this.request.equals(that.request)) {
+            return false;
+        }
       }
 
       return true;
@@ -4475,8 +4753,9 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetRequest()) ? 131071 : 524287);
-      if (isSetRequest())
-        hashCode = hashCode * 8191 + request.hashCode();
+      if (isSetRequest()) {
+          hashCode = hashCode * 8191 + request.hashCode();
+      }
 
       return hashCode;
     }
@@ -4502,15 +4781,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
     }
@@ -4556,6 +4838,7 @@ public class DasService {
     }
 
     private static class check_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public check_argsStandardScheme getScheme() {
         return new check_argsStandardScheme();
       }
@@ -4563,6 +4846,7 @@ public class DasService {
 
     private static class check_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<check_args> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, check_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -4593,6 +4877,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, check_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -4609,6 +4894,7 @@ public class DasService {
     }
 
     private static class check_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public check_argsTupleScheme getScheme() {
         return new check_argsTupleScheme();
       }
@@ -4692,7 +4978,9 @@ public class DasService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) {
+            throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        }
         return fields;
       }
 
@@ -4712,10 +5000,12 @@ public class DasService {
         _fieldName = fieldName;
       }
 
+      @Override
       public short getThriftFieldId() {
         return _thriftId;
       }
 
+      @Override
       public String getFieldName() {
         return _fieldName;
       }
@@ -4757,6 +5047,7 @@ public class DasService {
       }
     }
 
+    @Override
     public check_result deepCopy() {
       return new check_result(this);
     }
@@ -4817,6 +5108,7 @@ public class DasService {
       }
     }
 
+    @Override
     public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
       switch (field) {
       case SUCCESS:
@@ -4838,6 +5130,7 @@ public class DasService {
       }
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public Object getFieldValue(_Fields field) {
       switch (field) {
@@ -4852,6 +5145,7 @@ public class DasService {
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
         throw new IllegalArgumentException();
@@ -4868,35 +5162,43 @@ public class DasService {
 
     @Override
     public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof check_result)
-        return this.equals((check_result)that);
+      if (that == null) {
+          return false;
+      }
+      if (that instanceof check_result) {
+          return this.equals((check_result)that);
+      }
       return false;
     }
 
     public boolean equals(check_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
+      if (that == null) {
+          return false;
+      }
+      if (this == that) {
+          return true;
+      }
 
       boolean this_present_success = true && this.isSetSuccess();
       boolean that_present_success = true && that.isSetSuccess();
       if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
+        if (!(this_present_success && that_present_success)) {
+            return false;
+        }
+        if (!this.success.equals(that.success)) {
+            return false;
+        }
       }
 
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
-        if (!(this_present_e && that_present_e))
-          return false;
-        if (!this.e.equals(that.e))
-          return false;
+        if (!(this_present_e && that_present_e)) {
+            return false;
+        }
+        if (!this.e.equals(that.e)) {
+            return false;
+        }
       }
 
       return true;
@@ -4907,12 +5209,14 @@ public class DasService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
+      if (isSetSuccess()) {
+          hashCode = hashCode * 8191 + success.hashCode();
+      }
 
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
-      if (isSetE())
-        hashCode = hashCode * 8191 + e.hashCode();
+      if (isSetE()) {
+          hashCode = hashCode * 8191 + e.hashCode();
+      }
 
       return hashCode;
     }
@@ -4948,15 +5252,18 @@ public class DasService {
       return 0;
     }
 
+    @Override
     @org.apache.thrift.annotation.Nullable
     public _Fields fieldForId(int fieldId) {
       return _Fields.findByThriftId(fieldId);
     }
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       scheme(iprot).read(iprot, this);
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
       }
@@ -4973,7 +5280,9 @@ public class DasService {
         sb.append(this.success);
       }
       first = false;
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("e:");
       if (this.e == null) {
         sb.append("null");
@@ -5010,6 +5319,7 @@ public class DasService {
     }
 
     private static class check_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public check_resultStandardScheme getScheme() {
         return new check_resultStandardScheme();
       }
@@ -5017,6 +5327,7 @@ public class DasService {
 
     private static class check_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<check_result> {
 
+      @Override
       public void read(org.apache.thrift.protocol.TProtocol iprot, check_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
@@ -5056,6 +5367,7 @@ public class DasService {
         struct.validate();
       }
 
+      @Override
       public void write(org.apache.thrift.protocol.TProtocol oprot, check_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
@@ -5077,6 +5389,7 @@ public class DasService {
     }
 
     private static class check_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      @Override
       public check_resultTupleScheme getScheme() {
         return new check_resultTupleScheme();
       }

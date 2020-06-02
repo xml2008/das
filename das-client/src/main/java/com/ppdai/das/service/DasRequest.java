@@ -127,7 +127,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -147,10 +149,12 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -272,6 +276,7 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
     this.receiveTime = other.receiveTime;
   }
 
+  @Override
   public DasRequest deepCopy() {
     return new DasRequest(this);
   }
@@ -692,6 +697,7 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __RECEIVETIME_ISSET_ID, value);
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case APP_ID:
@@ -817,6 +823,7 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -870,6 +877,7 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -912,152 +920,186 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasRequest)
-      return this.equals((DasRequest)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasRequest) {
+        return this.equals((DasRequest)that);
+    }
     return false;
   }
 
   public boolean equals(DasRequest that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_appId = true && this.isSetAppId();
     boolean that_present_appId = true && that.isSetAppId();
     if (this_present_appId || that_present_appId) {
-      if (!(this_present_appId && that_present_appId))
-        return false;
-      if (!this.appId.equals(that.appId))
-        return false;
+      if (!(this_present_appId && that_present_appId)) {
+          return false;
+      }
+      if (!this.appId.equals(that.appId)) {
+          return false;
+      }
     }
 
     boolean this_present_logicDbName = true && this.isSetLogicDbName();
     boolean that_present_logicDbName = true && that.isSetLogicDbName();
     if (this_present_logicDbName || that_present_logicDbName) {
-      if (!(this_present_logicDbName && that_present_logicDbName))
-        return false;
-      if (!this.logicDbName.equals(that.logicDbName))
-        return false;
+      if (!(this_present_logicDbName && that_present_logicDbName)) {
+          return false;
+      }
+      if (!this.logicDbName.equals(that.logicDbName)) {
+          return false;
+      }
     }
 
     boolean this_present_dasClientVersion = true && this.isSetDasClientVersion();
     boolean that_present_dasClientVersion = true && that.isSetDasClientVersion();
     if (this_present_dasClientVersion || that_present_dasClientVersion) {
-      if (!(this_present_dasClientVersion && that_present_dasClientVersion))
-        return false;
-      if (!this.dasClientVersion.equals(that.dasClientVersion))
-        return false;
+      if (!(this_present_dasClientVersion && that_present_dasClientVersion)) {
+          return false;
+      }
+      if (!this.dasClientVersion.equals(that.dasClientVersion)) {
+          return false;
+      }
     }
 
     boolean this_present_ppdaiClientVersion = true && this.isSetPpdaiClientVersion();
     boolean that_present_ppdaiClientVersion = true && that.isSetPpdaiClientVersion();
     if (this_present_ppdaiClientVersion || that_present_ppdaiClientVersion) {
-      if (!(this_present_ppdaiClientVersion && that_present_ppdaiClientVersion))
-        return false;
-      if (!this.ppdaiClientVersion.equals(that.ppdaiClientVersion))
-        return false;
+      if (!(this_present_ppdaiClientVersion && that_present_ppdaiClientVersion)) {
+          return false;
+      }
+      if (!this.ppdaiClientVersion.equals(that.ppdaiClientVersion)) {
+          return false;
+      }
     }
 
     boolean this_present_operation = true && this.isSetOperation();
     boolean that_present_operation = true && that.isSetOperation();
     if (this_present_operation || that_present_operation) {
-      if (!(this_present_operation && that_present_operation))
-        return false;
-      if (!this.operation.equals(that.operation))
-        return false;
+      if (!(this_present_operation && that_present_operation)) {
+          return false;
+      }
+      if (!this.operation.equals(that.operation)) {
+          return false;
+      }
     }
 
     boolean this_present_transactionId = true && this.isSetTransactionId();
     boolean that_present_transactionId = true && that.isSetTransactionId();
     if (this_present_transactionId || that_present_transactionId) {
-      if (!(this_present_transactionId && that_present_transactionId))
-        return false;
-      if (!this.transactionId.equals(that.transactionId))
-        return false;
+      if (!(this_present_transactionId && that_present_transactionId)) {
+          return false;
+      }
+      if (!this.transactionId.equals(that.transactionId)) {
+          return false;
+      }
     }
 
     boolean this_present_hints = true && this.isSetHints();
     boolean that_present_hints = true && that.isSetHints();
     if (this_present_hints || that_present_hints) {
-      if (!(this_present_hints && that_present_hints))
-        return false;
-      if (!this.hints.equals(that.hints))
-        return false;
+      if (!(this_present_hints && that_present_hints)) {
+          return false;
+      }
+      if (!this.hints.equals(that.hints)) {
+          return false;
+      }
     }
 
     boolean this_present_entityList = true && this.isSetEntityList();
     boolean that_present_entityList = true && that.isSetEntityList();
     if (this_present_entityList || that_present_entityList) {
-      if (!(this_present_entityList && that_present_entityList))
-        return false;
-      if (!this.entityList.equals(that.entityList))
-        return false;
+      if (!(this_present_entityList && that_present_entityList)) {
+          return false;
+      }
+      if (!this.entityList.equals(that.entityList)) {
+          return false;
+      }
     }
 
     boolean this_present_callBuilder = true && this.isSetCallBuilder();
     boolean that_present_callBuilder = true && that.isSetCallBuilder();
     if (this_present_callBuilder || that_present_callBuilder) {
-      if (!(this_present_callBuilder && that_present_callBuilder))
-        return false;
-      if (!this.callBuilder.equals(that.callBuilder))
-        return false;
+      if (!(this_present_callBuilder && that_present_callBuilder)) {
+          return false;
+      }
+      if (!this.callBuilder.equals(that.callBuilder)) {
+          return false;
+      }
     }
 
     boolean this_present_batchUpdateBuilder = true && this.isSetBatchUpdateBuilder();
     boolean that_present_batchUpdateBuilder = true && that.isSetBatchUpdateBuilder();
     if (this_present_batchUpdateBuilder || that_present_batchUpdateBuilder) {
-      if (!(this_present_batchUpdateBuilder && that_present_batchUpdateBuilder))
-        return false;
-      if (!this.batchUpdateBuilder.equals(that.batchUpdateBuilder))
-        return false;
+      if (!(this_present_batchUpdateBuilder && that_present_batchUpdateBuilder)) {
+          return false;
+      }
+      if (!this.batchUpdateBuilder.equals(that.batchUpdateBuilder)) {
+          return false;
+      }
     }
 
     boolean this_present_batchCallBuilder = true && this.isSetBatchCallBuilder();
     boolean that_present_batchCallBuilder = true && that.isSetBatchCallBuilder();
     if (this_present_batchCallBuilder || that_present_batchCallBuilder) {
-      if (!(this_present_batchCallBuilder && that_present_batchCallBuilder))
-        return false;
-      if (!this.batchCallBuilder.equals(that.batchCallBuilder))
-        return false;
+      if (!(this_present_batchCallBuilder && that_present_batchCallBuilder)) {
+          return false;
+      }
+      if (!this.batchCallBuilder.equals(that.batchCallBuilder)) {
+          return false;
+      }
     }
 
     boolean this_present_sqlBuilders = true && this.isSetSqlBuilders();
     boolean that_present_sqlBuilders = true && that.isSetSqlBuilders();
     if (this_present_sqlBuilders || that_present_sqlBuilders) {
-      if (!(this_present_sqlBuilders && that_present_sqlBuilders))
-        return false;
-      if (!this.sqlBuilders.equals(that.sqlBuilders))
-        return false;
+      if (!(this_present_sqlBuilders && that_present_sqlBuilders)) {
+          return false;
+      }
+      if (!this.sqlBuilders.equals(that.sqlBuilders)) {
+          return false;
+      }
     }
 
     boolean this_present_traceId = true && this.isSetTraceId();
     boolean that_present_traceId = true && that.isSetTraceId();
     if (this_present_traceId || that_present_traceId) {
-      if (!(this_present_traceId && that_present_traceId))
-        return false;
-      if (!this.traceId.equals(that.traceId))
-        return false;
+      if (!(this_present_traceId && that_present_traceId)) {
+          return false;
+      }
+      if (!this.traceId.equals(that.traceId)) {
+          return false;
+      }
     }
 
     boolean this_present_sendTime = true;
     boolean that_present_sendTime = true;
     if (this_present_sendTime || that_present_sendTime) {
-      if (!(this_present_sendTime && that_present_sendTime))
-        return false;
-      if (this.sendTime != that.sendTime)
-        return false;
+      if (!(this_present_sendTime && that_present_sendTime)) {
+          return false;
+      }
+      if (this.sendTime != that.sendTime) {
+          return false;
+      }
     }
 
     boolean this_present_receiveTime = true && this.isSetReceiveTime();
     boolean that_present_receiveTime = true && that.isSetReceiveTime();
     if (this_present_receiveTime || that_present_receiveTime) {
-      if (!(this_present_receiveTime && that_present_receiveTime))
-        return false;
-      if (this.receiveTime != that.receiveTime)
-        return false;
+      if (!(this_present_receiveTime && that_present_receiveTime)) {
+          return false;
+      }
+      if (this.receiveTime != that.receiveTime) {
+          return false;
+      }
     }
 
     return true;
@@ -1068,62 +1110,76 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetAppId()) ? 131071 : 524287);
-    if (isSetAppId())
-      hashCode = hashCode * 8191 + appId.hashCode();
+    if (isSetAppId()) {
+        hashCode = hashCode * 8191 + appId.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetLogicDbName()) ? 131071 : 524287);
-    if (isSetLogicDbName())
-      hashCode = hashCode * 8191 + logicDbName.hashCode();
+    if (isSetLogicDbName()) {
+        hashCode = hashCode * 8191 + logicDbName.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetDasClientVersion()) ? 131071 : 524287);
-    if (isSetDasClientVersion())
-      hashCode = hashCode * 8191 + dasClientVersion.hashCode();
+    if (isSetDasClientVersion()) {
+        hashCode = hashCode * 8191 + dasClientVersion.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetPpdaiClientVersion()) ? 131071 : 524287);
-    if (isSetPpdaiClientVersion())
-      hashCode = hashCode * 8191 + ppdaiClientVersion.hashCode();
+    if (isSetPpdaiClientVersion()) {
+        hashCode = hashCode * 8191 + ppdaiClientVersion.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetOperation()) ? 131071 : 524287);
-    if (isSetOperation())
-      hashCode = hashCode * 8191 + operation.getValue();
+    if (isSetOperation()) {
+        hashCode = hashCode * 8191 + operation.getValue();
+    }
 
     hashCode = hashCode * 8191 + ((isSetTransactionId()) ? 131071 : 524287);
-    if (isSetTransactionId())
-      hashCode = hashCode * 8191 + transactionId.hashCode();
+    if (isSetTransactionId()) {
+        hashCode = hashCode * 8191 + transactionId.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetHints()) ? 131071 : 524287);
-    if (isSetHints())
-      hashCode = hashCode * 8191 + hints.hashCode();
+    if (isSetHints()) {
+        hashCode = hashCode * 8191 + hints.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetEntityList()) ? 131071 : 524287);
-    if (isSetEntityList())
-      hashCode = hashCode * 8191 + entityList.hashCode();
+    if (isSetEntityList()) {
+        hashCode = hashCode * 8191 + entityList.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetCallBuilder()) ? 131071 : 524287);
-    if (isSetCallBuilder())
-      hashCode = hashCode * 8191 + callBuilder.hashCode();
+    if (isSetCallBuilder()) {
+        hashCode = hashCode * 8191 + callBuilder.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetBatchUpdateBuilder()) ? 131071 : 524287);
-    if (isSetBatchUpdateBuilder())
-      hashCode = hashCode * 8191 + batchUpdateBuilder.hashCode();
+    if (isSetBatchUpdateBuilder()) {
+        hashCode = hashCode * 8191 + batchUpdateBuilder.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetBatchCallBuilder()) ? 131071 : 524287);
-    if (isSetBatchCallBuilder())
-      hashCode = hashCode * 8191 + batchCallBuilder.hashCode();
+    if (isSetBatchCallBuilder()) {
+        hashCode = hashCode * 8191 + batchCallBuilder.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetSqlBuilders()) ? 131071 : 524287);
-    if (isSetSqlBuilders())
-      hashCode = hashCode * 8191 + sqlBuilders.hashCode();
+    if (isSetSqlBuilders()) {
+        hashCode = hashCode * 8191 + sqlBuilders.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetTraceId()) ? 131071 : 524287);
-    if (isSetTraceId())
-      hashCode = hashCode * 8191 + traceId.hashCode();
+    if (isSetTraceId()) {
+        hashCode = hashCode * 8191 + traceId.hashCode();
+    }
 
     hashCode = hashCode * 8191 + org.apache.thrift.TBaseHelper.hashCode(sendTime);
 
     hashCode = hashCode * 8191 + ((isSetReceiveTime()) ? 131071 : 524287);
-    if (isSetReceiveTime())
-      hashCode = hashCode * 8191 + org.apache.thrift.TBaseHelper.hashCode(receiveTime);
+    if (isSetReceiveTime()) {
+        hashCode = hashCode * 8191 + org.apache.thrift.TBaseHelper.hashCode(receiveTime);
+    }
 
     return hashCode;
   }
@@ -1289,15 +1345,18 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -1314,7 +1373,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       sb.append(this.appId);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("logicDbName:");
     if (this.logicDbName == null) {
       sb.append("null");
@@ -1322,7 +1383,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       sb.append(this.logicDbName);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("dasClientVersion:");
     if (this.dasClientVersion == null) {
       sb.append("null");
@@ -1330,7 +1393,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       sb.append(this.dasClientVersion);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("ppdaiClientVersion:");
     if (this.ppdaiClientVersion == null) {
       sb.append("null");
@@ -1338,7 +1403,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       sb.append(this.ppdaiClientVersion);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("operation:");
     if (this.operation == null) {
       sb.append("null");
@@ -1347,7 +1414,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
     }
     first = false;
     if (isSetTransactionId()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("transactionId:");
       if (this.transactionId == null) {
         sb.append("null");
@@ -1357,7 +1426,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       first = false;
     }
     if (isSetHints()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("hints:");
       if (this.hints == null) {
         sb.append("null");
@@ -1367,7 +1438,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       first = false;
     }
     if (isSetEntityList()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("entityList:");
       if (this.entityList == null) {
         sb.append("null");
@@ -1377,7 +1450,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       first = false;
     }
     if (isSetCallBuilder()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("callBuilder:");
       if (this.callBuilder == null) {
         sb.append("null");
@@ -1387,7 +1462,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       first = false;
     }
     if (isSetBatchUpdateBuilder()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("batchUpdateBuilder:");
       if (this.batchUpdateBuilder == null) {
         sb.append("null");
@@ -1397,7 +1474,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       first = false;
     }
     if (isSetBatchCallBuilder()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("batchCallBuilder:");
       if (this.batchCallBuilder == null) {
         sb.append("null");
@@ -1407,7 +1486,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       first = false;
     }
     if (isSetSqlBuilders()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("sqlBuilders:");
       if (this.sqlBuilders == null) {
         sb.append("null");
@@ -1417,7 +1498,9 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       first = false;
     }
     if (isSetTraceId()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("traceId:");
       if (this.traceId == null) {
         sb.append("null");
@@ -1426,12 +1509,16 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       }
       first = false;
     }
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("sendTime:");
     sb.append(this.sendTime);
     first = false;
     if (isSetReceiveTime()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("receiveTime:");
       sb.append(this.receiveTime);
       first = false;
@@ -1498,6 +1585,7 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
   }
 
   private static class DasRequestStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasRequestStandardScheme getScheme() {
       return new DasRequestStandardScheme();
     }
@@ -1505,6 +1593,7 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
 
   private static class DasRequestStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasRequest> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasRequest struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -1667,6 +1756,7 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasRequest struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -1774,6 +1864,7 @@ public class DasRequest implements org.apache.thrift.TBase<DasRequest, DasReques
   }
 
   private static class DasRequestTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasRequestTupleScheme getScheme() {
       return new DasRequestTupleScheme();
     }

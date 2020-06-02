@@ -87,7 +87,9 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -107,10 +109,12 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -186,6 +190,7 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
     }
   }
 
+  @Override
   public DasParameter deepCopy() {
     return new DasParameter(this);
   }
@@ -397,6 +402,7 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case DIRECTION:
@@ -458,6 +464,7 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -487,6 +494,7 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -513,80 +521,98 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasParameter)
-      return this.equals((DasParameter)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasParameter) {
+        return this.equals((DasParameter)that);
+    }
     return false;
   }
 
   public boolean equals(DasParameter that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_direction = true && this.isSetDirection();
     boolean that_present_direction = true && that.isSetDirection();
     if (this_present_direction || that_present_direction) {
-      if (!(this_present_direction && that_present_direction))
-        return false;
-      if (!this.direction.equals(that.direction))
-        return false;
+      if (!(this_present_direction && that_present_direction)) {
+          return false;
+      }
+      if (!this.direction.equals(that.direction)) {
+          return false;
+      }
     }
 
     boolean this_present_name = true && this.isSetName();
     boolean that_present_name = true && that.isSetName();
     if (this_present_name || that_present_name) {
-      if (!(this_present_name && that_present_name))
-        return false;
-      if (!this.name.equals(that.name))
-        return false;
+      if (!(this_present_name && that_present_name)) {
+          return false;
+      }
+      if (!this.name.equals(that.name)) {
+          return false;
+      }
     }
 
     boolean this_present_index = true;
     boolean that_present_index = true;
     if (this_present_index || that_present_index) {
-      if (!(this_present_index && that_present_index))
-        return false;
-      if (this.index != that.index)
-        return false;
+      if (!(this_present_index && that_present_index)) {
+          return false;
+      }
+      if (this.index != that.index) {
+          return false;
+      }
     }
 
     boolean this_present_jdbcType = true;
     boolean that_present_jdbcType = true;
     if (this_present_jdbcType || that_present_jdbcType) {
-      if (!(this_present_jdbcType && that_present_jdbcType))
-        return false;
-      if (this.jdbcType != that.jdbcType)
-        return false;
+      if (!(this_present_jdbcType && that_present_jdbcType)) {
+          return false;
+      }
+      if (this.jdbcType != that.jdbcType) {
+          return false;
+      }
     }
 
     boolean this_present_inValues = true;
     boolean that_present_inValues = true;
     if (this_present_inValues || that_present_inValues) {
-      if (!(this_present_inValues && that_present_inValues))
-        return false;
-      if (this.inValues != that.inValues)
-        return false;
+      if (!(this_present_inValues && that_present_inValues)) {
+          return false;
+      }
+      if (this.inValues != that.inValues) {
+          return false;
+      }
     }
 
     boolean this_present_value = true && this.isSetValue();
     boolean that_present_value = true && that.isSetValue();
     if (this_present_value || that_present_value) {
-      if (!(this_present_value && that_present_value))
-        return false;
-      if (!this.value.equals(that.value))
-        return false;
+      if (!(this_present_value && that_present_value)) {
+          return false;
+      }
+      if (!this.value.equals(that.value)) {
+          return false;
+      }
     }
 
     boolean this_present_values = true && this.isSetValues();
     boolean that_present_values = true && that.isSetValues();
     if (this_present_values || that_present_values) {
-      if (!(this_present_values && that_present_values))
-        return false;
-      if (!this.values.equals(that.values))
-        return false;
+      if (!(this_present_values && that_present_values)) {
+          return false;
+      }
+      if (!this.values.equals(that.values)) {
+          return false;
+      }
     }
 
     return true;
@@ -597,12 +623,14 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetDirection()) ? 131071 : 524287);
-    if (isSetDirection())
-      hashCode = hashCode * 8191 + direction.getValue();
+    if (isSetDirection()) {
+        hashCode = hashCode * 8191 + direction.getValue();
+    }
 
     hashCode = hashCode * 8191 + ((isSetName()) ? 131071 : 524287);
-    if (isSetName())
-      hashCode = hashCode * 8191 + name.hashCode();
+    if (isSetName()) {
+        hashCode = hashCode * 8191 + name.hashCode();
+    }
 
     hashCode = hashCode * 8191 + index;
 
@@ -611,12 +639,14 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
     hashCode = hashCode * 8191 + ((inValues) ? 131071 : 524287);
 
     hashCode = hashCode * 8191 + ((isSetValue()) ? 131071 : 524287);
-    if (isSetValue())
-      hashCode = hashCode * 8191 + value.hashCode();
+    if (isSetValue()) {
+        hashCode = hashCode * 8191 + value.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetValues()) ? 131071 : 524287);
-    if (isSetValues())
-      hashCode = hashCode * 8191 + values.hashCode();
+    if (isSetValues()) {
+        hashCode = hashCode * 8191 + values.hashCode();
+    }
 
     return hashCode;
   }
@@ -702,15 +732,18 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -728,7 +761,9 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
     }
     first = false;
     if (isSetName()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("name:");
       if (this.name == null) {
         sb.append("null");
@@ -737,20 +772,28 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
       }
       first = false;
     }
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("index:");
     sb.append(this.index);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("jdbcType:");
     sb.append(this.jdbcType);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("inValues:");
     sb.append(this.inValues);
     first = false;
     if (isSetValue()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("value:");
       if (this.value == null) {
         sb.append("null");
@@ -760,7 +803,9 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
       first = false;
     }
     if (isSetValues()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("values:");
       if (this.values == null) {
         sb.append("null");
@@ -803,6 +848,7 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
   }
 
   private static class DasParameterStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasParameterStandardScheme getScheme() {
       return new DasParameterStandardScheme();
     }
@@ -810,6 +856,7 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
 
   private static class DasParameterStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasParameter> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasParameter struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -906,6 +953,7 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasParameter struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -959,6 +1007,7 @@ public class DasParameter implements org.apache.thrift.TBase<DasParameter, DasPa
   }
 
   private static class DasParameterTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasParameterTupleScheme getScheme() {
       return new DasParameterTupleScheme();
     }

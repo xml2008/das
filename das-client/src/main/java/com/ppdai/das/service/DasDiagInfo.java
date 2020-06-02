@@ -64,7 +64,9 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -84,10 +86,12 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -153,6 +157,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
     }
   }
 
+  @Override
   public DasDiagInfo deepCopy() {
     return new DasDiagInfo(this);
   }
@@ -291,6 +296,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
     }
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case NAME:
@@ -328,6 +334,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -348,6 +355,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -368,53 +376,65 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof DasDiagInfo)
-      return this.equals((DasDiagInfo)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof DasDiagInfo) {
+        return this.equals((DasDiagInfo)that);
+    }
     return false;
   }
 
   public boolean equals(DasDiagInfo that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_name = true && this.isSetName();
     boolean that_present_name = true && that.isSetName();
     if (this_present_name || that_present_name) {
-      if (!(this_present_name && that_present_name))
-        return false;
-      if (!this.name.equals(that.name))
-        return false;
+      if (!(this_present_name && that_present_name)) {
+          return false;
+      }
+      if (!this.name.equals(that.name)) {
+          return false;
+      }
     }
 
     boolean this_present_spaceLevel = true;
     boolean that_present_spaceLevel = true;
     if (this_present_spaceLevel || that_present_spaceLevel) {
-      if (!(this_present_spaceLevel && that_present_spaceLevel))
-        return false;
-      if (this.spaceLevel != that.spaceLevel)
-        return false;
+      if (!(this_present_spaceLevel && that_present_spaceLevel)) {
+          return false;
+      }
+      if (this.spaceLevel != that.spaceLevel) {
+          return false;
+      }
     }
 
     boolean this_present_entries = true && this.isSetEntries();
     boolean that_present_entries = true && that.isSetEntries();
     if (this_present_entries || that_present_entries) {
-      if (!(this_present_entries && that_present_entries))
-        return false;
-      if (!this.entries.equals(that.entries))
-        return false;
+      if (!(this_present_entries && that_present_entries)) {
+          return false;
+      }
+      if (!this.entries.equals(that.entries)) {
+          return false;
+      }
     }
 
     boolean this_present_diagnoseInfoMap = true && this.isSetDiagnoseInfoMap();
     boolean that_present_diagnoseInfoMap = true && that.isSetDiagnoseInfoMap();
     if (this_present_diagnoseInfoMap || that_present_diagnoseInfoMap) {
-      if (!(this_present_diagnoseInfoMap && that_present_diagnoseInfoMap))
-        return false;
-      if (!this.diagnoseInfoMap.equals(that.diagnoseInfoMap))
-        return false;
+      if (!(this_present_diagnoseInfoMap && that_present_diagnoseInfoMap)) {
+          return false;
+      }
+      if (!this.diagnoseInfoMap.equals(that.diagnoseInfoMap)) {
+          return false;
+      }
     }
 
     return true;
@@ -425,18 +445,21 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetName()) ? 131071 : 524287);
-    if (isSetName())
-      hashCode = hashCode * 8191 + name.hashCode();
+    if (isSetName()) {
+        hashCode = hashCode * 8191 + name.hashCode();
+    }
 
     hashCode = hashCode * 8191 + spaceLevel;
 
     hashCode = hashCode * 8191 + ((isSetEntries()) ? 131071 : 524287);
-    if (isSetEntries())
-      hashCode = hashCode * 8191 + entries.hashCode();
+    if (isSetEntries()) {
+        hashCode = hashCode * 8191 + entries.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetDiagnoseInfoMap()) ? 131071 : 524287);
-    if (isSetDiagnoseInfoMap())
-      hashCode = hashCode * 8191 + diagnoseInfoMap.hashCode();
+    if (isSetDiagnoseInfoMap()) {
+        hashCode = hashCode * 8191 + diagnoseInfoMap.hashCode();
+    }
 
     return hashCode;
   }
@@ -492,15 +515,18 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -517,11 +543,15 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
       sb.append(this.name);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("spaceLevel:");
     sb.append(this.spaceLevel);
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("entries:");
     if (this.entries == null) {
       sb.append("null");
@@ -529,7 +559,9 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
       sb.append(this.entries);
     }
     first = false;
-    if (!first) sb.append(", ");
+    if (!first) {
+        sb.append(", ");
+    }
     sb.append("diagnoseInfoMap:");
     if (this.diagnoseInfoMap == null) {
       sb.append("null");
@@ -565,6 +597,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
   }
 
   private static class DasDiagInfoStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasDiagInfoStandardScheme getScheme() {
       return new DasDiagInfoStandardScheme();
     }
@@ -572,6 +605,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
 
   private static class DasDiagInfoStandardScheme extends org.apache.thrift.scheme.StandardScheme<DasDiagInfo> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, DasDiagInfo struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -648,6 +682,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, DasDiagInfo struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -692,6 +727,7 @@ public class DasDiagInfo implements org.apache.thrift.TBase<DasDiagInfo, DasDiag
   }
 
   private static class DasDiagInfoTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public DasDiagInfoTupleScheme getScheme() {
       return new DasDiagInfoTupleScheme();
     }

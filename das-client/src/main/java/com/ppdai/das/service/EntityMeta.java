@@ -104,7 +104,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) {
+          throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      }
       return fields;
     }
 
@@ -124,10 +126,12 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       _fieldName = fieldName;
     }
 
+    @Override
     public short getThriftFieldId() {
       return _thriftId;
     }
 
+    @Override
     public String getFieldName() {
       return _fieldName;
     }
@@ -238,6 +242,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
     this.mapType = other.mapType;
   }
 
+  @Override
   public EntityMeta deepCopy() {
     return new EntityMeta(this);
   }
@@ -658,6 +663,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __MAPTYPE_ISSET_ID, value);
   }
 
+  @Override
   public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
     switch (field) {
     case TABLE_NAME:
@@ -759,6 +765,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
     }
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public Object getFieldValue(_Fields field) {
     switch (field) {
@@ -803,6 +810,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
@@ -839,125 +847,153 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
 
   @Override
   public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof EntityMeta)
-      return this.equals((EntityMeta)that);
+    if (that == null) {
+        return false;
+    }
+    if (that instanceof EntityMeta) {
+        return this.equals((EntityMeta)that);
+    }
     return false;
   }
 
   public boolean equals(EntityMeta that) {
-    if (that == null)
-      return false;
-    if (this == that)
-      return true;
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
 
     boolean this_present_tableName = true && this.isSetTableName();
     boolean that_present_tableName = true && that.isSetTableName();
     if (this_present_tableName || that_present_tableName) {
-      if (!(this_present_tableName && that_present_tableName))
-        return false;
-      if (!this.tableName.equals(that.tableName))
-        return false;
+      if (!(this_present_tableName && that_present_tableName)) {
+          return false;
+      }
+      if (!this.tableName.equals(that.tableName)) {
+          return false;
+      }
     }
 
     boolean this_present_metaMap = true && this.isSetMetaMap();
     boolean that_present_metaMap = true && that.isSetMetaMap();
     if (this_present_metaMap || that_present_metaMap) {
-      if (!(this_present_metaMap && that_present_metaMap))
-        return false;
-      if (!this.metaMap.equals(that.metaMap))
-        return false;
+      if (!(this_present_metaMap && that_present_metaMap)) {
+          return false;
+      }
+      if (!this.metaMap.equals(that.metaMap)) {
+          return false;
+      }
     }
 
     boolean this_present_columnNames = true && this.isSetColumnNames();
     boolean that_present_columnNames = true && that.isSetColumnNames();
     if (this_present_columnNames || that_present_columnNames) {
-      if (!(this_present_columnNames && that_present_columnNames))
-        return false;
-      if (!this.columnNames.equals(that.columnNames))
-        return false;
+      if (!(this_present_columnNames && that_present_columnNames)) {
+          return false;
+      }
+      if (!this.columnNames.equals(that.columnNames)) {
+          return false;
+      }
     }
 
     boolean this_present_columnTypes = true && this.isSetColumnTypes();
     boolean that_present_columnTypes = true && that.isSetColumnTypes();
     if (this_present_columnTypes || that_present_columnTypes) {
-      if (!(this_present_columnTypes && that_present_columnTypes))
-        return false;
-      if (!this.columnTypes.equals(that.columnTypes))
-        return false;
+      if (!(this_present_columnTypes && that_present_columnTypes)) {
+          return false;
+      }
+      if (!this.columnTypes.equals(that.columnTypes)) {
+          return false;
+      }
     }
 
     boolean this_present_primaryKeyNames = true && this.isSetPrimaryKeyNames();
     boolean that_present_primaryKeyNames = true && that.isSetPrimaryKeyNames();
     if (this_present_primaryKeyNames || that_present_primaryKeyNames) {
-      if (!(this_present_primaryKeyNames && that_present_primaryKeyNames))
-        return false;
-      if (!this.primaryKeyNames.equals(that.primaryKeyNames))
-        return false;
+      if (!(this_present_primaryKeyNames && that_present_primaryKeyNames)) {
+          return false;
+      }
+      if (!this.primaryKeyNames.equals(that.primaryKeyNames)) {
+          return false;
+      }
     }
 
     boolean this_present_autoIncremental = true && this.isSetAutoIncremental();
     boolean that_present_autoIncremental = true && that.isSetAutoIncremental();
     if (this_present_autoIncremental || that_present_autoIncremental) {
-      if (!(this_present_autoIncremental && that_present_autoIncremental))
-        return false;
-      if (this.autoIncremental != that.autoIncremental)
-        return false;
+      if (!(this_present_autoIncremental && that_present_autoIncremental)) {
+          return false;
+      }
+      if (this.autoIncremental != that.autoIncremental) {
+          return false;
+      }
     }
 
     boolean this_present_versionColumn = true && this.isSetVersionColumn();
     boolean that_present_versionColumn = true && that.isSetVersionColumn();
     if (this_present_versionColumn || that_present_versionColumn) {
-      if (!(this_present_versionColumn && that_present_versionColumn))
-        return false;
-      if (!this.versionColumn.equals(that.versionColumn))
-        return false;
+      if (!(this_present_versionColumn && that_present_versionColumn)) {
+          return false;
+      }
+      if (!this.versionColumn.equals(that.versionColumn)) {
+          return false;
+      }
     }
 
     boolean this_present_updatableColumnNames = true && this.isSetUpdatableColumnNames();
     boolean that_present_updatableColumnNames = true && that.isSetUpdatableColumnNames();
     if (this_present_updatableColumnNames || that_present_updatableColumnNames) {
-      if (!(this_present_updatableColumnNames && that_present_updatableColumnNames))
-        return false;
-      if (!this.updatableColumnNames.equals(that.updatableColumnNames))
-        return false;
+      if (!(this_present_updatableColumnNames && that_present_updatableColumnNames)) {
+          return false;
+      }
+      if (!this.updatableColumnNames.equals(that.updatableColumnNames)) {
+          return false;
+      }
     }
 
     boolean this_present_insertableColumnNames = true && this.isSetInsertableColumnNames();
     boolean that_present_insertableColumnNames = true && that.isSetInsertableColumnNames();
     if (this_present_insertableColumnNames || that_present_insertableColumnNames) {
-      if (!(this_present_insertableColumnNames && that_present_insertableColumnNames))
-        return false;
-      if (!this.insertableColumnNames.equals(that.insertableColumnNames))
-        return false;
+      if (!(this_present_insertableColumnNames && that_present_insertableColumnNames)) {
+          return false;
+      }
+      if (!this.insertableColumnNames.equals(that.insertableColumnNames)) {
+          return false;
+      }
     }
 
     boolean this_present_fieldMap = true && this.isSetFieldMap();
     boolean that_present_fieldMap = true && that.isSetFieldMap();
     if (this_present_fieldMap || that_present_fieldMap) {
-      if (!(this_present_fieldMap && that_present_fieldMap))
-        return false;
-      if (!this.fieldMap.equals(that.fieldMap))
-        return false;
+      if (!(this_present_fieldMap && that_present_fieldMap)) {
+          return false;
+      }
+      if (!this.fieldMap.equals(that.fieldMap)) {
+          return false;
+      }
     }
 
     boolean this_present_identityField = true && this.isSetIdentityField();
     boolean that_present_identityField = true && that.isSetIdentityField();
     if (this_present_identityField || that_present_identityField) {
-      if (!(this_present_identityField && that_present_identityField))
-        return false;
-      if (!this.identityField.equals(that.identityField))
-        return false;
+      if (!(this_present_identityField && that_present_identityField)) {
+          return false;
+      }
+      if (!this.identityField.equals(that.identityField)) {
+          return false;
+      }
     }
 
     boolean this_present_mapType = true && this.isSetMapType();
     boolean that_present_mapType = true && that.isSetMapType();
     if (this_present_mapType || that_present_mapType) {
-      if (!(this_present_mapType && that_present_mapType))
-        return false;
-      if (this.mapType != that.mapType)
-        return false;
+      if (!(this_present_mapType && that_present_mapType)) {
+          return false;
+      }
+      if (this.mapType != that.mapType) {
+          return false;
+      }
     }
 
     return true;
@@ -968,52 +1004,64 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
     int hashCode = 1;
 
     hashCode = hashCode * 8191 + ((isSetTableName()) ? 131071 : 524287);
-    if (isSetTableName())
-      hashCode = hashCode * 8191 + tableName.hashCode();
+    if (isSetTableName()) {
+        hashCode = hashCode * 8191 + tableName.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetMetaMap()) ? 131071 : 524287);
-    if (isSetMetaMap())
-      hashCode = hashCode * 8191 + metaMap.hashCode();
+    if (isSetMetaMap()) {
+        hashCode = hashCode * 8191 + metaMap.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetColumnNames()) ? 131071 : 524287);
-    if (isSetColumnNames())
-      hashCode = hashCode * 8191 + columnNames.hashCode();
+    if (isSetColumnNames()) {
+        hashCode = hashCode * 8191 + columnNames.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetColumnTypes()) ? 131071 : 524287);
-    if (isSetColumnTypes())
-      hashCode = hashCode * 8191 + columnTypes.hashCode();
+    if (isSetColumnTypes()) {
+        hashCode = hashCode * 8191 + columnTypes.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetPrimaryKeyNames()) ? 131071 : 524287);
-    if (isSetPrimaryKeyNames())
-      hashCode = hashCode * 8191 + primaryKeyNames.hashCode();
+    if (isSetPrimaryKeyNames()) {
+        hashCode = hashCode * 8191 + primaryKeyNames.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetAutoIncremental()) ? 131071 : 524287);
-    if (isSetAutoIncremental())
-      hashCode = hashCode * 8191 + ((autoIncremental) ? 131071 : 524287);
+    if (isSetAutoIncremental()) {
+        hashCode = hashCode * 8191 + ((autoIncremental) ? 131071 : 524287);
+    }
 
     hashCode = hashCode * 8191 + ((isSetVersionColumn()) ? 131071 : 524287);
-    if (isSetVersionColumn())
-      hashCode = hashCode * 8191 + versionColumn.hashCode();
+    if (isSetVersionColumn()) {
+        hashCode = hashCode * 8191 + versionColumn.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetUpdatableColumnNames()) ? 131071 : 524287);
-    if (isSetUpdatableColumnNames())
-      hashCode = hashCode * 8191 + updatableColumnNames.hashCode();
+    if (isSetUpdatableColumnNames()) {
+        hashCode = hashCode * 8191 + updatableColumnNames.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetInsertableColumnNames()) ? 131071 : 524287);
-    if (isSetInsertableColumnNames())
-      hashCode = hashCode * 8191 + insertableColumnNames.hashCode();
+    if (isSetInsertableColumnNames()) {
+        hashCode = hashCode * 8191 + insertableColumnNames.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetFieldMap()) ? 131071 : 524287);
-    if (isSetFieldMap())
-      hashCode = hashCode * 8191 + fieldMap.hashCode();
+    if (isSetFieldMap()) {
+        hashCode = hashCode * 8191 + fieldMap.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetIdentityField()) ? 131071 : 524287);
-    if (isSetIdentityField())
-      hashCode = hashCode * 8191 + identityField.hashCode();
+    if (isSetIdentityField()) {
+        hashCode = hashCode * 8191 + identityField.hashCode();
+    }
 
     hashCode = hashCode * 8191 + ((isSetMapType()) ? 131071 : 524287);
-    if (isSetMapType())
-      hashCode = hashCode * 8191 + ((mapType) ? 131071 : 524287);
+    if (isSetMapType()) {
+        hashCode = hashCode * 8191 + ((mapType) ? 131071 : 524287);
+    }
 
     return hashCode;
   }
@@ -1149,15 +1197,18 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
     return 0;
   }
 
+  @Override
   @org.apache.thrift.annotation.Nullable
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
+  @Override
   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     scheme(iprot).read(iprot, this);
   }
 
+  @Override
   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     scheme(oprot).write(oprot, this);
   }
@@ -1177,7 +1228,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetMetaMap()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("metaMap:");
       if (this.metaMap == null) {
         sb.append("null");
@@ -1187,7 +1240,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetColumnNames()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("columnNames:");
       if (this.columnNames == null) {
         sb.append("null");
@@ -1197,7 +1252,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetColumnTypes()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("columnTypes:");
       if (this.columnTypes == null) {
         sb.append("null");
@@ -1207,7 +1264,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetPrimaryKeyNames()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("primaryKeyNames:");
       if (this.primaryKeyNames == null) {
         sb.append("null");
@@ -1217,13 +1276,17 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetAutoIncremental()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("autoIncremental:");
       sb.append(this.autoIncremental);
       first = false;
     }
     if (isSetVersionColumn()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("versionColumn:");
       if (this.versionColumn == null) {
         sb.append("null");
@@ -1233,7 +1296,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetUpdatableColumnNames()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("updatableColumnNames:");
       if (this.updatableColumnNames == null) {
         sb.append("null");
@@ -1243,7 +1308,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetInsertableColumnNames()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("insertableColumnNames:");
       if (this.insertableColumnNames == null) {
         sb.append("null");
@@ -1253,7 +1320,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetFieldMap()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("fieldMap:");
       if (this.fieldMap == null) {
         sb.append("null");
@@ -1263,7 +1332,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetIdentityField()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("identityField:");
       if (this.identityField == null) {
         sb.append("null");
@@ -1273,7 +1344,9 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       first = false;
     }
     if (isSetMapType()) {
-      if (!first) sb.append(", ");
+      if (!first) {
+          sb.append(", ");
+      }
       sb.append("mapType:");
       sb.append(this.mapType);
       first = false;
@@ -1306,6 +1379,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
   }
 
   private static class EntityMetaStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public EntityMetaStandardScheme getScheme() {
       return new EntityMetaStandardScheme();
     }
@@ -1313,6 +1387,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
 
   private static class EntityMetaStandardScheme extends org.apache.thrift.scheme.StandardScheme<EntityMeta> {
 
+    @Override
     public void read(org.apache.thrift.protocol.TProtocol iprot, EntityMeta struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
@@ -1505,6 +1580,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
       struct.validate();
     }
 
+    @Override
     public void write(org.apache.thrift.protocol.TProtocol oprot, EntityMeta struct) throws org.apache.thrift.TException {
       struct.validate();
 
@@ -1647,6 +1723,7 @@ public class EntityMeta implements org.apache.thrift.TBase<EntityMeta, EntityMet
   }
 
   private static class EntityMetaTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+    @Override
     public EntityMetaTupleScheme getScheme() {
       return new EntityMetaTupleScheme();
     }

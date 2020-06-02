@@ -49,8 +49,9 @@ public class DefaultTaskFactory implements TaskFactory {
 		/**
 		 * Oracle has different way of INSERT VALUES, We do not support it yet.
 		 */
-		if(DatabaseCategory.Oracle == getDbCategory(parser))
-			return null;
+		if(DatabaseCategory.Oracle == getDbCategory(parser)) {
+            return null;
+        }
 			
 		CombinedInsertTask<T> combinedInsertTask = new CombinedInsertTask<T>();
 		combinedInsertTask.initialize(parser);

@@ -19,14 +19,19 @@ public class Text implements Segment {
         return text;
     }
     
+    @Override
     public String toString() {
         return getText();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Text)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Text)) {
+            return false;
+        }
         Text text1 = (Text) o;
         return Objects.equals(getText(), text1.getText());
     }

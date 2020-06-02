@@ -51,15 +51,17 @@ public class DalConnection {
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws SQLException {
-		if(conn.getAutoCommit() != autoCommit)
-			conn.setAutoCommit(autoCommit);
+		if(conn.getAutoCommit() != autoCommit) {
+            conn.setAutoCommit(autoCommit);
+        }
 	}
 
 	public void applyHints(Hints hints) throws SQLException {
 		Integer level = hints.getInt(HintEnum.isolationLevel);
 
-		if(level == null || oldIsolationLevel.equals(level))
-			return;
+		if(level == null || oldIsolationLevel.equals(level)) {
+            return;
+        }
 
 		newIsolationLevel = level;
 		conn.setTransactionIsolation(level);
@@ -71,15 +73,17 @@ public class DalConnection {
 
 	public void close() {
 		try {
-			if(conn == null || conn.isClosed())
-				return;
+			if(conn == null || conn.isClosed()) {
+                return;
+            }
 		} catch (Throwable e) {
 			logger.error("Restore connection isolation level failed!", e);
 		}
 
 		try {
-			if(newIsolationLevel != null)
-				conn.setTransactionIsolation(oldIsolationLevel);
+			if(newIsolationLevel != null) {
+                conn.setTransactionIsolation(oldIsolationLevel);
+            }
 		} catch (Throwable e) {
 			logger.error("Restore connection isolation level failed!", e);
 		}
@@ -106,12 +110,14 @@ public class DalConnection {
 			e = e.getCause();
 		}
 
-		if(e == null)
-			return false;
+		if(e == null) {
+            return false;
+        }
 
 		SQLException se = (SQLException)e;
-		if(meta.getDatabaseCategory().isDisconnectionError(se.getSQLState()))
-			return true;
+		if(meta.getDatabaseCategory().isDisconnectionError(se.getSQLState())) {
+            return true;
+        }
 
 		return isDisconnectionException(se.getNextException());
 	}

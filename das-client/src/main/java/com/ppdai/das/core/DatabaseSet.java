@@ -106,15 +106,17 @@ public class DatabaseSet {
 		databases.remove(dbName);
 	}
 	private void initStrategy(String shardStrategy) throws Exception {
-		if(shardStrategy == null || shardStrategy.length() == 0)
+		if(shardStrategy == null || shardStrategy.length() == 0) {
 			return;
+		}
 		
 		String[] values = shardStrategy.split(ENTRY_SEPARATOR);
 		String[] strategyDef = values[0].split(KEY_VALUE_SEPARATOR);
 
 		if(strategy == null) {
-			if(strategyDef[0].trim().equals(CLASS))
+			if(strategyDef[0].trim().equals(CLASS)) {
 				strategy = (ShardingStrategy)Class.forName(strategyDef[1].trim()).newInstance();
+			}
 		}
 
 		Map<String, String> settings = new HashMap<String, String>();
@@ -132,10 +134,11 @@ public class DatabaseSet {
 		if(strategy == null || strategy.isShardByDb() == false){
 			// Init with no shard support
 			for(DataBase db: databases.values()) {
-				if(db.isMaster())
+				if(db.isMaster()) {
 					masterDbs.add(db);
-				else
+				} else {
 					slaveDbs.add(db);
+				}
 			}
 		}else{
 			// Init map by shard
@@ -183,8 +186,9 @@ public class DatabaseSet {
 	}
 	
 	public void validate(String shard) throws SQLException {
-		if(!masterDbByShard.containsKey(shard))
+		if(!masterDbByShard.containsKey(shard)) {
 			throw new SQLException("No shard defined for id: " + shard);
+		}
 	}
 	
 	public Set<String> getAllShards() {
@@ -192,8 +196,9 @@ public class DatabaseSet {
 	}
 
 	public ShardingStrategy getStrategy() throws SQLException {
-		if(strategy == null)
+		if(strategy == null) {
 			throw new SQLException("No sharding stradegy defined");
+		}
 		return strategy;
 	}
 	
@@ -228,8 +233,12 @@ public class DatabaseSet {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof DatabaseSet)) return false;
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof DatabaseSet)) {
+			return false;
+		}
 		DatabaseSet that = (DatabaseSet) o;
 		return Objects.equals(getName(), that.getName()) &&
 				Objects.equals(getProvider(), that.getProvider()) &&

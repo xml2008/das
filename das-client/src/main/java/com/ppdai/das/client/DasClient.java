@@ -310,18 +310,21 @@ public class DasClient {
     }
 
 	protected Hints checkHints(Hints...hintsList) throws SQLException {
-		if(hintsList.length > 1)
-			throw new IllegalArgumentException("You should provide non or just one hints parameter.");
+		if(hintsList.length > 1) {
+            throw new IllegalArgumentException("You should provide non or just one hints parameter.");
+        }
 		
 		return hintsList.length == 0 || hintsList[0] == null ? new Hints() : hintsList[0];
 	}
 	
 	private <T> T internalExecute(Hints hints, Diagnosable<T> action) throws SQLException {
-	    if(debugMode == false)
-	        return action.execute();
+	    if(debugMode == false) {
+            return action.execute();
+        }
 	    
-	    if(!hints.isDiagnose())
-	        hints.diagnose();
+	    if(!hints.isDiagnose()) {
+            hints.diagnose();
+        }
 
 	    try {
             return action.execute();

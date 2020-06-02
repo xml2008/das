@@ -14,22 +14,25 @@ public class SingleUpdateTask<T> extends TaskAdapter<T> implements SingleTask<T>
 	
 	@Override
 	public int execute(Hints hints, Map<String, ?> fields, T rawPojo) throws SQLException {
-		if (fields.size() == 0)
-			throw new DasException(ErrorCode.ValidateFieldCount);
+		if (fields.size() == 0) {
+            throw new DasException(ErrorCode.ValidateFieldCount);
+        }
 		Map<String, ?> pks = getPrimaryKeys(fields);
 		
 		Object version = getVersion(fields);
 		
 		Map<String, ?> filted = null;
 		
-		if(rawPojo instanceof UpdatableEntity)
-			filted = filterUpdatableEntity(hints, fields, getUpdatedColumns(rawPojo));
-		else
-			filted = filterNullColumns(hints, fields);
+		if(rawPojo instanceof UpdatableEntity) {
+            filted = filterUpdatableEntity(hints, fields, getUpdatedColumns(rawPojo));
+        } else {
+            filted = filterNullColumns(hints, fields);
+        }
 		
 		// If there is no columns changed, we will not perform update
-		if(filted.size() == 0)
-			return 0;
+		if(filted.size() == 0) {
+            return 0;
+        }
 		
 		String updateSql = buildUpdateSql(getTableName(hints, fields), filted, hints);
 
@@ -42,12 +45,14 @@ public class SingleUpdateTask<T> extends TaskAdapter<T> implements SingleTask<T>
 	}
 
 	private Object getVersion(Map<String, ?> fields) throws DasException {
-		if(!hasVersion)
-			return null;
+		if(!hasVersion) {
+            return null;
+        }
 
 		Object version = fields.get(parser.getVersionColumn());
-		if(version == null)
-			throw new DasException(ErrorCode.ValidateVersion);
+		if(version == null) {
+            throw new DasException(ErrorCode.ValidateVersion);
+        }
 
 		return version;
 	}
@@ -61,8 +66,9 @@ public class SingleUpdateTask<T> extends TaskAdapter<T> implements SingleTask<T>
 		// primary key or not updatable
 		for (String column : parser.getColumnNames()) {
 			if ((fields.get(column) == null && !hints.isUpdateNullField())
-					|| isPrimaryKey(column) || !updatableColumns.contains(column))
-				continue;
+					|| isPrimaryKey(column) || !updatableColumns.contains(column)) {
+                continue;
+            }
 			
 			filted.put(column, fields.get(column));
 		}
@@ -78,8 +84,9 @@ public class SingleUpdateTask<T> extends TaskAdapter<T> implements SingleTask<T>
 		// primary key or not updatable
 		for (String column : parser.getColumnNames()) {
 			if (!updatedColumns.contains(column) && !hints.isUpdateUnchangedField() || 
-					isPrimaryKey(column) || !updatableColumns.contains(column))
-				continue;
+					isPrimaryKey(column) || !updatableColumns.contains(column)) {
+                continue;
+            }
 			
 			filted.put(column, fields.get(column));
 		}
@@ -92,15 +99,17 @@ public class SingleUpdateTask<T> extends TaskAdapter<T> implements SingleTask<T>
 				combine(TMPL_SET_VALUE, fields.size(), COLUMN_SEPARATOR),
 				quote(fields.keySet()));
 
-		if(isVersionUpdatable)
-			columns += COLUMN_SEPARATOR + setVersionValueTmpl;
+		if(isVersionUpdatable) {
+            columns += COLUMN_SEPARATOR + setVersionValueTmpl;
+        }
 
 		return String.format(TMPL_SQL_UPDATE, tableName, columns, updateCriteriaTmpl);
 	}
 	
 	private void addVersion(List<Parameter> parameters, Object version) throws DasException {
-		if(!hasVersion)
-			return;
+		if(!hasVersion) {
+            return;
+        }
 		
 		addParameter(parameters, parameters.size() + 1, parser.getVersionColumn(), version);
 	}

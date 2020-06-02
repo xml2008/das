@@ -23,6 +23,7 @@ public class TableDeclaration implements TableReference {
         return tableRef;
     }
 
+    @Override
     public String toString() {
         return build(new DefaultBuilderContext());
     }

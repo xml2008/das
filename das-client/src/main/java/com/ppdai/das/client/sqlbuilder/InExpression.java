@@ -95,9 +95,10 @@ public class InExpression extends ColumnExpression implements ParameterDefinitio
     
     @Override
     public void validate(BuilderContext context) {
-        if(isNullInParams(getValues()))
-            throw new IllegalArgumentException("All values for column :" + rightColumn.getReference(context) + 
+        if(isNullInParams(getValues())) {
+            throw new IllegalArgumentException("All values for column :" + rightColumn.getReference(context) +
                 " is null for IN clause. If you want this expression to be removed when value is null, please call nullable() before build");
+        }
     }
 
     @Override

@@ -88,8 +88,9 @@ public class DalStatementCreator {
 
 	private void setParameter(PreparedStatement statement, List<Parameter> parameters) throws Exception {
 		for (Parameter parameter: parameters) {
-			if(parameter.isInputParameter())
-			    dbCategory.setObject(statement, parameter);
+			if(parameter.isInputParameter()) {
+                dbCategory.setObject(statement, parameter);
+            }
 		}
 	}
 	
@@ -104,10 +105,11 @@ public class DalStatementCreator {
 	private void registerOutParameters(CallableStatement statement, List<Parameter> parameters) throws Exception {
 		for (Parameter parameter: parameters) {
 			if(parameter.isOutParameter()) {
-				if(parameter.getName() == null)
-					statement.registerOutParameter(parameter.getIndex(), getSqlType(parameter));
-				else
-					statement.registerOutParameter(parameter.getName(), getSqlType(parameter));
+				if(parameter.getName() == null) {
+                    statement.registerOutParameter(parameter.getIndex(), getSqlType(parameter));
+                } else {
+                    statement.registerOutParameter(parameter.getName(), getSqlType(parameter));
+                }
 			}
 		}
 	}
@@ -115,16 +117,19 @@ public class DalStatementCreator {
 	private void applyHints(Statement statement, Hints hints) throws SQLException {
 		Integer fetchSize = (Integer)hints.get(HintEnum.fetchSize);
 		
-		if(fetchSize != null && fetchSize > 0)
-			statement.setFetchSize(fetchSize);
+		if(fetchSize != null && fetchSize > 0) {
+            statement.setFetchSize(fetchSize);
+        }
 
 		Integer maxRows = (Integer)hints.get(HintEnum.maxRows);
-		if (maxRows != null && maxRows > 0)
-			statement.setMaxRows(maxRows);
+		if (maxRows != null && maxRows > 0) {
+            statement.setMaxRows(maxRows);
+        }
 
         Integer timeout = (Integer)hints.get(HintEnum.timeout);
-        if (timeout == null || timeout < 0)
+        if (timeout == null || timeout < 0) {
             timeout = StatusManager.getTimeoutMarkdown().getTimeoutThreshold();
+        }
 
 		statement.setQueryTimeout(timeout);
 	}

@@ -12,10 +12,12 @@ public class TableConditionContext extends ConditionContext {
         return tableShardingContext.getDbShard();
     }
 
+    @Override
     public TableConditionContext create(OperatorEnum operator) {
         return new TableConditionContext(tableShardingContext, super.create(operator));
     }
 
+    @Override
     public TableConditionContext create(OperatorEnum operator, Object value) {
         return new TableConditionContext(tableShardingContext, super.create(operator, value));
     }

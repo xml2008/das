@@ -46,30 +46,35 @@ public class AdvancedModStrategy extends AbstractConditionStrategy {
 
         String type = settings.get(TYPE);
         if(isShardByDb()) {
-            if(!settings.containsKey(MOD))
+            if(!settings.containsKey(MOD)) {
                 throw new IllegalArgumentException("Property " + MOD + " is required for shard by database");
+            }
 
             String zeroPaddingFormat = "%01d";
-            if(settings.containsKey(ZERO_PADDING))
+            if(settings.containsKey(ZERO_PADDING)) {
                 zeroPaddingFormat = "%0" + Integer.parseInt(settings.get(ZERO_PADDING)) + "d";
+            }
 
             dbLoactor = createLocator(type, Integer.parseInt(settings.get(MOD)), zeroPaddingFormat);
         }
         
         if(isShardByTable()) {
-            if(!settings.containsKey(TABLE_MOD))
+            if(!settings.containsKey(TABLE_MOD)) {
                 throw new IllegalArgumentException("Property " + TABLE_MOD + " is required for shard by table");
+            }
 
             String tableZeroPaddingFormat = "%01d";
-            if(settings.containsKey(TABLE_ZERO_PADDING))
+            if(settings.containsKey(TABLE_ZERO_PADDING)) {
                 tableZeroPaddingFormat = "%0" + Integer.parseInt(settings.get(TABLE_ZERO_PADDING)) + "d";
+            }
 
             Integer mod = Integer.parseInt(settings.get(TABLE_MOD));
             tableLoactor = createLocator(type, mod, tableZeroPaddingFormat);
             
             Set<String> allShards = new HashSet<>();
-            for(int i = 0; i < mod; i++)
+            for(int i = 0; i < mod; i++) {
                 allShards.add(String.format(tableZeroPaddingFormat, i));
+            }
             
             setAllTableShards(allShards);
         }
