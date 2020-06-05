@@ -169,7 +169,11 @@ public class DalTransactionManager {
 
 			result = action.execute();
 
-			endTransaction(level);
+			if(hints.isRollbackOnly()) {
+				rollbackTransaction();
+			} else {
+				endTransaction(level);
+			}
 		} catch (Throwable e) {
 		    action.error(e);
 			rollbackTransaction();

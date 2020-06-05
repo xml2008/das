@@ -270,5 +270,10 @@ public enum HintEnum {
 	/**
 	 * Columns to sort in-memory
 	 */
-	sortColumns
+	sortColumns,
+
+	/**
+	 * Rollback transaction explicitly
+	 */
+	rollbackOnly
 }
