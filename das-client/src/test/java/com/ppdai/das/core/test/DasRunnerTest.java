@@ -5,18 +5,20 @@ import com.ppdai.das.client.DasClientFactory;
 import com.ppdai.das.client.Person;
 import com.ppdai.das.client.SqlBuilder;
 import com.ppdai.das.client.annotation.DasTransactional;
+import com.ppdai.das.client.transaction.DasTransactionalEnabler;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.sql.SQLException;
 
 @RunWith(DasRunner.class)
-@ContextConfiguration(classes = DasRunnerTest.class)
+@ContextConfiguration(classes = {DasTransactionalEnabler.class, DasRunnerTest.class, DaoBean.class})
 @SpringBootTest
 public class DasRunnerTest {
 
@@ -24,6 +26,9 @@ public class DasRunnerTest {
     private DasClient dasClient;
     private boolean isRollback = false;
     private long count = 0;
+
+    @Autowired
+    DaoBean daoBean;
 
     @Before
     public void before() throws SQLException {
@@ -55,4 +60,17 @@ public class DasRunnerTest {
         dasClient.insert(p);
     }
 
+    @Test
+    @DasTransactional(logicDbName = DB_NAME, rollback = true)
+    public void testNestedTransaction() throws SQLException {
+        isRollback = true;
+        daoBean.commitMethod();
+    }
+
+    @Test(expected = SQLException.class)
+    @DasTransactional(logicDbName = DB_NAME, rollback = false)
+    public void testNestedTransactionException() throws SQLException {
+        isRollback = true;
+        daoBean.rollbackMethod();
+    }
 }
