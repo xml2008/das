@@ -9,6 +9,7 @@ import com.ppdai.das.core.DasLogger;
 import com.ppdai.das.core.ErrorCode;
 import com.ppdai.das.service.DasHints;
 import com.ppdai.das.service.DasTransactionId;
+import com.ppdai.das.util.ConvertUtils;
 
 import java.sql.SQLException;
 
@@ -49,7 +50,7 @@ public class TransactionClient {
     }
     
     private DasHints convert(Hints hints) {
-        return DasRemoteDelegate.toDasHints(hints);
+        return ConvertUtils.toDasHints(hints);
     }
 
     private <T> int startTransaction(Hints hints) throws Exception {

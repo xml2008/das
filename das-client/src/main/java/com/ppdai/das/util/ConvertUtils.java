@@ -1,6 +1,10 @@
 package com.ppdai.das.util;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Longs;
 import com.google.gson.Gson;
@@ -9,6 +13,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.ppdai.das.client.Hints;
+import com.ppdai.das.core.HintEnum;
+import com.ppdai.das.service.DasHintEnum;
+import com.ppdai.das.service.DasHints;
 import com.ppdai.das.service.DasRequest;
 import com.ppdai.das.service.Entity;
 import com.ppdai.das.service.EntityMeta;
@@ -20,6 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Utility for convert:
@@ -29,6 +38,76 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Shengyuan
  */
 public class ConvertUtils {
+
+    public static DasHints toDasHints(Hints hints) {
+        Map<DasHintEnum, String> map = ImmutableMap.<DasHintEnum, String>builder()
+                .put(DasHintEnum.dbShard, Objects.toString(hints.getShard(), ""))
+                .put(DasHintEnum.tableShard, Objects.toString(hints.getTableShard(), ""))
+                .put(DasHintEnum.dbShardValue, Objects.toString(hints.getShardValue(), ""))
+                .put(DasHintEnum.tableShardValue, Objects.toString(hints.getTableShardValue(), ""))
+                .put(DasHintEnum.setIdentityBack, Boolean.toString(hints.isSetIdBack()))
+                .put(DasHintEnum.enableIdentityInsert, Boolean.toString(hints.isInsertWithId()))
+                .put(DasHintEnum.diagnoseMode, Boolean.toString(hints.isDiagnose()))
+                .put(DasHintEnum.updateNullField, Boolean.toString(hints.isUpdateNullField()))
+                .put(DasHintEnum.excludedColumns, set2String(hints.getExcluded()))
+                .build();
+        return new DasHints().setHints(map);
+    }
+
+    static String set2String(Set<String> set) {
+        if(set == null || set.isEmpty()) {
+            return "";
+        } else {
+            return Joiner.on(",").join(set);
+        }
+    }
+
+    public static Hints translate(DasHints dasHints) {
+        if (dasHints == null) {
+            return null;
+        }
+
+        Map<DasHintEnum, String> map = dasHints.getHints();
+        Hints result = new Hints();
+        String dbShard = map.get(DasHintEnum.dbShard);
+        if(!isNullOrEmpty(dbShard)){
+            result.inShard(dbShard);
+        }
+        String tableShard = map.get(DasHintEnum.tableShard);
+        if(!isNullOrEmpty(tableShard)){
+            result.inTableShard(tableShard);
+        }
+        String dbShardValue = map.get(DasHintEnum.dbShardValue);
+        if(!isNullOrEmpty(dbShardValue)){
+            result.shardValue(dbShardValue);
+        }
+        String tableShardValue = map.get(DasHintEnum.tableShardValue);
+        if(!isNullOrEmpty(tableShardValue)){
+            result.tableShardValue(tableShardValue);
+        }
+        if(Boolean.valueOf(map.get(DasHintEnum.setIdentityBack))) {
+            result.setIdBack();
+        }
+        if(Boolean.valueOf(map.get(DasHintEnum.enableIdentityInsert))) {
+            result.insertWithId();
+        }
+        if(Boolean.valueOf(map.get(DasHintEnum.diagnoseMode))) {
+            result.diagnose();
+        }
+        if(Boolean.valueOf(map.get(DasHintEnum.updateNullField))) {
+            result.updateNullField();
+        }
+        String excludedColumns = map.get(DasHintEnum.excludedColumns);
+        if(!isNullOrEmpty(excludedColumns)){
+            result.set(HintEnum.excludedColumns, set2String(excludedColumns));
+        }
+
+        return result;
+    }
+
+    static Set<String> set2String(String excludedColumns) {
+        return Sets.newHashSet(Splitter.on(",").split(excludedColumns));
+    }
 
     public static Entity pojo2Entity(Object row, EntityMeta meta)  {
         checkNotNull(row);

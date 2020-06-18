@@ -1,6 +1,5 @@
 package com.ppdai.das.client.delegate.remote;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Ints;
@@ -27,14 +26,13 @@ import com.ppdai.das.core.ErrorCode;
 import com.ppdai.das.service.ColumnMeta;
 import com.ppdai.das.service.DasBatchUpdateBuilder;
 import com.ppdai.das.service.DasDiagInfo;
-import com.ppdai.das.service.DasHintEnum;
-import com.ppdai.das.service.DasHints;
 import com.ppdai.das.service.DasOperation;
 import com.ppdai.das.service.DasRequest;
 import com.ppdai.das.service.DasResult;
 import com.ppdai.das.service.Entity;
 import com.ppdai.das.service.EntityList;
 import com.ppdai.das.service.EntityMeta;
+import com.ppdai.das.util.ConvertUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
@@ -51,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.Iterables.getFirst;
@@ -102,19 +101,6 @@ public class DasRemoteDelegate implements DasDelegate {
         } finally {
             dalLogger.completeRemoteRequest(logContext, ex);
         }
-    }
-
-    public static DasHints toDasHints(Hints hints) {
-        Map<DasHintEnum, String> map = ImmutableMap.<DasHintEnum, String>builder()
-                .put(DasHintEnum.dbShard, Objects.toString(hints.getShard(), ""))
-                .put(DasHintEnum.tableShard, Objects.toString(hints.getTableShard(), ""))
-                .put(DasHintEnum.dbShardValue, Objects.toString(hints.getShardValue(), ""))
-                .put(DasHintEnum.tableShardValue, Objects.toString(hints.getTableShardValue(), ""))
-                .put(DasHintEnum.setIdentityBack, Boolean.toString(hints.isSetIdBack()))
-                .put(DasHintEnum.enableIdentityInsert, Boolean.toString(hints.isInsertWithId()))
-                .put(DasHintEnum.diagnoseMode, Boolean.toString(hints.isDiagnose()))
-                .build();
-        return new DasHints().setHints(map);
     }
 
     public static EntityMeta extract(Class clz) {
@@ -218,7 +204,7 @@ public class DasRemoteDelegate implements DasDelegate {
 
     private DasRequest create(DasOperation operation, Hints hints) {
         return new DasRequest()
-                .setHints(toDasHints(hints))
+                .setHints(ConvertUtils.toDasHints(hints))
                 .setLogicDbName(logicDbName)
                 .setDasClientVersion(DasClientVersion.getVersion())
                 .setPpdaiClientVersion(customerClientVersion)
