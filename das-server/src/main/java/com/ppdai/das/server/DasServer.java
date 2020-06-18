@@ -1,8 +1,6 @@
 package com.ppdai.das.server;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,15 +19,12 @@ import java.util.stream.Collectors;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.ppdai.das.core.DasConfigureFactory.configContextRef;
 import static com.ppdai.das.util.ConvertUtils.*;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import com.google.gson.Gson;
 import com.ppdai.das.client.*;
 import com.ppdai.das.client.sqlbuilder.SqlBuilderSerializer;
-
 import com.ppdai.das.core.DasLogger;
-
 import com.ppdai.das.core.LogContext;
 import com.ppdai.das.service.*;
 import com.ppdai.das.util.ConvertUtils;
@@ -395,41 +390,6 @@ public class DasServer implements DasService.Iface {
                 .setDiagnoseInfoMap(diagnoseInfoMap)
                 .setSpaceLevel(dasDiagnose.getSpaceLevel())
                 .setEntries(subs);
-    }
-
-    private Hints translate(DasHints dasHints) {
-        if (dasHints == null) {
-            return null;
-        }
-
-        Map<DasHintEnum, String> map = dasHints.getHints();
-        Hints result = new Hints();
-        String dbShard = map.get(DasHintEnum.dbShard);
-        if(!isNullOrEmpty(dbShard)){
-            result.inShard(dbShard);
-        }
-        String tableShard = map.get(DasHintEnum.tableShard);
-        if(!isNullOrEmpty(tableShard)){
-            result.inTableShard(tableShard);
-        }
-        String dbShardValue = map.get(DasHintEnum.dbShardValue);
-        if(!isNullOrEmpty(dbShardValue)){
-            result.shardValue(dbShardValue);
-        }
-        String tableShardValue = map.get(DasHintEnum.tableShardValue);
-        if(!isNullOrEmpty(tableShardValue)){
-            result.tableShardValue(tableShardValue);
-        }
-        if(Boolean.valueOf(map.get(DasHintEnum.setIdentityBack))) {
-            result.setIdBack();
-        }
-        if(Boolean.valueOf(map.get(DasHintEnum.enableIdentityInsert))) {
-            result.insertWithId();
-        }
-        if(Boolean.valueOf(map.get(DasHintEnum.diagnoseMode))) {
-            result.diagnose();
-        }
-        return result;
     }
 
     private DasResult queryByPK(DasRequest request) throws SQLException {
