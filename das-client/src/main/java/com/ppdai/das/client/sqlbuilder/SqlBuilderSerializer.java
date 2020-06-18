@@ -82,6 +82,9 @@ public class SqlBuilderSerializer implements Serializer {
         }
         boolean selectCount = ((JsonObject)jo).getAsJsonPrimitive("selectCount").getAsBoolean();
         writeField(sqlBuilder, "selectCount", selectCount);
+
+        boolean withLock = ((JsonObject)jo).getAsJsonPrimitive("withLock").getAsBoolean();
+        writeField(sqlBuilder, "withLock", withLock);
         return sqlBuilder;
     }
 
@@ -94,6 +97,7 @@ public class SqlBuilderSerializer implements Serializer {
 
         root.add("segments", segs);
         root.addProperty("selectCount", sqlBuilder.isSelectCount());
+        root.addProperty("withLock", sqlBuilder.isWithLock());
         return addBuildType(root);
     }
 
