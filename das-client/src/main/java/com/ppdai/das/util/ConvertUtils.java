@@ -1,5 +1,6 @@
 package com.ppdai.das.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.HashBiMap;
@@ -14,6 +15,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.ppdai.das.client.Hints;
+import com.ppdai.das.client.SqlBuilder;
+import com.ppdai.das.client.sqlbuilder.ColumnOrder;
+import com.ppdai.das.client.sqlbuilder.SqlBuilderSerializer;
 import com.ppdai.das.core.HintEnum;
 import com.ppdai.das.service.DasHintEnum;
 import com.ppdai.das.service.DasHints;
@@ -50,8 +54,18 @@ public class ConvertUtils {
                 .put(DasHintEnum.diagnoseMode, Boolean.toString(hints.isDiagnose()))
                 .put(DasHintEnum.updateNullField, Boolean.toString(hints.isUpdateNullField()))
                 .put(DasHintEnum.excludedColumns, set2String(hints.getExcluded()))
+                .put(DasHintEnum.sortColumns, serializeSortColumns(hints.getSorter()))
                 .build();
         return new DasHints().setHints(map);
+    }
+
+    static String serializeSortColumns(List<ColumnOrder> sorter) {
+        if(sorter == null || sorter.isEmpty()) {
+            return "";
+        } else {
+            return SqlBuilderSerializer.serializeSegment(
+                    new SqlBuilder().append(sorter.toArray(new ColumnOrder[sorter.size()])));
+        }
     }
 
     static String set2String(Set<String> set) {
@@ -101,8 +115,17 @@ public class ConvertUtils {
         if(!isNullOrEmpty(excludedColumns)){
             result.set(HintEnum.excludedColumns, set2String(excludedColumns));
         }
-
+        String sortColumns = map.get(DasHintEnum.sortColumns);
+        if(!isNullOrEmpty(sortColumns)){
+            result.set(HintEnum.sortColumns, deserializeSortColumns(sortColumns));
+        }
         return result;
+    }
+
+    static List<ColumnOrder> deserializeSortColumns(String sortColumns) {
+        return SqlBuilderSerializer.deserializeSegment(sortColumns).getSegments()
+                .stream().map(s -> (ColumnOrder)s)
+                .collect(Collectors.toList());
     }
 
     static Set<String> set2String(String excludedColumns) {
@@ -150,7 +173,8 @@ public class ConvertUtils {
                 Integer i = new Gson().fromJson(r.getValue(), Integer.class);
                 return (T) i;
             }else if (clz == Map.class) {
-                return (T) new Gson().fromJson(r.getValue(), Map.class);
+                ObjectMapper mapper = new ObjectMapper();
+                return (T) mapper.readValue(r.getValue(), Map.class);
             }  else if (clz == String.class) {
                 return (T) new Gson().fromJson(r.getValue(), String.class);
             }else if(clz == Object.class) {

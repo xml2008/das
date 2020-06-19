@@ -3,15 +3,16 @@ package com.ppdai.das.core.helper;
 import java.beans.Introspector;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.collect.ComparisonChain;
+import com.google.gson.Gson;
 import com.ppdai.das.client.sqlbuilder.ColumnOrder;
 import com.ppdai.das.core.ResultMerger;
+import com.ppdai.das.service.Entity;
 
 
 public class DalListMerger<T> implements ResultMerger<List<T>> {
@@ -32,19 +33,24 @@ public class DalListMerger<T> implements ResultMerger<List<T>> {
 			ComparisonChain comparisonChain = ComparisonChain.start();
 			for(ColumnOrder sorter: sorters){
 				try {
-					Object v1 = null;
-					Object v2 = null;
+					Object v1;
+					Object v2;
 					String colName = sorter.getColumn().getColumn().getColumnName();
 					if (o1 instanceof Map || o2 instanceof Map) {//Map entity
-						v1 = Optional.of(((Map)o1).get(colName)).orElse(least);
-						v2 = Optional.of(((Map)o2).get(colName)).orElse(least);
+						v1 = ((Map)o1).get(colName);
+						v2 = ((Map)o2).get(colName);
 
+					} else if(o1 instanceof Entity || o2 instanceof Entity){
+						v1 = new Gson().fromJson(((Entity)o1).getValue(), Map.class).get(colName);
+						v2 = new Gson().fromJson(((Entity)o2).getValue(), Map.class).get(colName);
 					} else {//POJO entity
 						Field f = o1.getClass().getDeclaredField(Introspector.decapitalize(colName));
 						f.setAccessible(true);
-						v1 = Optional.of(f.get(o1)).orElse(least);
-						v2 = Optional.of(f.get(o2)).orElse(least);
+						v1 = f.get(o1);
+						v2 = f.get(o2);
 					}
+					v1 = Optional.of(v1).orElse(least);
+					v2 = Optional.of(v2).orElse(least);
 					if(sorter.isAsc()) {
 						comparisonChain = comparisonChain.compare((Comparable)v1, (Comparable)v2);
 					} else {
@@ -68,7 +74,7 @@ public class DalListMerger<T> implements ResultMerger<List<T>> {
 	@Override
 	public List<T> merge() {
 		if(comparator != null) {
-			Collections.sort(result, comparator);
+			result.sort(comparator);
 		}
 
 		return result;

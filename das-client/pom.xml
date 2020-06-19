@@ -23,8 +23,10 @@
 		<libthrift-version>0.12.0</libthrift-version>
 		<guava-version>23.0</guava-version>
 		<spring-version>4.3.8.RELEASE</spring-version>
+		<jackson-version>2.9.1</jackson-version>
 		<file_encoding>UTF-8</file_encoding>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -115,6 +117,12 @@
 			<artifactId>guava</artifactId>
 			<version>${guava-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson-version}</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -146,14 +154,14 @@
 					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<configuration>
 					<encoding>${file_encoding}</encoding>
 				</configuration>
-			</plugin>
-			<plugin>
+			</plugin>-->
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<configuration>
@@ -168,8 +176,8 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
+			</plugin>-->
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
@@ -187,7 +195,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
