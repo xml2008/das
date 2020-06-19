@@ -36,7 +36,7 @@ import com.ppdai.das.client.delegate.local.PPDaiDalParser;
 import com.ppdai.das.core.ShardingManager;
 import com.ppdai.das.strategy.ConditionList;
 
-import oracle.sql.DATE;
+
 
 @RunWith(Parameterized.class)
 public class ShardingManagerTest {

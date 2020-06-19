@@ -6,8 +6,7 @@ import java.sql.SQLException;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.microsoft.sqlserver.jdbc.SQLServerCallableStatement;
-import com.microsoft.sqlserver.jdbc.SQLServerDataTable;
+
 import com.mysql.jdbc.exceptions.MySQLTimeoutException;
 import com.ppdai.das.client.Parameter;
 import com.ppdai.das.core.markdown.ErrorContext;
@@ -90,8 +89,7 @@ public enum DatabaseCategory {
 		@Override
 		public void setObject(CallableStatement statement, Parameter parameter) throws SQLException{
 			if(parameter.getValue() != null && getSqlType(parameter) == SQL_SERVER_TYPE_TVP){
-				SQLServerCallableStatement sqlsvrStatement = (SQLServerCallableStatement)statement;
-				sqlsvrStatement.setStructured(parameter.getIndex(), parameter.getName(), (SQLServerDataTable)parameter.getValue());
+
 			}else{
 				super.setObject(statement, parameter);
 			}
