@@ -73,12 +73,7 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql-connector-version}</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>${oracle-jdbc-thin-version}</version>
-		</dependency>
+	
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
