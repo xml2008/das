@@ -19,7 +19,8 @@ public class ExpressionSerializers {
                 new ColumnValueExpressionSerializer(),
                 new InterColumnExpressionSerializer(),
                 new InExpressionSerializer(),
-                new ColumnDefinitionExpressionSerializer());
+                new ColumnDefinitionExpressionSerializer(),
+                new CustomizedExpressionSerializer());
     }
 
     abstract static class ExpressionSerializer implements Serializer {
@@ -48,6 +49,31 @@ public class ExpressionSerializers {
         protected abstract void deserializeOther(JsonObject jo);
 
         protected abstract Expression createExpression();
+    }
+
+    static class CustomizedExpressionSerializer extends ExpressionSerializer {
+        String template;
+
+        @Override
+        void serializeOther(JsonObject root, Expression expression) {
+            CustomizedExpression ce = (CustomizedExpression) expression;
+            root.addProperty("template", ce.getTemplate());
+        }
+
+        @Override
+        protected void deserializeOther(JsonObject jo) {
+            template = jo.get("template").getAsString();
+        }
+
+        @Override
+        protected Expression createExpression() {
+            return new CustomizedExpression(template);
+        }
+
+        @Override
+        public Class getBuildType() {
+            return CustomizedExpression.class;
+        }
     }
 
     abstract static class ColumnExpressionSerializer extends ExpressionSerializer {
