@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -226,6 +227,11 @@ public class DasClientTest extends DataPreparer {
     }
 
     @Test
+    public void testInsertEmptyList() throws Exception {
+        assertEquals(0, dao.insert(Collections.emptyList()));
+    }
+
+    @Test
     public void testInsertList() throws Exception {
         List<Person> pl = new ArrayList<>();
         for(int k = 0; k < TABLE_MODE;k++) {
@@ -293,6 +299,13 @@ public class DasClientTest extends DataPreparer {
             assertNotNull(p);
             assertEquals("jerry" + k, p.getName());
         }
+    }
+
+    @Test
+    public void testBatchEmptyInsert() throws Exception {
+        int[] ret = dao.batchInsert(Collections.emptyList());
+        for(int x: ret)
+            assertEquals(0, x);
     }
 
     @Test
@@ -368,6 +381,13 @@ public class DasClientTest extends DataPreparer {
         sample.setName("test");
         assertEquals(4, dao.deleteBySample(sample));
         assertEquals(0, dao.queryBySample(sample).size());
+    }
+
+    @Test
+    public void testBatchEmptyDelete()  throws Exception {
+        int[] ret = dao.batchDelete(Collections.emptyList());
+        for(int i: ret)
+            assertEquals(0, i);
     }
 
     @Test
@@ -492,6 +512,13 @@ public class DasClientTest extends DataPreparer {
             pk.setPeopleID(k + 1);
             assertNull(dao.queryByPk(pk));
         }
+    }
+
+    @Test
+    public void testBatchEmptyUpdate() throws Exception {
+        int[] ret = dao.batchUpdate(Collections.emptyList());
+        for(int i: ret)
+            assertEquals(0, i);
     }
 
     @Test

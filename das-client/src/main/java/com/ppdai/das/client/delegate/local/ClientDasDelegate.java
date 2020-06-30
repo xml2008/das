@@ -127,6 +127,9 @@ public class ClientDasDelegate implements DasDelegate {
 
     @Override
     public <T> int insert(List<T> entities, Hints hints) throws SQLException {
+        if(isInvalid(entities)) {
+            return DEFAULT;
+        }
         return getSafeResult(exectuteBatch(entities, hints, DEFAULT, taskFactory.createCombinedInsertTask(getParser(entities))));
     }
 
@@ -149,16 +152,25 @@ public class ClientDasDelegate implements DasDelegate {
 
     @Override
     public <T> int[] batchInsert(List<T> entities, Hints hints) throws SQLException {
+        if(isInvalid(entities)) {
+            return BATCH_DEFAULT;
+        }
         return exectuteBatch(entities, hints, BATCH_DEFAULT, taskFactory.createBatchInsertTask(getParser(entities)));
     }
 
     @Override
     public <T> int[] batchDelete(List<T> entities, Hints hints) throws SQLException {
+        if(isInvalid(entities)) {
+            return BATCH_DEFAULT;
+        }
         return exectuteBatch(entities, hints, BATCH_DEFAULT, taskFactory.createBatchDeleteTask(getParser(entities)));
     }
 
     @Override
     public <T> int[] batchUpdate(List<T> entities, Hints hints) throws SQLException {
+        if(isInvalid(entities)) {
+            return BATCH_DEFAULT;
+        }
         return exectuteBatch(entities, hints, BATCH_DEFAULT, taskFactory.createBatchUpdateTask(getParser(entities)));
     }
 
@@ -229,10 +241,6 @@ public class ClientDasDelegate implements DasDelegate {
     }
 
     private <K, T> K exectuteBatch(List<T> entities, Hints hints, K defaultValue, BulkTask<K, T> bulkTask) throws SQLException {
-        if(isInvalid(entities)) {
-            return defaultValue;
-        }
-
         BulkTaskRequest<K, T> request = new BulkTaskRequest<>(appId, logicDbName, hints, entities, bulkTask);
         return execute(request, NOT_NULLABLE);
     }
