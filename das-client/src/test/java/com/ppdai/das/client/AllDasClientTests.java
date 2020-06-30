@@ -1,6 +1,7 @@
 package com.ppdai.das.client;
 
 import com.ppdai.das.client.transaction.normal.BaseDalTransactionalAnnotationTest;
+import com.ppdai.das.core.test.DasRunnerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -35,6 +36,7 @@ import com.ppdai.das.util.ConvertUtilsTest;
     SqlBuilderTableShardTest.class,
     SqlBuilderDbTableShardTest.class,
 
+    DasRunnerTest.class,
     DistributedTransactionDbTest.class,
     DistributedTransactionTableTest.class,
     NestedTransactionTest.class,
