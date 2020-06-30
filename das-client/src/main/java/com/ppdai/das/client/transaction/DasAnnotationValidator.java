@@ -2,6 +2,7 @@ package com.ppdai.das.client.transaction;
 
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import com.ppdai.das.client.annotation.DasTransactional;
 import org.springframework.beans.BeanInstantiationException;
@@ -46,7 +47,11 @@ public class DasAnnotationValidator implements BeanPostProcessor {
 
     private void validate(Class targetClass, Method method, Class annotationClass) {
         if (method.isAnnotationPresent(annotationClass)) {
-            throw new BeanInstantiationException(targetClass, VALIDATION_MSG);
+            String msg = "";
+            if(!Modifier.isPublic(method.getModifiers())) {
+                msg = method.toString() + " is NOT public method. ";
+            }
+            throw new BeanInstantiationException(targetClass, msg + VALIDATION_MSG);
         }
     }
 }
