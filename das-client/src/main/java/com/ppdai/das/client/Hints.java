@@ -64,6 +64,15 @@ public class Hints {
         return this;
     }
 
+    public Hints rollbackOnly() {
+        set(HintEnum.rollbackOnly);
+        return this;
+    }
+
+    public boolean isRollbackOnly() {
+        return is(HintEnum.rollbackOnly);
+    }
+
     /**
      * Returns {@code DasDiagnose} instance.
      *

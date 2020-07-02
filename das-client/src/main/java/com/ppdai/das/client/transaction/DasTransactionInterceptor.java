@@ -63,7 +63,9 @@ public class DasTransactionInterceptor implements MethodInterceptor {
         }
 
         final AtomicReference<Object> result = new AtomicReference<>();
-
+        if(getRollback(method)) {
+            hints.rollbackOnly();
+        }
         DasClientFactory.getClient(getLogicDbName(method)).execute(() -> {
             try {
                 result.set(proxy.invokeSuper(obj, args));
@@ -88,5 +90,14 @@ public class DasTransactionInterceptor implements MethodInterceptor {
         }
 
         return method.getAnnotation(DasTransactional.class).logicDbName();
+    }
+
+    private boolean getRollback(Method method) {
+        DasTransactional tran = method.getAnnotation(DasTransactional.class);
+        if(tran != null) {
+            return tran.rollback();
+        }
+
+        return method.getAnnotation(DasTransactional.class).rollback();
     }
 }
