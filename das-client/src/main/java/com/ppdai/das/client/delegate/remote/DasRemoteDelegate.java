@@ -70,6 +70,9 @@ public class DasRemoteDelegate implements DasDelegate {
     private TransactionClient transactionClient;
     private DasLogger dalLogger;
 
+    private final int DEFAULT = 0;
+    private final int[] BATCH_DEFAULT = new int[0];
+
     public DasRemoteDelegate(String appId, String logicDbName, String customerClientVersion, List<DasServerInstance> servers, DasLogger dalLogger) throws TTransportException, UnknownHostException {
         serverSelector = new ServerSelector(appId, servers,  DasClientVersion.getVersion(), customerClientVersion, InetAddress.getLocalHost().getHostAddress());
         this.appId = appId;
@@ -284,6 +287,9 @@ public class DasRemoteDelegate implements DasDelegate {
 
     @Override
     public <T> int insert(List<T> entities, Hints hints) throws SQLException {
+        if (entities.isEmpty()) {
+            return DEFAULT;
+        }
         return getFirst(call(DasOperation.InsertList, entities, hints, int.class), 0);
     }
 
@@ -304,16 +310,25 @@ public class DasRemoteDelegate implements DasDelegate {
 
     @Override
     public <T> int[] batchInsert(List<T> entities, Hints hints) throws SQLException {
+        if(entities.isEmpty()) {
+            return BATCH_DEFAULT;
+        }
         return Ints.toArray(call(DasOperation.BatchInsert, entities, hints, int.class));
     }
 
     @Override
     public <T> int[] batchDelete(List<T> entities, Hints hints) throws SQLException {
+        if(entities.isEmpty()) {
+            return BATCH_DEFAULT;
+        }
         return Ints.toArray(call(DasOperation.BatchDelete, entities, hints, int.class));
     }
 
     @Override
     public <T> int[] batchUpdate(List<T> entities, Hints hints) throws SQLException {
+        if(entities.isEmpty()) {
+            return BATCH_DEFAULT;
+        }
         return Ints.toArray(call(DasOperation.BatchUpdate, entities, hints, int.class));
     }
 
