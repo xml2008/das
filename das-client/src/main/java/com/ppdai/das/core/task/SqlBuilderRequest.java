@@ -7,6 +7,7 @@ import static com.ppdai.das.core.ShardingManager.locateShards;
 import static com.ppdai.das.core.ShardingManager.locateTableShards;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class SqlBuilderRequest<T> implements SqlRequest<T>{
         if(shards != null && shards.size() > 1 && hints.isCrossShardsPageRoughly()) {
             SqlBuilder sqlBuilder = provider.getRawRequest();
             sqlBuilder.reWritePage(shards.size());
+            sqlBuilder.setBuiltParameters(new ArrayList<>());
         }
         this.parameters = provider.buildParameters();
     }

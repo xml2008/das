@@ -55,6 +55,7 @@ public class ConvertUtils {
                 .put(DasHintEnum.updateNullField, Boolean.toString(hints.isUpdateNullField()))
                 .put(DasHintEnum.excludedColumns, set2String(hints.getExcluded()))
                 .put(DasHintEnum.sortColumns, serializeSortColumns(hints.getSorter()))
+                .put(DasHintEnum.crossShardsPageRoughly, Boolean.toString(hints.isCrossShardsPageRoughly()))
                 .build();
         return new DasHints().setHints(map);
     }
@@ -110,6 +111,9 @@ public class ConvertUtils {
         }
         if(Boolean.valueOf(map.get(DasHintEnum.updateNullField))) {
             result.updateNullField();
+        }
+        if(Boolean.valueOf(map.get(DasHintEnum.crossShardsPageRoughly))) {
+            result.crossShardsPageRoughly();
         }
         String excludedColumns = map.get(DasHintEnum.excludedColumns);
         if(!isNullOrEmpty(excludedColumns)){

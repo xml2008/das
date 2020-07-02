@@ -103,7 +103,8 @@ enum DasHintEnum {
     diagnoseMode,
     updateNullField,
 
-    sortColumns
+    sortColumns,
+    crossShardsPageRoughly
 }
 
 struct DasHints {
