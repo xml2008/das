@@ -95,7 +95,9 @@ public class DasRemoteDelegate implements DasDelegate {
         } catch (TException e) {
             ex = e;
             Throwable cause = e.getCause();
-            if(cause instanceof com.ppdai.das.service.DasException){
+            if(cause == null) {
+                throw new DasException(e.getMessage(), cause);
+            }else if(cause instanceof com.ppdai.das.service.DasException){
                 Optional<ErrorCode> eCode = Arrays.stream(ErrorCode.values()).filter(ec -> ("" + ec.getCode()).equals(((com.ppdai.das.service.DasException)cause).getCode())).findFirst();
                 throw eCode.isPresent() ? new com.ppdai.das.core.DasException(eCode.get(), cause.getMessage(), cause) : new com.ppdai.das.core.DasException(cause.getMessage(), cause);
             } else {
