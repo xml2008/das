@@ -31,20 +31,30 @@ import com.ppdai.das.core.helper.HintsAwareExtractor;
  * 
  * @author jhhe
  */
-public class DalDirectClient implements DalClient {
+public class DasDirectClient {
     private DalStatementCreator stmtCreator;
     private DalConnectionManager connManager;
     private DalTransactionManager transManager;
     private DasLogger logger;
 
-    public DalDirectClient(DasConfigure config, String logicDbName) {
+    public DasDirectClient(DasConfigure config, String logicDbName) {
         connManager = new DalConnectionManager(logicDbName, config);
         transManager = new DalTransactionManager(connManager);
         stmtCreator = new DalStatementCreator(config.getDatabaseSet(logicDbName).getDatabaseCategory());
         logger = config.getDasLogger();
     }
 
-    @Override
+    /**
+     * Query against the given sql and parameters. The result set will be
+     * processed by the given extractor
+     *
+     * @param sql The sql statement to be executed
+     * @param parameters A container that holds all the necessary parameters
+     * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @param extractor helper used to convert result to desired type
+     * @return the extracted result from the result set
+     * @throws SQLException when things going wrong during the execution
+     */
     public <T> T query(String sql, List<Parameter> parameters, final Hints hints,
             final DalResultSetExtractor<T> extractor) throws SQLException {
         ConnectionAction<T> action = new ConnectionAction<T>() {
@@ -76,7 +86,17 @@ public class DalDirectClient implements DalClient {
         return doInConnection(action, hints);
     }
 
-    @Override
+    /**
+     * Query against the given sql and parameters. The sql is combined by multiple select clause,
+     * the result will be extracted one by one by the given extractors list
+     *
+     * @param sql The sql statement to be executed
+     * @param parameters A container that holds all the necessary parameters
+     * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @param extractors helper used to convert result to desired type
+     * @return the extracted result from the result set
+     * @throws SQLException when things going wrong during the execution
+     */
     public List<?> query(String sql, List<Parameter> parameters, final Hints hints,
             final List<DalResultSetExtractor<?>> extractors) throws SQLException {
         ConnectionAction<List<?>> action = new ConnectionAction<List<?>>() {
@@ -119,7 +139,15 @@ public class DalDirectClient implements DalClient {
         return doInConnection(action, hints);
     }
 
-    @Override
+    /**
+     * Update against the given sql and parameters.
+     *
+     * @param sql The sql statement to be executed
+     * @param parameters A container that holds all the necessary parameters
+     * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @return how many rows been affected
+     * @throws SQLException when things going wrong during the execution
+     */
     public int update(String sql, List<Parameter> parameters, final Hints hints) throws SQLException {
         final KeyHolder generatedKeyHolder = hints.getKeyHolder();
         ConnectionAction<Integer> action = new ConnectionAction<Integer>() {
@@ -163,7 +191,17 @@ public class DalDirectClient implements DalClient {
         return doInConnection(action, hints);
     }
 
-    @Override
+    /**
+     * Batch update for given sqls.The default behavior is execute in transaction.
+     * You can overwrite this by set forceAutoCommit in hints.
+     *
+     * @param sqls List of sql statement to be executed
+     * @param hints
+     * 			Additional parameters that instruct how DAL Client perform database operation.
+     * 			when hints set forceAutoCommit the connection auto commit will be true.
+     * @return how many rows been affected for each of the sql
+     * @throws SQLException when things going wrong during the execution
+     */
     public int[] batchUpdate(String[] sqls, final Hints hints) throws SQLException {
         ConnectionAction<int[]> action = new ConnectionAction<int[]>() {
             @Override
@@ -187,7 +225,16 @@ public class DalDirectClient implements DalClient {
         return executeBatch(action, hints);
     }
 
-    @Override
+    /**
+     * Batch update for the given sql with all the given parameters in parametersList.
+     * The default behavior is execute in transaction.
+     * You can overwrite this by set forceAutoCommit in hints.
+     * @param sql The sql statement to be executed
+     * @param parametersList Container that holds parameters
+     * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @return how many rows been affected for each of parameters
+     * @throws SQLException when things going wrong during the execution
+     */
     public int[] batchUpdate(String sql, List<Parameter>[] parametersList, final Hints hints)
             throws SQLException {
         ConnectionAction<int[]> action = new ConnectionAction<int[]>() {
@@ -209,9 +256,15 @@ public class DalDirectClient implements DalClient {
         return executeBatch(action, hints);
     }
 
-    @Override
+    /**
+     * Execute customized command in the transaction.
+     *
+     * @param command Callback to be executed in a transaction
+     * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @throws SQLException when things going wrong during the execution
+     */
     public void execute(DalCommand command, Hints hints) throws SQLException {
-        final DalClient client = this;
+        final DasDirectClient client = this;
         ConnectionAction<?> action = new ConnectionAction<Object>() {
             @Override
             public Object execute() throws Exception {
@@ -224,9 +277,16 @@ public class DalDirectClient implements DalClient {
         doInTransaction(action, hints);
     }
 
-    @Override
+    /**
+     * Execute list of commands in the same transaction. This is useful when you have several
+     * commands and you want to combine them in a flexible way.
+     *
+     * @param commands Container that holds commands
+     * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @throws SQLException when things going wrong during the execution
+     */
     public void execute(final List<DalCommand> commands, final Hints hints) throws SQLException {
-        final DalClient client = this;
+        final DasDirectClient client = this;
         ConnectionAction<?> action = new ConnectionAction<Object>() {
             @Override
             public Object execute() throws Exception {
@@ -244,7 +304,15 @@ public class DalDirectClient implements DalClient {
         doInTransaction(action, hints);
     }
 
-    @Override
+    /**
+     * Call stored procedure.
+     *
+     * @param callString sql statement represent the stored procedure
+     * @param parameters A container that holds all the necessary parameters
+     * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @return the returned update count and result set in order
+     * @throws SQLException when things going wrong during the execution
+     */
     public Map<String, ?> call(String callString, List<Parameter> parameters, final Hints hints)
             throws SQLException {
         ConnectionAction<Map<String, ?>> action = new ConnectionAction<Map<String, ?>>() {
@@ -289,7 +357,16 @@ public class DalDirectClient implements DalClient {
         return doInConnection(action, hints);
     }
 
-    @Override
+    /**
+     * Call stored procedure in batch mode.
+     * The default behavior is execute in transaction.
+     * You can overwrite this by set forceAutoCommit in hints.
+     * @param callString sql statement represent the stored procedure
+     * @param parametersList Container that holds parameters
+     * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @return how many rows been affected for each of parameters
+     * @throws SQLException when things going wrong during the execution
+     */
     public int[] batchCall(String callString, List<Parameter>[] parametersList, final Hints hints)
             throws SQLException {
         ConnectionAction<int[]> action = new ConnectionAction<int[]>() {

@@ -14,5 +14,5 @@ public interface DalCommand {
 	 * @return true if going to next command, false if stop and commit
 	 * @throws SQLException for roll back
 	 */
-	boolean execute(DalClient client) throws SQLException;
+	boolean execute(DasDirectClient client) throws SQLException;
 }

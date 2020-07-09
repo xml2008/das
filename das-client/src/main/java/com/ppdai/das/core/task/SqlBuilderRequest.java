@@ -21,7 +21,7 @@ import com.ppdai.das.core.DasException;
 import com.ppdai.das.core.DasLogger;
 import com.ppdai.das.core.DasVersionInfo;
 import com.ppdai.das.core.ResultMerger;
-import com.ppdai.das.core.client.DalClient;
+import com.ppdai.das.core.client.DasDirectClient;
 import com.ppdai.das.strategy.ConditionList;
 
 public class SqlBuilderRequest<T> implements SqlRequest<T>{
@@ -121,7 +121,7 @@ public class SqlBuilderRequest<T> implements SqlRequest<T>{
     private static class SqlBuilderTaskCallable<T> implements Callable<T> {
         private String appId;
         private String logicDbName;
-        private DalClient client;
+        private DasDirectClient client;
         private StatementConditionProvider provider;
         private ConditionList conditions;
         private Hints hints;

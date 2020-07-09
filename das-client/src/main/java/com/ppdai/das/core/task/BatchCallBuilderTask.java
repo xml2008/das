@@ -10,7 +10,7 @@ import com.ppdai.das.client.Parameter;
 import com.ppdai.das.client.ParameterDefinition;
 import com.ppdai.das.client.delegate.local.DasBuilderContext;
 import com.ppdai.das.client.sqlbuilder.BuilderContext;
-import com.ppdai.das.core.client.DalClient;
+import com.ppdai.das.core.client.DasDirectClient;
 
 public class BatchCallBuilderTask implements SqlBuilderTask<int[]>{
     private String appId;
@@ -22,7 +22,7 @@ public class BatchCallBuilderTask implements SqlBuilderTask<int[]>{
     }
             
     @Override
-    public int[] execute(DalClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
+    public int[] execute(DasDirectClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
         BatchCallBuilder builder = provider.getRawRequest();
         BuilderContext context = new DasBuilderContext(appId, logicDbName, hints, new ArrayList<>());
         String callSql = builder.build(context);

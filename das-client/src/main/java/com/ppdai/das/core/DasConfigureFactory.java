@@ -8,8 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ppdai.das.client.DasClientVersion;
-import com.ppdai.das.core.client.DalClient;
-import com.ppdai.das.core.client.DalDirectClient;
+import com.ppdai.das.core.client.DasDirectClient;
 import com.ppdai.das.core.status.StatusManager;
 import com.ppdai.das.core.task.SqlRequestExecutor;
 import com.ppdai.das.core.task.TaskFactory;
@@ -109,7 +108,7 @@ public class DasConfigureFactory {
         getContext().getConfigure(appId).warmUpConnections();
     }
 
-    public static DalClient getClient(String appId, String logicDbName) {
+    public static DasDirectClient getClient(String appId, String logicDbName) {
         if (logicDbName == null) {
             throw new NullPointerException("Database Set name can not be null");
         }
@@ -119,7 +118,7 @@ public class DasConfigureFactory {
         // Verify if it is existed
         config.getDatabaseSet(logicDbName);
 
-        return new DalDirectClient(config, logicDbName);
+        return new DasDirectClient(config, logicDbName);
     }
     
     /**

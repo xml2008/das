@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.Parameter;
-import com.ppdai.das.core.client.DalClient;
+import com.ppdai.das.core.client.DasDirectClient;
 
 public interface SqlBuilderTask<T> {
-    T execute(DalClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException;
+    T execute(DasDirectClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException;
 }
