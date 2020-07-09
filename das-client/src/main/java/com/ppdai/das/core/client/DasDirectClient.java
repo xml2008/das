@@ -25,6 +25,7 @@ import com.ppdai.das.core.LogEntry;
 import com.ppdai.das.core.helper.DalColumnMapRowMapper;
 import com.ppdai.das.core.helper.DalRowMapperExtractor;
 import com.ppdai.das.core.helper.HintsAwareExtractor;
+import com.ppdai.das.core.task.TaskType;
 
 /**
  * The direct connection implementation for DalClient.
@@ -81,7 +82,7 @@ public class DasDirectClient {
                 return result;
             }
         };
-        action.populate(EventEnum.QUERY, sql, parameters);
+        action.populate(EventEnum.QUERY, sql, parameters, TaskType.QUERY);
 
         return doInConnection(action, hints);
     }
@@ -134,7 +135,7 @@ public class DasDirectClient {
                 return result;
             }
         };
-        action.populate(EventEnum.QUERY, sql, parameters);
+        action.populate(EventEnum.QUERY, sql, parameters, TaskType.QUERY);
 
         return doInConnection(action, hints);
     }
@@ -148,7 +149,7 @@ public class DasDirectClient {
      * @return how many rows been affected
      * @throws SQLException when things going wrong during the execution
      */
-    public int update(String sql, List<Parameter> parameters, final Hints hints) throws SQLException {
+    public int update(String sql, List<Parameter> parameters, final Hints hints, TaskType taskType) throws SQLException {
         final KeyHolder generatedKeyHolder = hints.getKeyHolder();
         ConnectionAction<Integer> action = new ConnectionAction<Integer>() {
             @Override
@@ -186,7 +187,7 @@ public class DasDirectClient {
             }
         };
         action.populate(generatedKeyHolder == null ? EventEnum.UPDATE_SIMPLE : EventEnum.UPDATE_KH, sql,
-                parameters);
+                parameters, taskType);
 
         return doInConnection(action, hints);
     }
@@ -220,7 +221,7 @@ public class DasDirectClient {
                 return ret;
             }
         };
-        action.populate(sqls);
+        action.populate(sqls, TaskType.UPDATE);
 
         return executeBatch(action, hints);
     }
@@ -251,7 +252,7 @@ public class DasDirectClient {
                 return ret;
             }
         };
-        action.populate(sql, parametersList);
+        action.populate(sql, parametersList, TaskType.UPDATE);
 
         return executeBatch(action, hints);
     }

@@ -34,7 +34,7 @@ public class SingleInsertTask<T> extends InsertTaskAdapter<T> implements SingleT
 		List<Parameter> parameters = new ArrayList<>();
 		addParameters(parameters, fields);
 		
-		return client.update(insertSql, parameters, hints);
+		return client.update(insertSql, parameters, hints, TaskType.INSERT);
 	}
 	
 	private String buildInsertSql(Hints hints, Map<String, ?> fields) throws SQLException {

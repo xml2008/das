@@ -20,10 +20,12 @@ import com.ppdai.das.core.EventEnum;
 import com.ppdai.das.core.HaContext;
 import com.ppdai.das.core.HintEnum;
 import com.ppdai.das.core.LogEntry;
+import com.ppdai.das.core.task.TaskType;
 
 public abstract class ConnectionAction<T> {
     public DasConfigure config;
 	public EventEnum operation;
+	public TaskType taskType;
 	public String sql;
 	public String callString;
 	public String[] sqls;
@@ -46,21 +48,24 @@ public abstract class ConnectionAction<T> {
 	public HaContext highAvalible;
     
 	private static final String SQLHIDDENString = "*";
-	void populate(EventEnum operation, String sql, List<Parameter> parameters) {
+	void populate(EventEnum operation, String sql, List<Parameter> parameters, TaskType taskType) {
 		this.operation = operation;
 		this.sql = sql;
 		this.parameters = parameters;
+		this.taskType = taskType;
 	}
 
-	void populate(String[] sqls) {
+	void populate(String[] sqls, TaskType taskType) {
 		this.operation = EventEnum.BATCH_UPDATE;
 		this.sqls = sqls;
+		this.taskType = taskType;
 	}
 
-	void populate(String sql, List<Parameter>[] parametersList) {
+	void populate(String sql, List<Parameter>[] parametersList, TaskType taskType) {
 		this.operation = EventEnum.BATCH_UPDATE_PARAM;
 		this.sql = sql;
 		this.parametersList = parametersList;
+		this.taskType = taskType;
 	}
 
 	void populate(DalCommand command) {

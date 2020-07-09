@@ -30,7 +30,7 @@ public class UpdateSqlBuilderTask implements SqlBuilderTask<Integer>{
             Parameter.compile(parameters);
         }
         
-        return client.update(sql, parameters, hints);
+        return client.update(sql, parameters, hints, TaskType.UPDATE);
     }
 
     public List<List<?>> getAllInParameters(List<Parameter> parameters) {
