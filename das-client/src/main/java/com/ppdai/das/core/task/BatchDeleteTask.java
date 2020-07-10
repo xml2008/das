@@ -26,7 +26,7 @@ public class BatchDeleteTask<T> extends AbstractIntArrayBulkTask<T> {
 		}
 		
 		String deleteSql = buildDeleteSql(getTableName(hints));
-		int[] result = client.batchUpdate(deleteSql, parametersList, hints);
+		int[] result = client.batchUpdate(deleteSql, parametersList, hints, TaskType.BATCH_DELETE);
 		return result;
 	}
 	

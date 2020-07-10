@@ -18,7 +18,7 @@ public class SingleDeleteTask<T> extends TaskAdapter<T> implements SingleTask<T>
 		addParameters(parameters, fields, parser.getPrimaryKeyNames());
 		String deleteSql = buildDeleteSql(getTableName(hints, fields));
 
-		return client.update(deleteSql, parameters, hints.setFields(fields));
+		return client.update(deleteSql, parameters, hints.setFields(fields), TaskType.DELETE);
 	}
 
 	private String buildDeleteSql(String tableName) {

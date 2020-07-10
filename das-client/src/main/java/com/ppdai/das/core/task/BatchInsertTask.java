@@ -43,7 +43,7 @@ public class BatchInsertTask<T> extends InsertTaskAdapter<T> implements BulkTask
 		}
 
 		String batchInsertSql = buildBatchInsertSql(hints, unqualifiedColumns);
-		int[] result = client.batchUpdate(batchInsertSql, parametersList, hints);
+		int[] result = client.batchUpdate(batchInsertSql, parametersList, hints, TaskType.BATCH_INSERT);
 		return result;
 	}
 	
