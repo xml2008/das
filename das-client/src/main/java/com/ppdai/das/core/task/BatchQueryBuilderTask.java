@@ -49,7 +49,7 @@ public class BatchQueryBuilderTask implements SqlBuilderTask<List<?>>{
             Parameter.compile(parameters);
         }
         
-        return client.query(sql, parameters, hints, extractors);
+        return client.query(sql, parameters, hints, extractors, TaskType.BATCH_QUERY);
     }
 
     public List<List<?>> getAllInParameters(List<Parameter> parameters) {

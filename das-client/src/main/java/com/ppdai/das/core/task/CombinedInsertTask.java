@@ -51,7 +51,7 @@ public class CombinedInsertTask<T> extends InsertTaskAdapter<T> implements BulkT
 				getTableName(hints), insertColumns,
 				values.substring(0, values.length() - 2) + ")");
 
-		return client.update(sql, parameters, hints, TaskType.INSERT);
+		return client.update(sql, parameters, hints, TaskType.COMBINED_INSERT);
 	}
 
 	@Override

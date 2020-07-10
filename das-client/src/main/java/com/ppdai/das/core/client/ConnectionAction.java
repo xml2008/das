@@ -82,12 +82,14 @@ public abstract class ConnectionAction<T> {
 		this.operation = EventEnum.CALL;
 		this.callString = callString;
 		this.parameters = parameters;
+		this.taskType = TaskType.CALL;
 	}
 
 	void populateSp(String callString, List<Parameter> []parametersList) {
 		this.operation = EventEnum.BATCH_CALL;
 		this.callString = callString;
 		this.parametersList = parametersList;
+		this.taskType = TaskType.BATCH_CALL;
 	}
 
 	public void populateDbMeta() {

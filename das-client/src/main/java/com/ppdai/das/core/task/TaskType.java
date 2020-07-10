@@ -2,7 +2,18 @@ package com.ppdai.das.core.task;
 
 public enum TaskType {
     QUERY,
+    BATCH_QUERY,
+
     INSERT,
+    BATCH_INSERT,
+    COMBINED_INSERT,
+
     UPDATE,
-    DELETE;
+    BATCH_UPDATE,
+
+    DELETE,
+    BATCH_DELETE,
+
+    CALL,
+    BATCH_CALL
 }

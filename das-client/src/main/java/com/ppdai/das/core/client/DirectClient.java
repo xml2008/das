@@ -53,11 +53,12 @@ public class DirectClient {
      * @param parameters A container that holds all the necessary parameters
      * @param hints Additional parameters that instruct how DAL Client perform database operation.
      * @param extractor helper used to convert result to desired type
+     * @param taskType indicate sql type
      * @return the extracted result from the result set
      * @throws SQLException when things going wrong during the execution
      */
     public <T> T query(String sql, List<Parameter> parameters, final Hints hints,
-            final DalResultSetExtractor<T> extractor) throws SQLException {
+            final DalResultSetExtractor<T> extractor, TaskType taskType) throws SQLException {
         ConnectionAction<T> action = new ConnectionAction<T>() {
             @Override
             public T execute() throws Exception {
@@ -82,7 +83,7 @@ public class DirectClient {
                 return result;
             }
         };
-        action.populate(EventEnum.QUERY, sql, parameters, TaskType.QUERY);
+        action.populate(EventEnum.QUERY, sql, parameters, taskType);
 
         return doInConnection(action, hints);
     }
@@ -95,11 +96,12 @@ public class DirectClient {
      * @param parameters A container that holds all the necessary parameters
      * @param hints Additional parameters that instruct how DAL Client perform database operation.
      * @param extractors helper used to convert result to desired type
+     * @param taskType indicate sql type
      * @return the extracted result from the result set
      * @throws SQLException when things going wrong during the execution
      */
     public List<?> query(String sql, List<Parameter> parameters, final Hints hints,
-            final List<DalResultSetExtractor<?>> extractors) throws SQLException {
+            final List<DalResultSetExtractor<?>> extractors, TaskType taskType) throws SQLException {
         ConnectionAction<List<?>> action = new ConnectionAction<List<?>>() {
             @Override
             public List<?> execute() throws Exception {
@@ -135,7 +137,7 @@ public class DirectClient {
                 return result;
             }
         };
-        action.populate(EventEnum.QUERY, sql, parameters, TaskType.QUERY);
+        action.populate(EventEnum.QUERY, sql, parameters, taskType);
 
         return doInConnection(action, hints);
     }
@@ -146,6 +148,7 @@ public class DirectClient {
      * @param sql The sql statement to be executed
      * @param parameters A container that holds all the necessary parameters
      * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @param taskType indicate sql type
      * @return how many rows been affected
      * @throws SQLException when things going wrong during the execution
      */
@@ -200,10 +203,11 @@ public class DirectClient {
      * @param hints
      * 			Additional parameters that instruct how DAL Client perform database operation.
      * 			when hints set forceAutoCommit the connection auto commit will be true.
+     * @param taskType indicate sql type
      * @return how many rows been affected for each of the sql
      * @throws SQLException when things going wrong during the execution
      */
-    public int[] batchUpdate(String[] sqls, final Hints hints) throws SQLException {
+    public int[] batchUpdate(String[] sqls, final Hints hints, TaskType taskType) throws SQLException {
         ConnectionAction<int[]> action = new ConnectionAction<int[]>() {
             @Override
             public int[] execute() throws Exception {
@@ -221,7 +225,7 @@ public class DirectClient {
                 return ret;
             }
         };
-        action.populate(sqls, TaskType.UPDATE);
+        action.populate(sqls, taskType);
 
         return executeBatch(action, hints);
     }
@@ -233,10 +237,11 @@ public class DirectClient {
      * @param sql The sql statement to be executed
      * @param parametersList Container that holds parameters
      * @param hints Additional parameters that instruct how DAL Client perform database operation.
+     * @param taskType indicate sql type
      * @return how many rows been affected for each of parameters
      * @throws SQLException when things going wrong during the execution
      */
-    public int[] batchUpdate(String sql, List<Parameter>[] parametersList, final Hints hints)
+    public int[] batchUpdate(String sql, List<Parameter>[] parametersList, final Hints hints, TaskType taskType)
             throws SQLException {
         ConnectionAction<int[]> action = new ConnectionAction<int[]>() {
             @Override
@@ -252,7 +257,7 @@ public class DirectClient {
                 return ret;
             }
         };
-        action.populate(sql, parametersList, TaskType.UPDATE);
+        action.populate(sql, parametersList, taskType);
 
         return executeBatch(action, hints);
     }

@@ -24,7 +24,7 @@ public class BatchUpdateBuilderTask implements SqlBuilderTask<int[]>{
     public int[] execute(DirectClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
         BatchUpdateBuilder builder = provider.getRawRequest();
         if(builder.isMultipleStatements()) {
-            return client.batchUpdate(builder.getStatements(), hints);
+            return client.batchUpdate(builder.getStatements(), hints, TaskType.BATCH_UPDATE);
         }
 
         List<ParameterDefinition> defList = builder.buildDefinitions();
@@ -43,6 +43,6 @@ public class BatchUpdateBuilderTask implements SqlBuilderTask<int[]>{
         
         DasBuilderContext ctx = new DasBuilderContext(appId, logicDbName, hints, new ArrayList());
         
-        return client.batchUpdate(builder.build(ctx), parametersList.toArray(new ArrayList[parametersList.size()]), hints);
+        return client.batchUpdate(builder.build(ctx), parametersList.toArray(new ArrayList[parametersList.size()]), hints, TaskType.BATCH_UPDATE);
     }
 }

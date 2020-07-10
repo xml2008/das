@@ -33,7 +33,7 @@ public class QuerySqlBuilderTask<T> implements SqlBuilderTask<T>{
             Parameter.compile(parameters);
         }
         
-        return client.query(sql, parameters, hints, extractor);
+        return client.query(sql, parameters, hints, extractor, TaskType.QUERY);
     }
 
     public List<List<?>> getAllInParameters(List<Parameter> parameters) {
