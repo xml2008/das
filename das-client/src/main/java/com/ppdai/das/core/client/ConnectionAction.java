@@ -122,6 +122,7 @@ public abstract class ConnectionAction<T> {
 		entry.setClientVersion(DasClientVersion.getVersion());
 		entry.setSensitive(hints.is(HintEnum.sensitive));
 		entry.setEvent(operation);
+		entry.setTaskType(taskType);
 
 		wrapSql();
 		entry.setCallString(callString);

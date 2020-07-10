@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.ppdai.das.core.enums.DatabaseCategory;
+import com.ppdai.das.core.task.TaskType;
 
 public class LogEntry {
     private static volatile ThreadLocal<StackTraceElement> currentCaller;
@@ -15,6 +16,7 @@ public class LogEntry {
 	private String[] pramemters;
 	private String callString;
 	private EventEnum event;
+	private TaskType taskType;
 	private String errorMsg;
 	private boolean success;
 	private boolean transactional;
@@ -297,6 +299,15 @@ public class LogEntry {
 
 	public String getClientVersion() {
 		return clientVersion;
+	}
+
+	public LogEntry setTaskType(TaskType taskType) {
+		this.taskType = taskType;
+		return this;
+	}
+
+	public TaskType getTaskType() {
+		return taskType;
 	}
 
 	public void setClientVersion(String clientVersion) {
