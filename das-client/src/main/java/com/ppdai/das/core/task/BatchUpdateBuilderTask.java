@@ -9,7 +9,7 @@ import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.Parameter;
 import com.ppdai.das.client.ParameterDefinition;
 import com.ppdai.das.client.delegate.local.DasBuilderContext;
-import com.ppdai.das.core.client.DasDirectClient;
+import com.ppdai.das.core.client.DirectClient;
 
 public class BatchUpdateBuilderTask implements SqlBuilderTask<int[]>{
     private String appId;
@@ -21,7 +21,7 @@ public class BatchUpdateBuilderTask implements SqlBuilderTask<int[]>{
     }
             
     @Override
-    public int[] execute(DasDirectClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
+    public int[] execute(DirectClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
         BatchUpdateBuilder builder = provider.getRawRequest();
         if(builder.isMultipleStatements()) {
             return client.batchUpdate(builder.getStatements(), hints);

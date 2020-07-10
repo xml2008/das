@@ -32,13 +32,13 @@ import com.ppdai.das.core.task.TaskType;
  * 
  * @author jhhe
  */
-public class DasDirectClient {
+public class DirectClient {
     private DalStatementCreator stmtCreator;
     private DalConnectionManager connManager;
     private DalTransactionManager transManager;
     private DasLogger logger;
 
-    public DasDirectClient(DasConfigure config, String logicDbName) {
+    public DirectClient(DasConfigure config, String logicDbName) {
         connManager = new DalConnectionManager(logicDbName, config);
         transManager = new DalTransactionManager(connManager);
         stmtCreator = new DalStatementCreator(config.getDatabaseSet(logicDbName).getDatabaseCategory());
@@ -265,7 +265,7 @@ public class DasDirectClient {
      * @throws SQLException when things going wrong during the execution
      */
     public void execute(DalCommand command, Hints hints) throws SQLException {
-        final DasDirectClient client = this;
+        final DirectClient client = this;
         ConnectionAction<?> action = new ConnectionAction<Object>() {
             @Override
             public Object execute() throws Exception {
@@ -287,7 +287,7 @@ public class DasDirectClient {
      * @throws SQLException when things going wrong during the execution
      */
     public void execute(final List<DalCommand> commands, final Hints hints) throws SQLException {
-        final DasDirectClient client = this;
+        final DirectClient client = this;
         ConnectionAction<?> action = new ConnectionAction<Object>() {
             @Override
             public Object execute() throws Exception {
