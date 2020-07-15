@@ -1,139 +1,115 @@
 package com.ppdai.das.client.transaction;
 
-
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Objects;
-
+import java.util.concurrent.atomic.AtomicReference;
+import com.google.common.base.Preconditions;
+import com.ppdai.das.client.DasClientFactory;
+import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.annotation.DasTransactional;
+import com.ppdai.das.client.annotation.DefaultShard;
+import com.ppdai.das.client.annotation.Shard;
+import com.ppdai.das.core.DasException;
 import com.ppdai.das.core.client.DalTransactionManager;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionValidationException;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.SmartClassLoader;
-import org.springframework.core.type.AnnotationMetadata;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
 
+@Component
+@Aspect
+public class DasTransactionalEnabler{
 
-public class DasTransactionalEnabler implements ImportBeanDefinitionRegistrar, BeanFactoryPostProcessor {
-    private static final String BEAN_VALIDATOR_NAME = DasAnnotationValidator.VALIDATOR_NAME;
-    private static final String BEAN_FACTORY_NAME = DalTransactionManager.class.getName();
-    private static final String FACTORY_METHOD_NAME = "create";
-
-    private BeanDefinitionRegistry registry;
-    private ConfigurableListableBeanFactory beanFactory;
-
-    @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        this.registry = registry;
-        register();
+    @Around(value="@annotation(DasTransactional)")
+    public Object around(ProceedingJoinPoint joinPoint, DasTransactional DasTransactional) throws Throwable {
+        Object[] args = joinPoint.getArgs();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Object result = (Object)intercept(method, args, joinPoint);
+        return result;
     }
 
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
-        register();
-    }
+    private Object intercept( final Method method, final Object[] args, ProceedingJoinPoint joinPoint  ) throws Throwable {
+        Hints hints = null;
 
-    private void register() {
-        replaceBeanDefinition();
-        registerValidator();
-    }
-
-    private String[] getBeanDefinitionNames() {
-        return registry == null ? beanFactory.getBeanDefinitionNames() : registry.getBeanDefinitionNames();
-    }
-
-    private BeanDefinition getBeanDefinition(String beanName) {
-        return registry == null ? beanFactory.getBeanDefinition(beanName) : registry.getBeanDefinition(beanName);
-    }
-
-    private void replaceBeanDefinition() {
-        for(String beanName: getBeanDefinitionNames()) {
-            BeanDefinition beanDef = getBeanDefinition(beanName);
-            String beanClassName = beanDef.getBeanClassName();
-
-            if(beanClassName == null || beanClassName.equals(BEAN_FACTORY_NAME) || isSpringSmartClassLoader(beanDef)) {
-                continue;
+        for(Object o: args) {
+            if(o instanceof Hints) {
+                hints = (Hints) o;
             }
+        }
 
-            Class beanClass;
+        Annotation[][] paraAnnArrays = method.getParameterAnnotations();
+        int shardParaIndex = -1;
+        int defaultShardParaIndex = -1;
+        int i = 0;
+        outter: for(Annotation[] paraAnnArray: paraAnnArrays) {
+            for(Annotation paraAnn: paraAnnArray) {
+                if(paraAnn instanceof DefaultShard) {
+                    defaultShardParaIndex = i;
+                    break outter;
+                }
+                if(paraAnn instanceof Shard) {
+                    shardParaIndex = i;
+                    break outter;
+                }
+            }
+            i++;
+        }
+
+        hints = hints == null ? new Hints():hints.clone();
+
+        if(shardParaIndex != -1) {
+            Object shard = args[shardParaIndex];
+            if(shard != null) {
+                hints.inShard(shard.toString());
+            }
+        }
+        if(defaultShardParaIndex != -1) {
+            Object shard = args[defaultShardParaIndex];
+            if(shard != null){
+                checkMultipleDefaultShard(shard.toString());
+                hints.inShard(shard.toString()).applyDefaultShard();
+            }
+        }
+
+        final AtomicReference<Object> result = new AtomicReference<>();
+        if(getRollback(method)) {
+            hints.rollbackOnly();
+        }
+        DasClientFactory.getClient(getLogicDbName(method)).execute(() -> {
             try {
-                beanClass = Class.forName(beanDef.getBeanClassName());
-            } catch (ClassNotFoundException e) {
-                throw new BeanDefinitionValidationException("Cannot validate bean: " + beanName, e);
+                result.set(joinPoint.proceed(args));
+            } catch (Throwable e) {
+                throw DasException.wrap(e);
             }
+        }, hints);
+        return result.get();
+    }
 
-            boolean annotated = false;
-            for (Method method : beanClass.getMethods()) {
-                if(isTransactionAnnotated(method)) {
-                    annotated = true;
-                    break;
-                }
-            }
-
-            if(!annotated) {
-                continue;
-            }
-
-            beanDef.setBeanClassName(BEAN_FACTORY_NAME);
-            beanDef.setFactoryMethodName(FACTORY_METHOD_NAME);
-
-            ConstructorArgumentValues cav = beanDef.getConstructorArgumentValues();
-
-            if(cav.getArgumentCount() != 0) {
-                throw new BeanDefinitionValidationException("The transactional bean can only be instantiated with default constructor.");
-            }
-
-            cav.addGenericArgumentValue(beanClass.getName());
+    private void checkMultipleDefaultShard(String shard) {
+        if(DalTransactionManager.isDefaultShardApplied() && DalTransactionManager.getCurrentShardId() != null) {
+            Preconditions.checkArgument(DalTransactionManager.getCurrentShardId().equals(shard),
+                    "@DefaultShard are not same: [" + DalTransactionManager.getCurrentShardId() + "], [" + shard + "]");
         }
     }
 
-    //Check Spring's CGLIB proxy beans
-    private boolean isSpringSmartClassLoader(BeanDefinition beanDef) {
-        return beanDef instanceof AbstractBeanDefinition
-                && ((AbstractBeanDefinition)beanDef).hasBeanClass()
-                && ((AbstractBeanDefinition)beanDef).getBeanClass().getClassLoader() instanceof SmartClassLoader;
-    }
-
-    private boolean isTransactionAnnotated(Method method) {
-        return method.isAnnotationPresent(DasTransactional.class);
-    }
-
-    private void registerValidator() {
-        if(registry != null) {
-            // Need to check here because bean name canbe low case
-            if(registry.containsBeanDefinition(BEAN_VALIDATOR_NAME)) {
-                return;
-            }
-
-            for(String beanName: registry.getBeanDefinitionNames()) {
-                BeanDefinition beanDef = registry.getBeanDefinition(beanName);
-                if(Objects.equals(beanDef.getBeanClassName(), BEAN_VALIDATOR_NAME)) {
-                    return;
-                }
-            }
-
-            registry.registerBeanDefinition(BEAN_VALIDATOR_NAME, BeanDefinitionBuilder.genericBeanDefinition(DasAnnotationValidator.class).getBeanDefinition());
-        } else {
-            // Need to check here because bean name canbe low case
-            if(beanFactory.containsBeanDefinition(BEAN_VALIDATOR_NAME)) {
-                return;
-            }
-
-            for(String beanName: beanFactory.getBeanDefinitionNames()) {
-                BeanDefinition beanDef = beanFactory.getBeanDefinition(beanName);
-                if(Objects.equals(beanDef.getBeanClassName(), BEAN_VALIDATOR_NAME)) {
-                    return;
-                }
-            }
-
-            beanFactory.addBeanPostProcessor(new DasAnnotationValidator());
+    private String getLogicDbName(Method method) {
+        DasTransactional tran = method.getAnnotation(DasTransactional.class);
+        if(tran != null) {
+            return tran.logicDbName();
         }
+
+        return method.getAnnotation(DasTransactional.class).logicDbName();
     }
+
+    private boolean getRollback(Method method) {
+        DasTransactional tran = method.getAnnotation(DasTransactional.class);
+        if(tran != null) {
+            return tran.rollback();
+        }
+
+        return method.getAnnotation(DasTransactional.class).rollback();
+    }
+
 }

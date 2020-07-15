@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.ppdai.das.client.Hints;
-import com.ppdai.das.client.transaction.DasTransactionInterceptor;
-import com.ppdai.das.client.transaction.TransactionalIntercepted;
 import com.ppdai.das.client.annotation.DasTransactional;
 import com.ppdai.das.core.DasException;
 import com.ppdai.das.core.ErrorCode;
@@ -15,10 +13,7 @@ import com.ppdai.das.core.EventEnum;
 import com.ppdai.das.core.HaContext;
 import com.ppdai.das.core.HintEnum;
 import com.ppdai.das.core.markdown.MarkdownManager;
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.CallbackFilter;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.NoOp;
+
 
 public class DalTransactionManager {
 	private DalConnectionManager connManager;
@@ -135,25 +130,6 @@ public class DalTransactionManager {
 	public static void clearCurrentTransaction() {
 		transactionHolder.set(null);
 	}
-
-    @SuppressWarnings("unchecked")
-    public static <T> T create(Class<T> targetClass) throws InstantiationException, IllegalAccessException {
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(targetClass);
-        enhancer.setClassLoader(targetClass.getClassLoader());
-        enhancer.setCallbackFilter(new TransactionalCallbackFilter());
-        Callback[] callbacks = new Callback[] {new DasTransactionInterceptor(), NoOp.INSTANCE};
-        enhancer.setCallbacks(callbacks);
-        enhancer.setInterfaces(new Class[] {TransactionalIntercepted.class});
-        return (T) enhancer.create();
-    }
-
-    private static class TransactionalCallbackFilter implements CallbackFilter {
-        @Override
-        public int accept(Method method) {
-            return method.isAnnotationPresent(DasTransactional.class) ? 0 : 1;
-        }
-    }
     
 	public <T> T doInTransaction(ConnectionAction<T> action, Hints hints)throws SQLException{
 	    action.config = connManager.getConfig();
