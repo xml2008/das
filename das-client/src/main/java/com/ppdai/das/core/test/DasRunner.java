@@ -17,16 +17,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  * @see {@link com.ppdai.das.client.annotation.DasTransactional}.
  */
+@Deprecated
 public class DasRunner extends SpringJUnit4ClassRunner {
     public DasRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
     }
 
-    @Override
+   /* @Override
     protected Object createTest() throws Exception {
         Class clz = this.getTestClass().getJavaClass();
         Object testInstance = DalTransactionManager.create(clz);
         this.getTestContextManager().prepareTestInstance(testInstance);
         return testInstance;
-    }
+    }*/
 }
