@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DasTransactionalEnabler.class, AnnotationAwareAspectJAutoProxyCreator.class,
-        DasRunnerTest.class, DaoBean.class})
+        DasRunnerTest.class, DaoBean.class, DaoBean2.class})
 @SpringBootTest
 public class DasRunnerTest  {
 
@@ -50,7 +50,7 @@ public class DasRunnerTest  {
         isRollback = true;
         Person p = new Person();
         p.setName("name");
-        daoBean.testRollback(p);
+        daoBean.rollback(p);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class DasRunnerTest  {
         isRollback = false;
         Person p = new Person();
         p.setName("name");
-        daoBean.testCommit(p);
+        daoBean.commit(p);
     }
 
     @Test

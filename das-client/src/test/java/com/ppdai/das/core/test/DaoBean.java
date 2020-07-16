@@ -4,6 +4,7 @@ import com.ppdai.das.client.DasClient;
 import com.ppdai.das.client.DasClientFactory;
 import com.ppdai.das.client.Person;
 import com.ppdai.das.client.annotation.DasTransactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
@@ -13,42 +14,29 @@ import static com.ppdai.das.core.test.DasRunnerTest.DB_NAME;
 @Component
 public class DaoBean {
 
+    @Autowired
+    DaoBean2 daoBean2;
+
     @DasTransactional(logicDbName = DB_NAME, rollback = true)
     public void rollbackAndCommit() throws SQLException {
-        commit();
-    }
-
-    @DasTransactional(logicDbName = DB_NAME, rollback = false)
-    public void commit() throws SQLException {
-        insert();
+        daoBean2.commit();
     }
 
     @DasTransactional(logicDbName = DB_NAME, rollback = true)
-    public void rollback() throws SQLException {
-        insert();
-    }
-
-    @DasTransactional(logicDbName = DB_NAME, rollback = true)
-    public void testRollback(Person p) throws SQLException {
+    public void rollback(Person p) throws SQLException {
         DasClient dasClient = DasClientFactory.getClient(DB_NAME);
         dasClient.insert(p);
     }
 
     @DasTransactional(logicDbName = DB_NAME)
-    public void testCommit(Person p) throws SQLException {
+    public void commit(Person p) throws SQLException {
         DasClient dasClient = DasClientFactory.getClient(DB_NAME);
         dasClient.insert(p);
     }
 
     @DasTransactional(logicDbName = DB_NAME, rollback = false)
     public void commitAndRollback() throws SQLException {
-        rollback();
+        daoBean2.rollback();
     }
 
-    private void insert() throws SQLException {
-        DasClient dasClient = DasClientFactory.getClient(DB_NAME);
-        Person p = new Person();
-        p.setName("name");
-        dasClient.insert(p);
-    }
 }
