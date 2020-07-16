@@ -8,18 +8,41 @@ import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
+import static com.ppdai.das.core.test.DasRunnerTest.DB_NAME;
+
 @Component
 public class DaoBean {
-    private static final String DB_NAME = "MySqlSimple";
 
-    @DasTransactional(logicDbName = DB_NAME)
-    public void commitMethod() throws SQLException {
+    @DasTransactional(logicDbName = DB_NAME, rollback = true)
+    public void rollbackAndCommit() throws SQLException {
+        commit();
+    }
+
+    @DasTransactional(logicDbName = DB_NAME, rollback = false)
+    public void commit() throws SQLException {
         insert();
     }
 
     @DasTransactional(logicDbName = DB_NAME, rollback = true)
-    public void rollbackMethod() throws SQLException {
+    public void rollback() throws SQLException {
         insert();
+    }
+
+    @DasTransactional(logicDbName = DB_NAME, rollback = true)
+    public void testRollback(Person p) throws SQLException {
+        DasClient dasClient = DasClientFactory.getClient(DB_NAME);
+        dasClient.insert(p);
+    }
+
+    @DasTransactional(logicDbName = DB_NAME)
+    public void testCommit(Person p) throws SQLException {
+        DasClient dasClient = DasClientFactory.getClient(DB_NAME);
+        dasClient.insert(p);
+    }
+
+    @DasTransactional(logicDbName = DB_NAME, rollback = false)
+    public void commitAndRollback() throws SQLException {
+        rollback();
     }
 
     private void insert() throws SQLException {
