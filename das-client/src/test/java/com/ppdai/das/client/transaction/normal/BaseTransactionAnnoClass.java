@@ -74,8 +74,6 @@ public class BaseTransactionAnnoClass {
 
    public String performNest3() throws InstantiationException, IllegalAccessException {
         assertTrue(!DalTransactionManager.isInTransaction());
-        TransactionAnnoClassSqlServer target = DalTransactionManager.create(TransactionAnnoClassSqlServer.class);
-        target.perform();
         return DONE;
     }
 

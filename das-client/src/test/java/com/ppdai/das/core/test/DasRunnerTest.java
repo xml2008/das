@@ -4,25 +4,27 @@ import com.ppdai.das.client.DasClient;
 import com.ppdai.das.client.DasClientFactory;
 import com.ppdai.das.client.Person;
 import com.ppdai.das.client.SqlBuilder;
-import com.ppdai.das.client.annotation.DasTransactional;
 import com.ppdai.das.client.transaction.DasTransactionalEnabler;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.SQLException;
 
-@RunWith(DasRunner.class)
-@ContextConfiguration(classes = {DasTransactionalEnabler.class, DasRunnerTest.class, DaoBean.class})
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {DasTransactionalEnabler.class, AnnotationAwareAspectJAutoProxyCreator.class,
+        DasRunnerTest.class, DaoBean.class, DaoBean2.class})
 @SpringBootTest
-public class DasRunnerTest {
+public class DasRunnerTest  {
 
-    private static final String DB_NAME = "MySqlSimple";
+    static final String DB_NAME = "MySqlSimple";
     private DasClient dasClient;
     private boolean isRollback = false;
     private long count = 0;
@@ -42,35 +44,32 @@ public class DasRunnerTest {
         Assert.assertEquals(now, isRollback ? count : count + 1);
     }
 
+
     @Test
-    @DasTransactional(logicDbName = DB_NAME, rollback = true)
     public void testRollback() throws SQLException {
         isRollback = true;
         Person p = new Person();
         p.setName("name");
-        dasClient.insert(p);
+        daoBean.rollback(p);
     }
 
     @Test
-    @DasTransactional(logicDbName = DB_NAME)
     public void testCommit() throws SQLException {
         isRollback = false;
         Person p = new Person();
         p.setName("name");
-        dasClient.insert(p);
+        daoBean.commit(p);
     }
 
     @Test
-    @DasTransactional(logicDbName = DB_NAME, rollback = true)
     public void testNestedTransaction() throws SQLException {
         isRollback = true;
-        daoBean.commitMethod();
+        daoBean.rollbackAndCommit();
     }
 
     @Test(expected = SQLException.class)
-    @DasTransactional(logicDbName = DB_NAME, rollback = false)
     public void testNestedTransactionException() throws SQLException {
         isRollback = true;
-        daoBean.rollbackMethod();
+        daoBean.commitAndRollback();
     }
 }
