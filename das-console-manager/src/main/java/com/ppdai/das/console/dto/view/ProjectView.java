@@ -1,7 +1,10 @@
 package com.ppdai.das.console.dto.view;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ppdai.das.console.common.utils.StringUtil;
+import com.ppdai.das.console.dto.model.AttributesModel;
+import com.ppdai.das.console.enums.AttributesEnum;
 import lombok.*;
 import org.apache.commons.lang.StringUtils;
 
@@ -86,6 +89,9 @@ public class ProjectView {
     @Column(name = "token")
     private String token;
 
+    @Column(name = "attributes")
+    private String attributes;
+
     private List<String> pre_release_times;
 
     private List<String> first_release_times;
@@ -109,5 +115,12 @@ public class ProjectView {
 
     public List<String> getUserNoes() {
         return StringUtil.toList(userNoes);
+    }
+
+    public AttributesModel getAttributes() {
+        if (StringUtils.isNotBlank(attributes) && !StringUtils.isNumeric(attributes)) {
+            return JSON.parseObject(attributes, AttributesModel.class);
+        }
+        return AttributesModel.builder().autoReloadEnabled(AttributesEnum.AUTO_RELOAD_DISENABLED.getType()).build();
     }
 }

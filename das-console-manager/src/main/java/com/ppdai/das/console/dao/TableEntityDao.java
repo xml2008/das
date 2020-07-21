@@ -95,7 +95,7 @@ public class TableEntityDao extends BaseDao {
     public Long getTableEntityTotalCount(Paging<TaskTable> paging) throws SQLException {
         String sql = " select count(1) from task_table t1 " +
                 " left join databaseset t2 on t1.dbset_id = t2.id " +
-                " left join login_users t3 on t1.update_user_no = t3.user_no " + appenCondition(paging);
+                " left join login_users t3 on t1.update_user_no = t3.user_no " + appenWhere(paging);
         return this.getCount(sql);
     }
 

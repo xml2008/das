@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class UserLoginInterceptor implements HandlerInterceptor {
 
+    private String superToken = "87679214010892";
+
     @Autowired
     private UserConfiguration userConfiguration;
 
@@ -33,7 +35,16 @@ public class UserLoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(PermissionService.getSUPERID().equals(UserContext.getUser(request).getId())){
+        if (PermissionService.getSUPERID().equals(UserContext.getUser(request).getId())) {
+            return true;
+        }
+        //跨环境同步数据
+        if (superToken.equals(request.getParameter("token"))) {
+            LoginUser loginUser = (LoginUser) request.getSession().getAttribute(UserContext.CURRENTUSER);
+            if (null == loginUser) {
+                loginUser = loginUserDao.getUserById(PermissionService.getSUPERID());
+                request.getSession().setAttribute(UserContext.CURRENTUSER, loginUser);
+            }
             return true;
         }
         // 统一登录
@@ -41,14 +52,16 @@ public class UserLoginInterceptor implements HandlerInterceptor {
             String userName = userConfiguration.getUserIdentity(request, response).getUserName();
             if (StringUtils.isNotBlank(userName)) {
                 LoginUser loginUser = loginUserDao.getUserByUserName(userName);
-                if (null != loginUser) {
+                if (request.getSession().getAttribute(UserContext.CURRENTUSER) == null && null != loginUser) {
+                    request.getSession().setAttribute(UserContext.CURRENTUSER, loginUser);
+                } else if (null != loginUser) {
                     return true;
                 }
             }
             HttpServletUtil.returnErrorResponse(response, ServiceResult.fail("请先登录! " + userConfiguration.fetchLoginUrl(request, response)));
             return false;
         } else {
-            LoginUser user = (LoginUser) request.getSession().getAttribute("currentUser");
+            LoginUser user = (LoginUser) request.getSession().getAttribute(UserContext.CURRENTUSER);
             if (null == user || UserContext.UNKNOWN.equals(user.getUserNo())) {
                 HttpServletUtil.returnErrorResponse(response, ServiceResult.fail("请先登录！"));
                 return false;

@@ -1558,6 +1558,9 @@ div.paleTable {
 .divTable.paleTable .divTableRow:nth-child(even) {
   background: #f5f5f5;
 }
+.divTable.paleTable .divTableRow:nth-child(even):hover {
+  background-color: #ecf6fd;
+}
 .paleTable .tableFootStyle {
   font-size: 14px;
 }
@@ -1567,6 +1570,9 @@ div.paleTable {
 }
 .divTableRow {
   display: table-row;
+}
+.divTableRow:hover {
+  background-color: #ecf6fd;
 }
 .divTableHeading {
   display: table-header-group;

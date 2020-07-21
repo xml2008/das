@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class DatabaseSetModel {
 
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -28,7 +28,7 @@ public class DatabaseSetModel {
 
     private String strategySource;
 
-    private Integer dynamicStrategyId;
+    private Long dynamicStrategyId;
 
     private String updateUserNo;
 
@@ -43,4 +43,6 @@ public class DatabaseSetModel {
     private CheckTypes strategyTypes;
 
     private Long app_id;
+
+    private PatternModel pattern;
 }

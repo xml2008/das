@@ -70,9 +70,6 @@ public class ProjectController {
     @Autowired
     private GroupDao groupDao;
 
-/*    @Autowired
-    private AppDataProject appDataProject;*/
-
     /**
      * 1、根据name模糊查询Project
      */

@@ -1,7 +1,7 @@
 package com.ppdai.das.console.common.utils;
 
-import com.ppdai.das.core.configure.DalConfigureFactory;
 import com.ppdai.das.console.dao.base.BaseDao;
+import com.ppdai.das.core.configure.DalConfigureFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -9,7 +9,9 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.XMLWriter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.system.ApplicationHome;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.URL;
@@ -17,6 +19,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Slf4j
+@Component
 public class ResourceUtil {
 
     public static final String SCRIPT_FILE = "script.sql";
@@ -32,7 +35,7 @@ public class ResourceUtil {
     public static final String DATASOURCE_DRIVER_CLASS = "driverClassName";
     public static final String DATASOURCE_MYSQL_DRIVER = "com.mysql.jdbc.Driver";
 
-    public static final String DATA_SET_BASE = "das_code_gen";
+    public static String DATA_SET_BASE = "das_console_data";
     public static final String DATA_SET_ROOT = "das";
     public static final String DATA_BASE = "dao";
     public static final String DAS_SET_APPID = "das_console";
@@ -48,6 +51,11 @@ public class ResourceUtil {
             }
         }
         return singleInstance;
+    }
+
+    @Value("${code.console.dataSetBase}")
+    public void setDataSetBase(String dataSetBase) {
+        ResourceUtil.DATA_SET_BASE = dataSetBase;
     }
 
     public String getClasspath() {
@@ -140,7 +148,7 @@ public class ResourceUtil {
                 .addAttribute("connectionString", DATA_BASE)
                 .addAttribute("databaseType", "Master")
                 .addAttribute("sharding", "1");
-        Element connectionLocator =  root.addElement("ConnectionLocator");
+        Element connectionLocator = root.addElement("ConnectionLocator");
         connectionLocator.addElement("locator").addText("com.ppdai.das.core.DefaultConnectionLocator");
         connectionLocator.addElement("settings").addElement("dataSourceConfigureProvider").addText("com.ppdai.das.console.config.init.ConsoleDataSourceConfigureProvider");
         try (FileWriter fileWriter = new FileWriter(getDasXmlPath())) {

@@ -79,7 +79,7 @@ public class DatabaseSetDao extends BaseDao {
     }
 
     public List<DatabaseSetView> getAllDatabaseSetByProjectId(Long projectId) throws SQLException {
-        String sql = "SELECT t1.id, t1.name, t1.db_type,t1.strategy_type, t1.strategy_source, t1.dynamic_strategy_id, t1.class_name, t1.group_id, t1.update_user_no, t1.update_time ,t3.group_name " +
+        String sql = "SELECT t1.id, t1.name, t1.db_type,t1.strategy_type, t1.strategy_source, t1.dynamic_strategy_id, t1.class_name, t1.group_id, t1.update_user_no, t1.update_time ,t3.group_name, t1.pattern " +
                 "FROM databaseset t1 " +
                 "inner join project_dbset_relation t2 on t2.dbset_id = t1.id " +
                 "inner join dal_group t3 on t1.group_id = t3.id " +
@@ -112,7 +112,7 @@ public class DatabaseSetDao extends BaseDao {
     }
 
     public List<DatabaseSetView> findDbSetPageList(Paging<DatabaseSet> paging) throws SQLException {
-        String sql = "SELECT t1.id, t1.name, t1.db_type, t1.dynamic_strategy_id, t1.strategy_source, t1.class_name, t1.group_id, t1.strategy_type, t1.update_user_no, t1.update_time,t2.user_real_name, t3.group_name FROM databaseset t1 " +
+        String sql = "SELECT t1.id, t1.name, t1.db_type, t1.dynamic_strategy_id, t1.strategy_source, t1.class_name, t1.group_id, t1.strategy_type, t1.update_user_no, t1.update_time,t2.user_real_name, t3.group_name, t1.pattern FROM databaseset t1 " +
                 " inner join login_users t2 on t1.update_user_no = t2.user_no " +
                 " inner join dal_group t3 on t1.group_id = t3.id  " + appenCondition(paging);
         log.info("findDbSetPageList----> " + sql);

@@ -87,6 +87,7 @@ CREATE TABLE `data_search_log` (
 CREATE TABLE `databaseset` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pattern` tinytext COLLATE utf8mb4_unicode_ci COMMENT '模式:0:普通，1：mgr',
   `db_type` tinyint(2) NOT NULL COMMENT '数据库类型：1、mysql 2、SqlServer',
   `strategy_type` tinyint(2) NOT NULL DEFAULT '1' COMMENT '类型：0.无策略 1、私有策略 2、公共策略',
   `class_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,

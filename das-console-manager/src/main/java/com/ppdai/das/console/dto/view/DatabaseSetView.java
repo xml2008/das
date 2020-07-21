@@ -1,8 +1,12 @@
 package com.ppdai.das.console.dto.view;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ppdai.das.console.common.configCenter.ConfigCenterCons;
+import com.ppdai.das.console.dto.model.PatternModel;
 import com.ppdai.das.console.enums.DataBaseEnum;
+import com.ppdai.das.console.enums.PatternDescriptionEnum;
+import com.ppdai.das.console.enums.PatternTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -62,6 +66,16 @@ public class DatabaseSetView {
     @Column(name = "group_name")
     private String groupName;
 
+    @Column(name = "pattern")
+    private String pattern;
+
+    public PatternModel getPattern() {
+        if (StringUtils.isNotBlank(pattern) && !StringUtils.isNumeric(pattern)) {
+            return JSON.parseObject(pattern, PatternModel.class);
+        }
+        return PatternModel.builder().type(PatternTypeEnum.NORMAL.getType()).description(PatternDescriptionEnum.NORMAL.getType()).build();
+    }
+
     List<DatabaseSetEntryView> databaseSetEntryList;
 
     public boolean hasShardingStrategy() throws SQLException {
@@ -78,5 +92,13 @@ public class DatabaseSetView {
 
     public String getShardingStrategy() throws SQLException {
         return ConfigCenterCons.getShardingStrategy(this);
+    }
+
+    public boolean getMgrEnabled() {
+        return PatternTypeEnum.MGR.getType().equals(this.getPattern().getType());
+    }
+
+    public boolean getMgrReadWriteSplittingEnabled() {
+        return PatternDescriptionEnum.MGRREADWRITESPLITTING.getType().equals(this.getPattern().getDescription());
     }
 }

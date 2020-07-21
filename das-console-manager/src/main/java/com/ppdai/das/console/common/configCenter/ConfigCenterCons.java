@@ -16,6 +16,8 @@ public class ConfigCenterCons {
     public static final String DBSET_DATABASESETS = "databaseSets";
     public static final String DBSET_PROVIDER = "provider";
     public static final String DBSET_SHARDINGSTRATEGY = "shardingStrategy";
+    public static final String DBSET_MGRENABLED = "mgrEnabled";
+    public static final String DBSET_MGRREADWRITESPLITTINGENABLED = "mgrReadWriteSplittingEnabled";
 
     public static final String ENTRY_ENTRIES = "entries";
     public static final String ENTRY_TYPE = "type";
@@ -25,6 +27,8 @@ public class ConfigCenterCons {
     public final static String SYMBOL_SEPARATOR = "=";
     public final static String SYMBOL_SEMICOLON = ";";
     public static final String SEPARATOR = ",";
+
+    public static final String AUTO_RELOAD_ENABLED = "autoReloadEnabled";
 
     public static String getDasTeamNameSpaceByDalGroup(DasGroup dasGroup) {
         return getDasTeamNameSpaceByDalGroup(dasGroup.getGroup_name());

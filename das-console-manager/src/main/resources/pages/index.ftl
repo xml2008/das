@@ -7,7 +7,7 @@
 </head>
 
 <header>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.2.1/jquery.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin="anonymous"></script>
     <style type="text/css">
@@ -37,7 +37,7 @@
 <#else>
     <link rel="stylesheet" type="text/css" href="../pages/dist/index.css"/>
     <script src="../pages/dist/common.js"></script>
-    <script src="../pages/dist/index.js?t=20191209"></script>
+    <script src="../pages/dist/index.js?t=20200615"></script>
 </#if>
 </body>
 </html>
