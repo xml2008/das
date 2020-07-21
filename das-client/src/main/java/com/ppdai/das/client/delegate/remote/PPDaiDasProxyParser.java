@@ -189,6 +189,7 @@ public class PPDaiDasProxyParser implements DalParser<Entity> {
                     String type = columnMeta.getType();
                     Object value = null;
                     switch (type) {
+                        case "TINYINT":
                         case "INTEGER":
                             value = f.get().getValue().getAsInt();
                             break;
@@ -196,6 +197,7 @@ public class PPDaiDasProxyParser implements DalParser<Entity> {
                             value = f.get().getValue().getAsLong();
                             break;
                         case "VARCHAR":
+                        case "LONGVARCHAR":
                             value = f.get().getValue().getAsString();
                             break;
                         case "TIMESTAMP":

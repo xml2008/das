@@ -52,7 +52,12 @@ public class ConvertUtils {
 
         Map<String, Object> entity = new HashMap<>();
         Map<String, String> map = HashBiMap.create(meta.getFieldMap()).inverse();
-        tree.forEach(e-> entity.put(map.get(e.getKey()), e.getValue()));
+        tree.forEach(e-> {
+            String k = map.get(e.getKey());
+            if(k != null) {
+                entity.put(k, e.getValue());
+            }
+        });
         return new Entity().setValue(new Gson().toJson(entity)).setEntityMeta(meta);
     }
 
