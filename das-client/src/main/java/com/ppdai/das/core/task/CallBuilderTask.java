@@ -7,7 +7,7 @@ import com.ppdai.das.client.CallBuilder;
 import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.Parameter;
 import com.ppdai.das.client.delegate.local.DasBuilderContext;
-import com.ppdai.das.core.client.DalClient;
+import com.ppdai.das.core.client.DirectClient;
 import com.ppdai.das.core.enums.ParameterDirection;
 
 
@@ -21,7 +21,7 @@ public class CallBuilderTask implements SqlBuilderTask<Object>{
     }
             
     @Override
-    public Object execute(DalClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
+    public Object execute(DirectClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
         CallBuilder builder = provider.getRawRequest();
         parameters = builder.buildParameters();
         String callSql = builder.build(new DasBuilderContext(appId, logicDbName, hints, parameters));

@@ -24,7 +24,7 @@ import com.ppdai.das.client.Parameter;
 import com.ppdai.das.core.HintEnum;
 import com.ppdai.das.core.DasConfigureFactory;
 import com.ppdai.das.core.UpdatableEntity;
-import com.ppdai.das.core.client.DalClient;
+import com.ppdai.das.core.client.DirectClient;
 import com.ppdai.das.core.client.DalParser;
 import com.ppdai.das.core.enums.DatabaseCategory;
 
@@ -42,7 +42,7 @@ public class TaskAdapter<T> implements DaoTask<T> {
 
 	public static String findtmp = "SELECT * FROM %s WHERE %s";
 	
-	protected DalClient client;
+	protected DirectClient client;
 	protected DalParser<T> parser;
 
 	protected String appId;

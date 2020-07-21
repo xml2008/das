@@ -12,4 +12,10 @@ public @interface DasTransactional {
      * @return logic database name defined in dal.config/xml
      */
     String logicDbName();
+
+    /**
+     *
+     * @return rollback transaction or not, default false
+     */
+    boolean rollback() default false;
 }

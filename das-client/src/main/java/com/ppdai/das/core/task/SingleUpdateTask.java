@@ -41,7 +41,7 @@ public class SingleUpdateTask<T> extends TaskAdapter<T> implements SingleTask<T>
 		addParameters(parameters, pks);
 		addVersion(parameters, version);
 		
-		return client.update(updateSql, parameters, hints.setFields(fields));
+		return client.update(updateSql, parameters, hints.setFields(fields), TaskType.UPDATE);
 	}
 
 	private Object getVersion(Map<String, ?> fields) throws DasException {

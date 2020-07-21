@@ -8,7 +8,7 @@ import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.Parameter;
 import com.ppdai.das.client.SqlBuilder;
 import com.ppdai.das.client.delegate.local.DasBuilderContext;
-import com.ppdai.das.core.client.DalClient;
+import com.ppdai.das.core.client.DirectClient;
 
 public class UpdateSqlBuilderTask implements SqlBuilderTask<Integer>{
     private String appId;
@@ -20,7 +20,7 @@ public class UpdateSqlBuilderTask implements SqlBuilderTask<Integer>{
     }
 
     @Override
-    public Integer execute(DalClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
+    public Integer execute(DirectClient client, StatementConditionProvider provider, List<Parameter> parameters, Hints hints) throws SQLException {
         SqlBuilder builder = provider.getRawRequest();
         String sql = builder.build(new DasBuilderContext(appId, logicDbName, hints, parameters));
         
@@ -30,7 +30,7 @@ public class UpdateSqlBuilderTask implements SqlBuilderTask<Integer>{
             Parameter.compile(parameters);
         }
         
-        return client.update(sql, parameters, hints);
+        return client.update(sql, parameters, hints, TaskType.UPDATE);
     }
 
     public List<List<?>> getAllInParameters(List<Parameter> parameters) {

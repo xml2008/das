@@ -58,7 +58,7 @@ public class DasClientDBTest extends DataPreparer {
         super(dbCategory);
         this.provider = provider;
     }
-    
+
     public static DasClientDBTest of(DatabaseCategory dbCategory) throws SQLException {
         return new DasClientDBTest(dbCategory, new DefaultProvider());
     }
@@ -67,7 +67,7 @@ public class DasClientDBTest extends DataPreparer {
     public String getDbName(DatabaseCategory dbCategory) {
         return dbCategory.equals(MySql) ? DATABASE_LOGIC_NAME_MYSQL : DATABASE_LOGIC_NAME_SQLSVR;
     }
-    
+
     public static interface ShardInfoProvider {
         void process(Person p, Hints hints, int dbShard);
         void where(SqlBuilder sb, int dbShard);
@@ -75,7 +75,7 @@ public class DasClientDBTest extends DataPreparer {
         SqlBuilder update(int dbShard);
         void inShard(Hints hints, int dbShard);
     }
-    
+
     private static class DefaultProvider implements ShardInfoProvider {
         public void process(Person p, Hints hints, int dbShard) {
             p.setCountryID(dbShard);
@@ -84,20 +84,20 @@ public class DasClientDBTest extends DataPreparer {
         public void where(SqlBuilder sb, int dbShard) {
             sb.and(p.CountryID.eq(dbShard));
         }
-        
+
         public SqlBuilder insert(int dbShard) {
             SqlBuilder builder = insertInto(p, p.Name, p.CountryID).values(p.Name.of("Jerry"), p.CountryID.of(dbShard));
             return builder;
         }
-        
+
         public SqlBuilder update(int dbShard) {
             SqlBuilder builder = SqlBuilder.update(Person.PERSON).set(p.Name.eq("Tom"), p.CountryID.eq(dbShard));
             return builder;
         }
-        
+
         public void inShard(Hints hints, int dbShard) {}
     }
-    
+
     private static class ShardIdProvider implements ShardInfoProvider {
         public void process(Person p, Hints hints, int dbShard) {
             hints.inShard(dbShard);
@@ -106,24 +106,24 @@ public class DasClientDBTest extends DataPreparer {
         public void where(SqlBuilder sb, int dbShard) {
             sb.hints().inShard(dbShard);
         }
-        
+
         public SqlBuilder insert(int dbShard) {
             SqlBuilder builder = insertInto(p, p.Name).values(p.Name.of("Jerry"));
             builder.hints().inShard(dbShard);
             return builder;
         }
-        
+
         public SqlBuilder update(int dbShard) {
             SqlBuilder builder = SqlBuilder.update(Person.PERSON).set(p.Name.eq("Tom"));
             builder.hints().inShard(dbShard);
             return builder;
         }
-        
+
         public void inShard(Hints hints, int dbShard) {
             hints.inShard(dbShard);
         }
     }
-    
+
     private static class ShardValueProvider implements ShardInfoProvider {
         public void process(Person p, Hints hints, int dbShard) {
             hints.shardValue(dbShard);
@@ -132,13 +132,13 @@ public class DasClientDBTest extends DataPreparer {
         public void where(SqlBuilder sb, int dbShard) {
             sb.hints().shardValue(dbShard);
         }
-        
+
         public SqlBuilder insert(int dbShard) {
             SqlBuilder builder = insertInto(p, p.Name).values(p.Name.of("Jerry"));
             builder.hints().shardValue(dbShard);
             return builder;
         }
-        
+
         public SqlBuilder update(int dbShard) {
             SqlBuilder builder = SqlBuilder.update(Person.PERSON).set(p.Name.eq("Tom"));
             builder.hints().shardValue(dbShard);
@@ -149,36 +149,36 @@ public class DasClientDBTest extends DataPreparer {
             hints.shardValue(dbShard);
         }
     }
-    
+
     public void process(Person p, Hints hints, int i) {
         provider.process(p, hints, i);
     }
-    
+
     public void process(Person p, Hints hints, int i, int j) {
         process(p, hints, i);
         p.setCityID(j);
     }
-    
+
     public SqlBuilder where(SqlBuilder sb, int i) {
         provider.where(sb, i);
         return sb;
     }
-    
+
     public Hints hints(int i) {
         return new Hints().inShard(i);
     }
-    
+
     public Hints hints() {
         return new Hints();
     }
-    
+
     private long count(int i) throws SQLException {
         PersonDefinition p = Person.PERSON;
         SqlBuilder sb = new SqlBuilder().select("count(1)").from(p).intoObject();
         sb.hints().inShard(i);
         return ((Number)dao.queryObject(sb)).longValue();
     }
-    
+
     @Before
     public void setup() throws Exception {
         for (int i = 0; i < DB_MODE; i++) {
@@ -195,7 +195,7 @@ public class DasClientDBTest extends DataPreparer {
             dao.batchUpdate(builder);
         }
     }
-    
+
     private boolean allowInsertWithId() {
         return setuper.turnOnIdentityInsert("person") == null;
     }
@@ -295,7 +295,7 @@ public class DasClientDBTest extends DataPreparer {
             assertEquals("test", pk.getName());
         }
     }
-    
+
     @Test
     public void testQueryBySamplePage() throws Exception {
         for(int i = 0; i < DB_MODE;i++) {
@@ -304,43 +304,43 @@ public class DasClientDBTest extends DataPreparer {
             Person pk = new Person();
             pk.setName("test");
 
-            
+
             process(pk, hints, i);
             plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID), hints);
             assertList(4, plist);
-            
+
             plist = dao.queryBySample(pk, PageRange.atPage(2, 2, p.CityID, p.CountryID), hints);
             assertList(2, plist);
-            
+
             if(dbCategory == DatabaseCategory.MySql) {
                 plist = dao.queryBySample(pk, PageRange.atPage(3, 2), hints);
                 assertList(0, plist);
             }
-        
+
             plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID.asc()), hints);
             assertList(4, plist);
             assertOrder(plist, true);
-            
+
             plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID.desc()), hints);
             assertList(4, plist);
             assertOrder(plist, false);
-            
+
             plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID.asc(), p.CityID.desc()), hints);
             assertList(4, plist);
             assertOrder(plist, true);
         }
     }
-    
+
     private void assertList(int size, List<Person> plist) {
         assertNotNull(plist);
         assertEquals(size, plist.size());
-        
+
         int id = -1;
         for(Person p: plist) {
             assertEquals("test", p.getName());
         }
     }
-    
+
     private void assertOrder(List<Person> plist, boolean asc) {
         int id = asc ? -1 : 10000;
         for(Person p: plist) {
@@ -419,7 +419,7 @@ public class DasClientDBTest extends DataPreparer {
             Hints hints = new Hints();
             process(p, hints, i);
             assertEquals(TABLE_MODE, dao.insert(pl, hints));
-                
+
             assertEquals(TABLE_MODE * 2, count(i));
         }
     }
@@ -435,7 +435,7 @@ public class DasClientDBTest extends DataPreparer {
     public void testInsertListWithId() throws Exception {
         if(!allowInsertWithId())
             return;
-        
+
         for(int i = 0; i < DB_MODE;i++) {
             List<Person> pl = new ArrayList<>();
             for(int j = 0; j < TABLE_MODE;j++) {
@@ -448,7 +448,7 @@ public class DasClientDBTest extends DataPreparer {
             }
             Hints hints = new Hints();
             process(new Person(), hints, i);
-            
+
             assertEquals(TABLE_MODE, dao.insert(pl, hints.insertWithId()));
 
             for(int k = 0; k < TABLE_MODE;k++) {
@@ -521,9 +521,9 @@ public class DasClientDBTest extends DataPreparer {
             int[] ret = dao.batchInsert(pl, hints);
             for(int x: ret)
                 assertEquals(batchRet, x);
-            
+
             assertEquals(TABLE_MODE, ret.length);
-            
+
             Person p = new Person();
             p.setCountryID(i);
 
@@ -531,7 +531,7 @@ public class DasClientDBTest extends DataPreparer {
             assertNotNull(plist);
             assertEquals(TABLE_MODE * 2, plist.size());
             for(Person p1: plist)
-                assertNotNull(p1.getPeopleID());    
+                assertNotNull(p1.getPeopleID());
         }
     }
 
@@ -547,11 +547,11 @@ public class DasClientDBTest extends DataPreparer {
                 pl.add(p);
             }
         }
-        
+
         int[] ret = dao.batchInsert(pl);
         for(int x: ret)
             assertEquals(batchRet, x);
-        
+
         assertEquals(TABLE_MODE * 2, ret.length);
 
         for(int i = 0; i < DB_MODE;i++) {
@@ -565,7 +565,7 @@ public class DasClientDBTest extends DataPreparer {
                 assertNotNull(plist);
                 assertEquals(2, plist.size());
                 for(Person p1: plist)
-                    assertNotNull(p1.getPeopleID());   
+                    assertNotNull(p1.getPeopleID());
             }
         }
     }
@@ -611,9 +611,9 @@ public class DasClientDBTest extends DataPreparer {
         int[] ret = dao.batchDelete(pl);
         for(int i: ret)
             assertEquals(1, i);
-        
+
         assertEquals(TABLE_MODE * DB_MODE, ret.length);
-        
+
         for(Person pk: pl)
             assertNull(dao.queryByPk(pk));
     }
@@ -629,13 +629,13 @@ public class DasClientDBTest extends DataPreparer {
                 process(pk, hints, i, j);
                 pl.add(pk);
             }
-            
+
             Hints hints = new Hints();
             process(new Person(), hints, i);
             int[] ret = dao.batchDelete(pl, hints);
             for(int k: ret)
                 assertEquals(1, k);
-            
+
             assertEquals(TABLE_MODE, ret.length);
             for(Person pk: pl)
                 assertNull(dao.queryByPk(pk, hints(i)));
@@ -688,9 +688,9 @@ public class DasClientDBTest extends DataPreparer {
         int[] ret = dao.batchUpdate(pl);
         for(int i: ret)
             assertEquals(1, i);
-        
+
         assertEquals(TABLE_MODE * DB_MODE, ret.length);
-        
+
         for(Person pk: pl)
             assertEquals("Tom", dao.queryByPk(pk).getName());
     }
@@ -707,13 +707,13 @@ public class DasClientDBTest extends DataPreparer {
                 process(pk, hints, i, j);
                 pl.add(pk);
             }
-            
+
             Hints hints = new Hints();
             process(new Person(), hints, i);
             int[] ret = dao.batchUpdate(pl, hints);
             for(int k: ret)
                 assertEquals(1, k);
-            
+
             assertEquals(4, ret.length);
             for(Person pk: pl)
                 assertEquals("Tom", dao.queryByPk(pk, hints).getName());
@@ -740,14 +740,14 @@ public class DasClientDBTest extends DataPreparer {
         BatchUpdateBuilder builder = new BatchUpdateBuilder(
                 "INSERT INTO " + TABLE_NAME + "( Name, CityID, ProvinceID, CountryID) VALUES( ?, ?, ?, ?)",
                 p.Name, p.CityID, p.ProvinceID, p.CountryID);
-        
+
         builder.addBatch("test", 10, 1, 1);
         builder.addBatch("test", 10, 1, 1);
         builder.addBatch("test", 10, 1, 1);
-        
+
         builder.hints().inShard(0);
         assertArrayEquals(new int[] {batchRet,  batchRet, batchRet}, dao.batchUpdate(builder));
-        
+
     }
 
     @Test
@@ -758,7 +758,7 @@ public class DasClientDBTest extends DataPreparer {
         builder.addBatch("test", 10, 1, 1);
         builder.addBatch("test", 10, 1, 1);
         builder.addBatch("test", 10, 1, 1);
-        
+
         builder.hints().inShard(0);
         assertArrayEquals(new int[] {batchRet,  batchRet, batchRet}, dao.batchUpdate(builder));
     }
@@ -771,7 +771,7 @@ public class DasClientDBTest extends DataPreparer {
         builder.addBatch("test", 10, 1, 1);
         builder.addBatch("test", 10, 1, 1);
         builder.addBatch("test", 10, 1, 1);
-        
+
         builder.hints().inShard(0);
         assertArrayEquals(new int[] {batchRet,  batchRet, batchRet}, dao.batchUpdate(builder));
     }
@@ -784,7 +784,7 @@ public class DasClientDBTest extends DataPreparer {
         builder.addBatch("test", 10, 1, 1);
         builder.addBatch("test", 10, 1, 1);
         builder.addBatch("test", 10, 1, 1);
-        
+
         builder.hints().inShard(0);
         assertArrayEquals(new int[] {batchRet,  batchRet, batchRet}, dao.batchUpdate(builder));
     }
@@ -793,7 +793,7 @@ public class DasClientDBTest extends DataPreparer {
     @Test
     public void testInsertBuilder() throws Exception {
         PersonDefinition p = Person.PERSON;
-        
+
         for(int i = 0; i < DB_MODE;i++) {
             for(int j = 0; j < TABLE_MODE;j++) {
                 SqlBuilder builder = provider.insert(i);
@@ -808,19 +808,19 @@ public class DasClientDBTest extends DataPreparer {
             }
         }
     }
-    
+
     @Test
     public void testUpdateBuilder() throws Exception {
         PersonDefinition p = Person.PERSON;
         for(int i = 0; i < DB_MODE;i++) {
             for(int j = 0; j < TABLE_MODE;j++) {
                 SqlBuilder builder = provider.update(i).where(p.PeopleID.eq(j+1));
-                
+
                 assertEquals(1, dao.update(builder));
                 Person pk = new Person();
                 pk.setPeopleID(j + 1);
                 pk = dao.queryByPk(pk, hints(i));
-                
+
                 assertEquals("Tom", pk.getName());
                 assertEquals(i, pk.getCountryID().intValue());
             }
@@ -887,13 +887,13 @@ public class DasClientDBTest extends DataPreparer {
             }
         }
     }
-    
+
     @Test
     public void testQuery() throws Exception {
         PersonDefinition p = Person.PERSON;
         for (int i = 0; i < DB_MODE; i++) {
             List<Integer> pks = new ArrayList<>();
-            for (int j = 0; j < TABLE_MODE; j++) 
+            for (int j = 0; j < TABLE_MODE; j++)
                 pks.add(j+1);
 
             SqlBuilder builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks)).into(Person.class);
@@ -903,7 +903,7 @@ public class DasClientDBTest extends DataPreparer {
             List<Person> plist = dao.query(builder);
 
             assertEquals(4, plist.size());
-            for (int j = 0; j < TABLE_MODE; j++) { 
+            for (int j = 0; j < TABLE_MODE; j++) {
                 Person pk = plist.get(j);
                 assertNotNull(p);
                 assertEquals(j+1,  pk.getPeopleID().intValue());
@@ -917,7 +917,7 @@ public class DasClientDBTest extends DataPreparer {
         PersonDefinition p = Person.PERSON;
         for (int i = 0; i < DB_MODE; i++) {
             List<Integer> pks = new ArrayList<>();
-            for (int j = 0; j < TABLE_MODE; j++) 
+            for (int j = 0; j < TABLE_MODE; j++)
                 pks.add(j+1);
 
             SqlBuilder builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.Name.like("te%")).into(Person.class);
@@ -925,7 +925,7 @@ public class DasClientDBTest extends DataPreparer {
             builder.orderBy(p.PeopleID.asc());
             setuper.range(builder, 0, 3);
             List<Person> plist = dao.query(builder);
-            
+
             assertEquals(3, plist.size());
             for (int k = 0; k < 3; k++) {
                 Person pk = plist.get(k);
@@ -933,7 +933,7 @@ public class DasClientDBTest extends DataPreparer {
                 assertEquals(k+1,  pk.getPeopleID().intValue());
                 assertEquals(i,  pk.getCountryID().intValue());
             }
-            
+
             builder = selectAllFrom(p).where().allOf(p.PeopleID.in(pks), p.Name.like("te%")).into(Person.class);
             where(builder, i);
             builder.orderBy(p.PeopleID.asc());
@@ -948,13 +948,13 @@ public class DasClientDBTest extends DataPreparer {
     public void testQueryTopObj() throws Exception {
         if(dbCategory == MySql)
             return;
-        
+
         for (int k = 0; k < DB_MODE; k++) {
             PersonDefinition p = Person.PERSON;
             SqlBuilder builder = selectTop(3, p.PeopleID).from(p).where(p.PeopleID.gt(-1));
             where(builder, k).orderBy(p.PeopleID.asc()).intoObject();
             List plist = dao.query(builder);
-    
+
             assertEquals(3, plist.size());
             for(int i = 0; i < plist.size(); i++){
                 assertEquals(i + 1, ((Number)plist.get(i)).intValue());
@@ -971,17 +971,17 @@ public class DasClientDBTest extends DataPreparer {
             PersonDefinition p = Person.PERSON;
             SqlBuilder builder = selectTop(3, p.PeopleID, p.Name).from(p).where(p.PeopleID.gt(-1));
             where(builder, k).orderBy(p.PeopleID.asc()).into(Person.class);
-            
+
             List<Person> plist = null;
             plist = dao.query(builder);
-    
+
             assertEquals(3, plist.size());
             for(int i = 0; i < plist.size(); i++){
                 assertEquals("test", plist.get(i).getName());
             }
         }
     }
-    
+
     @Test
     public void testBatchQueryBuilder() throws Exception {
         PersonDefinition p = Person.PERSON;
@@ -991,7 +991,7 @@ public class DasClientDBTest extends DataPreparer {
                 SqlBuilder builder = selectAllFrom(p).where().allOf(p.PeopleID.eq(j+1), p.CountryID.eq(i)).orderBy(p.PeopleID.asc()).into(Person.class);
                 batchBuilder.addBatch(builder);
             }
-            
+
             provider.inShard(batchBuilder.hints(), i);
             List<List<Person>> plist = (List<List<Person>>)dao.batchQuery(batchBuilder);
 
@@ -1015,7 +1015,7 @@ public class DasClientDBTest extends DataPreparer {
             int ifinal = i;
             Hints hints = new Hints();
             provider.inShard(hints, i);
-            
+
             if(hints.getShard() == null && hints.getShardValue() == null)
                 continue;
 
@@ -1024,24 +1024,24 @@ public class DasClientDBTest extends DataPreparer {
                 List<Person> plist = dao.query(builder);
 
                 assertEquals(4, plist.size());
-                
+
                 assertArrayEquals(new int[] {1, 1, 1, 1}, dao.batchDelete(plist));
-                
+
                 builder = selectAllFrom(p).where().allOf(p.CountryID.eq(ifinal)).orderBy(p.PeopleID.asc()).into(Person.class);
                 assertEquals(0, dao.query(builder).size());
-                
+
                 assertEquals(4, dao.insert(plist));
                 builder = selectAllFrom(p).where().allOf(p.CountryID.eq(ifinal)).orderBy(p.PeopleID.asc()).into(Person.class);
                 plist = dao.query(builder);
                 assertEquals(4, plist.size());
-                
+
                 assertArrayEquals(new int[] {1, 1, 1, 1}, dao.batchDelete(plist));
             }, hints);
-            
+
             assertEquals(0, count(i));
-        }        
+        }
     }
-    
+
     @Test
     public void testTransactionRollback() throws Exception {
         PersonDefinition p = Person.PERSON;
@@ -1049,7 +1049,7 @@ public class DasClientDBTest extends DataPreparer {
             int ifinal = i;
             Hints hints = new Hints();
             provider.inShard(hints, i);
-            
+
             if(hints.getShard() == null && hints.getShardValue() == null)
                 continue;
 
@@ -1059,28 +1059,28 @@ public class DasClientDBTest extends DataPreparer {
                     List<Person> plist = dao.query(builder);
 
                     assertEquals(4, plist.size());
-                    
+
                     assertArrayEquals(new int[] {1, 1, 1, 1}, dao.batchDelete(plist));
-                    
+
                     builder = selectAllFrom(p).where().allOf(p.CountryID.eq(ifinal)).orderBy(p.PeopleID.asc()).into(Person.class);
                     assertEquals(0, dao.query(builder).size());
-                    
+
                     assertEquals(4, dao.insert(plist));
                     builder = selectAllFrom(p).where().allOf(p.CountryID.eq(ifinal)).orderBy(p.PeopleID.asc()).into(Person.class);
                     plist = dao.query(builder);
                     assertEquals(4, plist.size());
-                    
+
                     assertArrayEquals(new int[] {1, 1, 1, 1}, dao.batchDelete(plist));
                     throw new RuntimeException("1");
                 }, hints);
                 fail();
             } catch (Exception e) {
             }
-            
+
             assertEquals(4, count(i));
-        }        
+        }
     }
-    
+
     @Test
     public void testCallableTransaction() throws Exception {
         PersonDefinition p = Person.PERSON;
@@ -1089,7 +1089,7 @@ public class DasClientDBTest extends DataPreparer {
 
             Hints hints = new Hints();
             provider.inShard(hints, i);
-            
+
             if(hints.getShard() == null && hints.getShardValue() == null)
                 continue;
 
@@ -1098,23 +1098,23 @@ public class DasClientDBTest extends DataPreparer {
                 List<Person> plist = dao.query(builder);
 
                 assertEquals(4, plist.size());
-                
+
                 assertArrayEquals(new int[] {1, 1, 1, 1}, dao.batchDelete(plist));
-                
+
                 builder = selectAllFrom(p).where().allOf(p.CountryID.eq(ifinal)).orderBy(p.PeopleID.asc()).into(Person.class);
                 assertEquals(0, dao.query(builder).size());
-                
+
                 assertEquals(4, dao.insert(plist));
                 builder = selectAllFrom(p).where().allOf(p.CountryID.eq(ifinal)).orderBy(p.PeopleID.asc()).into(Person.class);
                 plist = dao.query(builder);
                 assertEquals(4, plist.size());
-                
+
                 assertArrayEquals(new int[] {1, 1, 1, 1}, dao.batchDelete(plist));
                 return 10;
             }, hints));
-            
+
             assertEquals(0, count(i));
-        }        
+        }
     }
 
     @Test
@@ -1125,7 +1125,7 @@ public class DasClientDBTest extends DataPreparer {
 
             Hints hints = new Hints();
             provider.inShard(hints, i);
-            
+
             if(hints.getShard() == null && hints.getShardValue() == null)
                 continue;
 
@@ -1135,25 +1135,25 @@ public class DasClientDBTest extends DataPreparer {
                     List<Person> plist = dao.query(builder);
 
                     assertEquals(4, plist.size());
-                    
+
                     assertArrayEquals(new int[] {1, 1, 1, 1}, dao.batchDelete(plist));
-                    
+
                     builder = selectAllFrom(p).where().allOf(p.CountryID.eq(ifinal)).orderBy(p.PeopleID.asc()).into(Person.class);
                     assertEquals(0, dao.query(builder).size());
-                    
+
                     assertEquals(4, dao.insert(plist));
                     builder = selectAllFrom(p).where().allOf(p.CountryID.eq(ifinal)).orderBy(p.PeopleID.asc()).into(Person.class);
                     plist = dao.query(builder);
                     assertEquals(4, plist.size());
-                    
+
                     assertArrayEquals(new int[] {1, 1, 1, 1}, dao.batchDelete(plist));
                     throw new RuntimeException("1");
                 }, hints));
                 fail();
             } catch (Exception e) {
             }
-            
+
             assertEquals(4, count(i));
-        }        
+        }
     }
 }

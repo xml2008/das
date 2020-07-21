@@ -1,5 +1,7 @@
 package com.ppdai.das.strategy;
 
+import com.google.common.base.Strings;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,7 +33,7 @@ public abstract class AbstractShardingStrategy implements ShardingStrategy {
     private Set<String> shardedTables;
     private Set<String> allTableShards;
     
-    private String separator = "_";
+    private String separator = "";
 
     @Override
     public abstract Set<String> locateDbShards(ShardingContext ctx);
@@ -111,7 +113,7 @@ public abstract class AbstractShardingStrategy implements ShardingStrategy {
 
     @Override
     public String getTableName(String logicTableName, String shard) {
-        return separator == null ? logicTableName + shard : logicTableName + separator + shard;
+        return Strings.isNullOrEmpty(separator) ? logicTableName + shard : logicTableName + separator + shard;
     }
     
     /**

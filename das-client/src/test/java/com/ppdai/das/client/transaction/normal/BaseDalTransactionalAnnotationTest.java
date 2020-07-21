@@ -37,16 +37,12 @@ public class BaseDalTransactionalAnnotationTest {
         return Arrays.asList(new Object[][]{
                 {1, TransactionAnnoClassMySql.class, TransactionTestMySqlUser.class},
                 {2, TransactionAnnoClassMySql.class, TransactionTestMySqlUser.class},
-                {3, TransactionAnnoClassMySql.class, TransactionTestMySqlUser.class},
                 {1, TransactionAnnoClassMySqlNew.class, TransactionTestMySqlUserNew.class},
                 {2, TransactionAnnoClassMySqlNew.class, TransactionTestMySqlUserNew.class},
-                {3, TransactionAnnoClassMySqlNew.class, TransactionTestMySqlUserNew.class},
                 {1, TransactionAnnoClassSqlServer.class, TransactionTestSqlServerUser.class},
                 {2, TransactionAnnoClassSqlServer.class, TransactionTestSqlServerUser.class},
-                {3, TransactionAnnoClassSqlServer.class, TransactionTestSqlServerUser.class},
                 {1, TransactionAnnoClassSqlServerNew.class, TransactionTestSqlServerUserNew.class},
                 {2, TransactionAnnoClassSqlServerNew.class, TransactionTestSqlServerUserNew.class},
-                {3, TransactionAnnoClassSqlServerNew.class, TransactionTestSqlServerUserNew.class},
                 }
         );
     }
@@ -70,8 +66,6 @@ public class BaseDalTransactionalAnnotationTest {
                 return (BaseTransactionAnnoClass)ctx.getBean(targetClass);
             case 2:
                 return (BaseTransactionAnnoClass)ctx.getBean(autoWireClass).getTransactionAnnoTest();
-            case 3:
-                return DalTransactionManager.create(targetClass);
 
             default:
                 throw new RuntimeException("wrong option");
@@ -123,7 +117,7 @@ public class BaseDalTransactionalAnnotationTest {
     @Test
     public void testNestedTransaction2() throws InstantiationException, IllegalAccessException {
         BaseTransactionAnnoClass test = create();
-        Assert.assertEquals(DONE, test.performNest2());
+        Assert.assertEquals(DONE, test.perform());
     }
 
     @Test
@@ -212,10 +206,10 @@ public class BaseDalTransactionalAnnotationTest {
         Assert.assertEquals(DONE, test.performWitShard(null, new Hints().inShard("0")));
     }
 
-    @Test(expected = java.sql.SQLException.class)
+    @Test(expected = Exception.class)
     public void testWithShardAndHintsFail() throws InstantiationException, IllegalAccessException {
-        BaseTransactionAnnoClass test = create();
-        test.performWitShard("1", new Hints().inShard(0));
+         BaseTransactionAnnoClass test = create();
+         test.performWitShard("1", new Hints().inShard(0));
     }
 
     @Test
@@ -362,61 +356,5 @@ public class BaseDalTransactionalAnnotationTest {
         
         assertTrue(DalTransactionManager.isInTransaction() == false);
     }
-    
-    @Test
-    public void testDeclareOnClassInternal() throws InstantiationException, IllegalAccessException {
-        TransactionTestInternal test = DalTransactionManager.create(TransactionTestInternal.class);
-        test.perform();
-    }
 
-    @Test
-    public void testDeclareOnClassInternal1() throws InstantiationException, IllegalAccessException {
-        TransactionTestInternal1 test;
-        try {
-            test = DalTransactionManager.create(TransactionTestInternal1.class);
-            fail();
-            test.perform();
-        } catch (Exception e) {
-        }
-    }
-
-    @Test
-    public void testDeclareOnClassInternal2() throws InstantiationException, IllegalAccessException {
-        try {
-            TransactionTestInternal2 test = DalTransactionManager.create(TransactionTestInternal2.class);
-            fail();
-            test.perform();
-        } catch (Exception e) {
-        }
-    }
-
-    public static class TransactionTestInternal {
-
-        @DasTransactional(logicDbName = DATABASE_NAME)
-        public String perform() {
-            assertTrue(DalTransactionManager.isInTransaction());
-            return null;
-        }
-        
-    }
-
-    public class TransactionTestInternal1 {
-
-        @DasTransactional(logicDbName = DATABASE_NAME)
-        public String perform() {
-            assertTrue(DalTransactionManager.isInTransaction());
-            return null;
-        }
-        
-    }
-
-    private static class TransactionTestInternal2 {
-
-        @DasTransactional(logicDbName = DATABASE_NAME)
-        public String perform() {
-            assertTrue(DalTransactionManager.isInTransaction());
-            return null;
-        }
-        
-    }
 }

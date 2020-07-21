@@ -63,7 +63,7 @@ public class BatchUpdateTask<T> extends AbstractIntArrayBulkTask<T> {
 		
 		String batchUpdateSql = buildBatchUpdateSql(getTableName(hints), pojoFieldStatus);
 		
-		int[] result = client.batchUpdate(batchUpdateSql, parametersList, hints);
+		int[] result = client.batchUpdate(batchUpdateSql, parametersList, hints, TaskType.BATCH_UPDATE);
 		return result;
 	}
 	

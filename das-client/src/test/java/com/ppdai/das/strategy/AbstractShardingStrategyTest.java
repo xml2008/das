@@ -88,8 +88,8 @@ public class AbstractShardingStrategyTest {
     public void testSeparatorAndTableName() {
         AbstractShardingStrategy test = new TestShardingStrategy();
         
-        //Test default
-        assertEquals("A_1", test.getTableName("A", "1"));
+        //Test default，empty separator
+        assertEquals("A1", test.getTableName("A", "1"));
         
         test.setSeparator(null);
         assertEquals("A1", test.getTableName("A", "1"));
