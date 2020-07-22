@@ -203,6 +203,9 @@ public class PPDaiDasProxyParser implements DalParser<Entity> {
                         case "TIMESTAMP":
                             value = new java.sql.Timestamp(f.get().getValue().getAsLong());
                             break;
+                        case "BIT":
+                            value = f.get().getValue().getAsBoolean();
+                            break;
                     }
                     map.put(e.getKey(), value);
                 }
