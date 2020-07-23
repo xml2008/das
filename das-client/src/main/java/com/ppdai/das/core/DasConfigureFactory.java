@@ -51,6 +51,8 @@ public class DasConfigureFactory {
                     for(String appId: configContext.getAppIds()) {
                         StatusManager.registerApplication(appId, configContext.getConfigure(appId));
                     }
+                } else {
+                    StatusManager.initializeGlobal();
                 }
                 
                 LogEntry.init();
