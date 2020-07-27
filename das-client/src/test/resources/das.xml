@@ -76,6 +76,12 @@
       <add  name="sql_shard_0" databaseType="Master" sharding="" connectionString="sql_shard_0"/>
     </databaseSet>
 
+    <!-- mgr -->
+    <databaseSet name="myMGR" provider="mysqlProvider" mgrEnabled = "true">
+        <add name="dal_shard_m0" databaseType="Master" sharding="" connectionString="dal_shard_0"/>
+        <add name="dal_shard_m1" databaseType="Master" sharding="" connectionString="dal_shard_0"/>
+        <add name="dal_shard_m2" databaseType="Master" sharding="" connectionString="dal_shard_0"/>
+    </databaseSet>
   </databaseSets>
   <LogListener enabled="true">
   	  <logger>com.ppdai.das.core.DefaultLogger</logger>

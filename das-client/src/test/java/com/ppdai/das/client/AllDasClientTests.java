@@ -1,6 +1,10 @@
 package com.ppdai.das.client;
 
+import com.ppdai.das.SafeLoggerTest;
 import com.ppdai.das.client.transaction.normal.BaseDalTransactionalAnnotationTest;
+import com.ppdai.das.core.ResultMergerTest;
+import com.ppdai.das.core.configure.ConfigureTest;
+import com.ppdai.das.core.markdown.MarkdownTest;
 import com.ppdai.das.core.test.DasRunnerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -21,7 +25,6 @@ import com.ppdai.das.util.ConvertUtilsTest;
     AllSqlBuilderTests.class,
     AllStrategyTests.class,
     AllTableDaoTests.class,
-
     BatchCallBuilderTest.class,
     CallBuilderTest.class,
 
@@ -49,6 +52,10 @@ import com.ppdai.das.util.ConvertUtilsTest;
     RefreshableDataSourceTest.class,
     SqlBuilderSerializeTest.class,
     SlaveFreshnessScannerMysqlTest.class,
+    MarkdownTest.class,
+    ConfigureTest.class,
+    SafeLoggerTest.class,
+    ResultMergerTest.class
 })
 public class AllDasClientTests {
 }
