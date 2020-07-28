@@ -16,6 +16,7 @@ import org.apache.commons.lang.reflect.FieldUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,9 +115,15 @@ public class ConvertUtils {
                         value =  value.floatValue();
                     } else if (fieldClz == double.class || fieldClz == Double.class) {
                         value = value.doubleValue();
+                    }else if (fieldClz == BigDecimal.class) {
+                        value = BigDecimal.valueOf(value.doubleValue());
                     }
                     FieldUtils.writeField(obj, fieldName, value, true);
                 }else {
+                    if(f.getType().getSimpleName().equals("byte[]")) {
+                        //TODO:
+                        continue;
+                    }
                     Object value = map.get(col);
                     if(java.util.Date.class.isAssignableFrom(f.getType()) && value != null){
                         Constructor constructor = f.getType().getDeclaredConstructor(long.class);

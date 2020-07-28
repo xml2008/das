@@ -382,7 +382,7 @@ public class KeyHolder {
      *
      * @throws SQLException
      */
-    private static void setPrimaryKey(Field pkFlield, Object entity, Number val) throws SQLException {
+    static void setPrimaryKey(Field pkFlield, Object entity, Number val) throws SQLException {
         try {
             if (val == null) {
                 pkFlield.set(entity, null);
@@ -416,7 +416,7 @@ public class KeyHolder {
         }
     }
 
-    private static void setPrimaryKey(String type, String key, Map entity, Number val) throws SQLException {
+    static void setPrimaryKey(String type, String key, Map entity, Number val) throws SQLException {
         try {
             //TODO check types
             if (val == null) {
@@ -438,11 +438,6 @@ public class KeyHolder {
             }
             if (type.equals(JDBCType.SMALLINT.getName())) {
                 entity.put(key, val.shortValue());
-                return;
-            }
-            if (type.equals(JDBCType.BIGINT.getName())) {
-                BigInteger bigIntegerValue = BigInteger.valueOf(val.longValue());
-                entity.put(key, bigIntegerValue);
                 return;
             }
         } catch (Throwable e) {

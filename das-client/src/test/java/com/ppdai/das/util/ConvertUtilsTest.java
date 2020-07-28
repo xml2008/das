@@ -1,8 +1,12 @@
 package com.ppdai.das.util;
 
+import com.google.gson.Gson;
 import com.ppdai.das.client.delegate.remote.DasRemoteDelegate;
+import com.ppdai.das.service.DasRequest;
 import com.ppdai.das.service.Entity;
+import com.ppdai.das.service.EntityList;
 import com.ppdai.das.service.EntityMeta;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -28,7 +32,7 @@ public class ConvertUtilsTest {
         EntityMeta meta = DasRemoteDelegate.extract(pojo.getClass());
         List<Entity> entities = ConvertUtils.pojo2Entities(Arrays.asList(pojo), meta);
         List<Map<String, Object>> maps = ConvertUtils.entity2POJOs(entities, meta, Map.class);
-
+        List<TesttableMySQL> entity = ConvertUtils.entity2POJOs(entities, meta, TesttableMySQL.class);
         assertEquals(1, maps.size());
         Map<String, Object> map = maps.get(0);
 
@@ -89,6 +93,23 @@ public class ConvertUtilsTest {
         //assertArrayEquals(pojo.getMyVarbinary(), (byte[])map.get("MyVarbinary"));
         //assertArrayEquals(pojo.getMyImage(), (byte[])map.get("MyImage"));
     }
+
+    @Test
+    public void testFillMeta() {
+        EntityList entityList = new EntityList();
+        TesttableMySQL pojo = createMySQLPOJO();
+        EntityMeta meta = DasRemoteDelegate.extract(pojo.getClass());
+        entityList.setEntityMeta(meta);
+        Entity entity = new Entity();
+        entity.setValue(new Gson().toJson(pojo));
+        entityList.addToRows(new Entity());
+
+        DasRequest dasRequest = new DasRequest().setEntityList(entityList);
+        Entity entity1 = ConvertUtils.fillMeta(dasRequest);
+        List<Entity> entity2 = ConvertUtils.fillMetas(dasRequest);
+        Assert.assertNotNull(dasRequest.getEntityList().getRows().get(0).getEntityMeta());
+    }
+
 /*
     @Test
     public void testMap2EntityMySQL() {

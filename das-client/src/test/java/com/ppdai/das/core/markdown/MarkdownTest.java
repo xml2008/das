@@ -1,6 +1,7 @@
 package com.ppdai.das.core.markdown;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import com.ppdai.das.core.DasConfigure;
 import com.ppdai.das.core.DasConfigureContext;
 import com.ppdai.das.core.DasConfigureFactory;
@@ -91,5 +92,26 @@ public class MarkdownTest {
         TimeoutMarkdown tmb = StatusManager.getTimeoutMarkdown();
         tmb.setEnabled(true);
         detector.detect(context);
+    }
+
+    @Test
+    public void testTimeoutMarkdown(){
+        TimeoutMarkdown timeoutMarkdown = StatusManager.getTimeoutMarkdown();
+        timeoutMarkdown.setSamplingDuration(1);
+        Assert.assertEquals(1, timeoutMarkdown.getSamplingDuration());
+        timeoutMarkdown.setErrorCountThreshold(2);
+        Assert.assertEquals(2, timeoutMarkdown.getErrorCountThreshold());
+        timeoutMarkdown.setErrorPercentThreshold(3);
+        Assert.assertEquals(3, timeoutMarkdown.getErrorPercentThreshold(), 1);
+        timeoutMarkdown.setMySqlErrorCodes("10");
+        Assert.assertEquals("10", timeoutMarkdown.getMySqlErrorCodes());
+        Assert.assertEquals(Sets.newHashSet(10), timeoutMarkdown.getMysqlTimeoutMarkdownCodes());
+        timeoutMarkdown.setSqlServerErrorCodes("11");
+        Assert.assertEquals("11", timeoutMarkdown.getSqlServerErrorCodes());
+        Assert.assertEquals(Sets.newHashSet(11), timeoutMarkdown.getSqlServerTimeoutMarkdownCodes());
+        timeoutMarkdown.setErrorPercentReferCount(4);
+        Assert.assertEquals(4, timeoutMarkdown.getErrorPercentReferCount());
+        timeoutMarkdown.setTimeoutThreshold(5);
+        Assert.assertEquals(5, timeoutMarkdown.getTimeoutThreshold());
     }
 }
