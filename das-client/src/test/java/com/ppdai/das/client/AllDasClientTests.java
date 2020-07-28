@@ -2,10 +2,14 @@ package com.ppdai.das.client;
 
 import com.ppdai.das.SafeLoggerTest;
 import com.ppdai.das.client.transaction.normal.BaseDalTransactionalAnnotationTest;
+import com.ppdai.das.core.DefaultDataSourceConfigureLocatorTest;
+import com.ppdai.das.core.KeyHolderTest;
 import com.ppdai.das.core.ResultMergerTest;
 import com.ppdai.das.core.configure.ConfigureTest;
 import com.ppdai.das.core.markdown.MarkdownTest;
 import com.ppdai.das.core.test.DasRunnerTest;
+import com.ppdai.das.strategy.TimeRangeShardLocatorTest;
+import com.ppdai.das.strategy.TimeRangeStrategyTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -55,7 +59,11 @@ import com.ppdai.das.util.ConvertUtilsTest;
     MarkdownTest.class,
     ConfigureTest.class,
     SafeLoggerTest.class,
-    ResultMergerTest.class
+    ResultMergerTest.class,
+    KeyHolderTest.class,
+    DefaultDataSourceConfigureLocatorTest.class,
+    TimeRangeShardLocatorTest.class,
+    TimeRangeStrategyTest.class
 })
 public class AllDasClientTests {
 }
