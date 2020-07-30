@@ -63,6 +63,22 @@ public class DatabaseSet {
 		this.mgrEnabled = mgrEnabled;
 	}
 
+	public DatabaseSet(String name, String provider, String shardStrategy, ShardingStrategy strategy, Map<String, DataBase> databases) throws Exception {
+		this.name = name;
+		this.provider = provider;
+		dbCategory = DatabaseCategory.matchWith(provider);
+		this.databases = databases;
+        this.strategy = strategy;
+
+		initStrategy(shardStrategy);
+		initShards();
+	}
+
+	public DatabaseSet(String name, String provider, String shardStrategy, ShardingStrategy strategy, Map<String, DataBase> databases, boolean mgrEnabled) throws Exception {
+		this(name, provider, shardStrategy, strategy, databases);
+		this.mgrEnabled = mgrEnabled;
+	}
+
 	private DatabaseSet() {}
 
 	/**

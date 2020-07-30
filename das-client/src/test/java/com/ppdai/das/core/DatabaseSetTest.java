@@ -35,8 +35,8 @@ public class DatabaseSetTest {
 
     @Test
     public void testHash() throws Exception  {
-        DatabaseSet databaseSet2 = new DatabaseSet("dbset", MYSQL_PROVIDER,
-                ImmutableMap.of("db", new DataBase("db", true, "sh", "connectionString")));
+        DatabaseSet databaseSet2 = new DatabaseSet("dbset", MYSQL_PROVIDER, null, null,
+                ImmutableMap.of("db", new DataBase("db", true, "sh", "connectionString")), false);
         HashMap<DatabaseSet, String> map = new HashMap<>();
         map.put(databaseSet, "1");
         Assert.assertEquals("1", map.get(databaseSet2));
