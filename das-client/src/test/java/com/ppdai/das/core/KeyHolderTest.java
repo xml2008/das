@@ -127,6 +127,22 @@ public class KeyHolderTest {
         Assert.assertTrue(Double.parseDouble(new Gson().fromJson(entity.getValue(), Map.class).get("keyC").toString()) > 1);
     }
 
+    @Test(timeout = 1000)
+    public void testMerge() throws InterruptedException {
+        KeyHolder keyHolder = new KeyHolder();
+        KeyHolder tmp = new KeyHolder();
+        keyHolder.waitForMerge(1);
+        keyHolder.addPatial(new Integer[]{}, tmp);
+        keyHolder.waitForMerge();
+    }
+
+    @Test(expected = DasException.class)
+    public void testkeyListException() throws DasException {
+        KeyHolder keyHolder = new KeyHolder();
+        keyHolder.requireMerge();
+        keyHolder.getKeyList();
+    }
+
     static class MyEntity {
         long lf;
         int intf;

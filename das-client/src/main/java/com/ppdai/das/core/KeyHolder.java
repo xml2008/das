@@ -174,7 +174,7 @@ public class KeyHolder {
      * @throws SQLException if the conversion fails
      */
     public List<Number> getIdList() throws SQLException {
-        List<Number> idList = new ArrayList<Number>();
+        List<Number> idList = new ArrayList<>();
 
         try {
             for (Map<String, Object> key : getKeyList()) {
@@ -182,7 +182,6 @@ public class KeyHolder {
             }
             return idList;
         } catch (Throwable e) {
-            e.printStackTrace();
             throw new DasException(ErrorCode.ValidateKeyHolderConvert, e);
         }
     }
