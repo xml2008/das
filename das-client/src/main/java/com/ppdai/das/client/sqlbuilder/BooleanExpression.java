@@ -13,7 +13,7 @@ public class BooleanExpression extends Expression implements ConditionProvider {
     public static final BooleanExpression FALSE = new BooleanExpression("FALSE");
 
     private BooleanExpression(String template) {
-        this.template = template;;
+        this.template = template;
     }
 
     @Override

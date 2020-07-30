@@ -336,7 +336,7 @@ public class DasRemoteDelegate implements DasDelegate {
         DasRequest dasRequest = create(DasOperation.UpdateWithSqlBuilder, builder.hints(), builder);
         DasResult dasResult = callRemote(dasRequest);
         builder.hints().setDasDiagnose(diagInfo2Diagnose(dasResult.getDiagInfo()));
-        return (int)getFirst(entity2POJOs(dasResult.getRows(), null, int.class), 0);
+        return getFirst(entity2POJOs(dasResult.getRows(), null, int.class), 0);
     }
 
     @Override

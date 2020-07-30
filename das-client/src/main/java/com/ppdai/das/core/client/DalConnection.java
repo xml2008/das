@@ -19,9 +19,9 @@ public class DalConnection {
 	private String shardId;
 	private DbMeta meta;
 	private DasLogger logger;
-	private boolean needDiscard;;
+	private boolean needDiscard;
 
-	public DalConnection(Connection conn, boolean master, String shardId, DbMeta meta) throws SQLException {
+    public DalConnection(Connection conn, boolean master, String shardId, DbMeta meta) throws SQLException {
 		this.oldIsolationLevel = conn.getTransactionIsolation();
 		this.conn = conn;
 		this.master = master;
@@ -123,7 +123,7 @@ public class DalConnection {
 	}
 
 	private void markDiscard(Connection conn) throws SQLException {
-		PooledConnection pConn = (PooledConnection)conn.unwrap(PooledConnection.class);
+		PooledConnection pConn = conn.unwrap(PooledConnection.class);
 		pConn.setDiscarded(true);
 	}
 }

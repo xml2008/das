@@ -80,7 +80,7 @@ public class SqlBuilderSerializer implements Serializer {
         for(JsonElement seg: segs){
             sqlBuilder.getSegments().add(getSerializeFactory().deserialize(seg));
         }
-        boolean selectCount = ((JsonObject)jo).getAsJsonPrimitive("selectCount").getAsBoolean();
+        boolean selectCount = jo.getAsJsonPrimitive("selectCount").getAsBoolean();
         writeField(sqlBuilder, "selectCount", selectCount);
         return sqlBuilder;
     }

@@ -24,11 +24,13 @@ public class ConditionContext extends ColumnCondition {
     public Hints getHints() {
         return shardingContext.getHints();
     }
-    
+
+    @Override
     public ConditionContext create(OperatorEnum operator) {
         return new ConditionContext(shardingContext, super.create(operator));
     }
 
+    @Override
     public ConditionContext create(OperatorEnum operator, Object value) {
         return new ConditionContext(shardingContext, super.create(operator, value));
     }

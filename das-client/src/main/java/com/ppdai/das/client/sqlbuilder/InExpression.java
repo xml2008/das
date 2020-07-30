@@ -81,12 +81,8 @@ public class InExpression extends ColumnExpression implements ParameterDefinitio
                 ite.remove();
             }
         }
-        
-        if(values.size() == 0){
-            return true;
-        }
-        
-        return false;
+
+        return values.size() == 0;
     }
 
     private List<?> getValues() {

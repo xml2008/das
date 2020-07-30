@@ -21,7 +21,8 @@ public class InsertTaskAdapter<T> extends TaskAdapter<T> {
 	protected String columnsForInsertWithId;
 	protected List<String> validColumnsForInsert;
 	protected List<String> validColumnsForInsertWithId;
-	
+
+	@Override
 	public void initialize(DalParser<T> parser) {
 		super.initialize(parser);
 		

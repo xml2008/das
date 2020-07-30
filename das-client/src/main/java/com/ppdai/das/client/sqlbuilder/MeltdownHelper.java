@@ -141,7 +141,7 @@ public class MeltdownHelper implements SegmentConstants {
             }
         }
         
-        return bracketCount == 0? true : false;
+        return bracketCount == 0;
     }
 
     private boolean meltDownAndOrOperator(LinkedList<Segment> filtered) {
@@ -163,12 +163,9 @@ public class MeltdownHelper implements SegmentConstants {
         }
         
         // If it is expression. 
-        if(isExpression(entry)) {
-            return false;
-        }
+        return !isExpression(entry);
 
         // Reach the beginning of the meltdown section
-        return true;
     }
     /**
      * @return if current segment is comma

@@ -204,10 +204,10 @@ public class DalConfigureFactory implements DalConfigConstants {
         }
 
         //Check MGR
-        boolean mgrEnabled = hasAttribute(databaseSetNode, MGR_ENABLED) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_ENABLED)) : false;
+        boolean mgrEnabled = hasAttribute(databaseSetNode, MGR_ENABLED) && Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_ENABLED));
         boolean mgrReadWriteSplittingEnabled = false;
         if(mgrEnabled) {
-            mgrReadWriteSplittingEnabled = hasAttribute(databaseSetNode, MGR_RW_SPLITTING_ENABLED) ? Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_RW_SPLITTING_ENABLED)) : false;
+            mgrReadWriteSplittingEnabled = hasAttribute(databaseSetNode, MGR_RW_SPLITTING_ENABLED) && Boolean.parseBoolean(getAttribute(databaseSetNode, MGR_RW_SPLITTING_ENABLED));
         }
         DatabaseSet databaseSet = null;
         if (shardingStrategy.isEmpty()){

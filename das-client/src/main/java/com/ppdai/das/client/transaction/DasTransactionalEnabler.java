@@ -26,7 +26,7 @@ public class DasTransactionalEnabler{
         Object[] args = joinPoint.getArgs();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-        Object result = (Object)intercept(method, args, joinPoint);
+        Object result = intercept(method, args, joinPoint);
         return result;
     }
 

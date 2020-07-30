@@ -206,10 +206,7 @@ public abstract class LoggerAdapter implements DasLogger {
 	private boolean useLow(LogEntry entry) {
 		String[] pramemters = entry.getPramemters();
 		//use low when have parameters, otherwise use high.
-		if (pramemters == null || pramemters.length <= 0) {
-            return false;
-        }
-		return true;
-	}
+        return pramemters != null && pramemters.length > 0;
+    }
 
 }

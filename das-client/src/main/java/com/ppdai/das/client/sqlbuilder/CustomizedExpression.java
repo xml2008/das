@@ -9,7 +9,7 @@ public class CustomizedExpression extends Expression implements ConditionProvide
     private String template;
     
     public CustomizedExpression(String template) {
-        this.template = template;;
+        this.template = template;
     }
 
     @Override

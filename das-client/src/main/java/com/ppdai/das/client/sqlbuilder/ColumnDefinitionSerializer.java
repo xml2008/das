@@ -13,7 +13,7 @@ public class ColumnDefinitionSerializer implements Serializer {
     public Segment deserialize(JsonObject jo) {
         TableDefinition td = getSerializeFactory().deserialize(jo.getAsJsonObject("table"));
         ColumnDefinition cd = new ColumnDefinition(td, jo.get("columnName").getAsString(), JDBCType.valueOf(jo.get("type").getAsInt()));
-        writeField(cd, "alias", jo.get("alias").isJsonNull() ? Optional.empty() : Optional.<String>of(jo.get("alias").getAsString()));
+        writeField(cd, "alias", jo.get("alias").isJsonNull() ? Optional.empty() : Optional.of(jo.get("alias").getAsString()));
         return cd;
     }
 

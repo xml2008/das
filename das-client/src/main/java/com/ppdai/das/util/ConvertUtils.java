@@ -128,7 +128,7 @@ public class ConvertUtils {
                     if(java.util.Date.class.isAssignableFrom(f.getType()) && value != null){
                         Constructor constructor = f.getType().getDeclaredConstructor(long.class);
                         constructor.setAccessible(true);
-                        value = (Date) constructor.newInstance(((Number)value).longValue());
+                        value = constructor.newInstance(((Number)value).longValue());
                     }
                     FieldUtils.writeField(obj, meta.getFieldMap().get(col), value, true);
                 }

@@ -55,7 +55,7 @@ public class StatusManager {
 //			registerDataSources(config.getDataSourceNames());
 			MarkdownManager.init();
 			
-			initialized.set(true);;
+			initialized.set(true);
 		}
 	}
 	
@@ -71,7 +71,7 @@ public class StatusManager {
 		
 		if(mbs.isRegistered(getGlobalName(HAStatus.class))){
 			logger.warn("DAL Management Bean has already been initialized. Please make remove your application's Context registration in server.xml under Tomcat conf folder.");
-		};
+		}
 	}
 	
 	private static void registerMBean(Object mBean, ObjectName name) throws Exception{
