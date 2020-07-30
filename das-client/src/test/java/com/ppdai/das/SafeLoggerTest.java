@@ -10,6 +10,8 @@ import com.ppdai.das.service.DasRequest;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static com.ppdai.das.core.task.TaskType.QUERY;
+
 public class SafeLoggerTest {
     @Test
     public void testNormal() throws Exception {
@@ -48,5 +50,38 @@ public class SafeLoggerTest {
         safeLogger.shutdown();
         Assert.assertEquals("appid", logContext.getAppId());
 
+    }
+
+    @Test
+    public void testLogEntry() {
+        LogEntry.init();
+        LogEntry logEntry = new LogEntry();
+        logEntry.setErrorMsg("em");
+        logEntry.setException(new Exception("e"));
+        logEntry.setSuccess(true);
+        logEntry.setMethod("m");
+        logEntry.setServerAddress("s");
+        logEntry.setCommandType("c");
+        logEntry.setUserName("u");
+        logEntry.setAffectedRows(1);
+        logEntry.setAffectedRowsArray(new int[]{1, 2});
+        logEntry.setConnectionCost(2L);
+        logEntry.setShardId("sid");
+        logEntry.setTaskType(QUERY);
+        Assert.assertEquals("N/A", logEntry.getStackTraceElement().getFileName());
+        Assert.assertEquals("em", logEntry.getErrorMsg());
+        Assert.assertEquals("e", logEntry.getException().getMessage());
+        Assert.assertTrue(logEntry.isSuccess());
+        Assert.assertFalse(logEntry.isTransactional());
+        Assert.assertEquals(0, logEntry.getDuration());
+        Assert.assertEquals("s", logEntry.getServerAddress());
+        Assert.assertEquals("c", logEntry.getCommandType());
+        Assert.assertEquals("u", logEntry.getUserName());
+        Assert.assertEquals(1, logEntry.getAffectedRows().intValue());
+        Assert.assertArrayEquals(new int[]{1, 2}, logEntry.getAffectedRowsArray());
+        Assert.assertEquals(2, logEntry.getConnectionCost());
+        Assert.assertEquals("sid", logEntry.getShardId());
+        Assert.assertEquals(QUERY, logEntry.getTaskType());
+        Assert.assertEquals(0, logEntry.getSqlSize());
     }
 }

@@ -11,6 +11,7 @@ import com.ppdai.das.core.DefaultConnectionLocator;
 import com.ppdai.das.core.DefaultDatabaseSelector;
 import com.ppdai.das.core.DefaultLogger;
 import com.ppdai.das.core.enums.DatabaseCategory;
+import com.ppdai.das.core.status.MarkdownStatus;
 import com.ppdai.das.core.status.StatusManager;
 import com.ppdai.das.core.status.TimeoutMarkdown;
 import com.ppdai.das.core.task.DefaultTaskFactory;
@@ -113,5 +114,18 @@ public class MarkdownTest {
         Assert.assertEquals(4, timeoutMarkdown.getErrorPercentReferCount());
         timeoutMarkdown.setTimeoutThreshold(5);
         Assert.assertEquals(5, timeoutMarkdown.getTimeoutThreshold());
+    }
+
+    @Test
+    public void testMarkdownStatus(){
+        MarkdownStatus markdownStatus = new MarkdownStatus();
+        markdownStatus.setAppMarkdown(true);
+        markdownStatus.setEnableAutoMarkdown(true);
+        markdownStatus.setAutoMarkupDelay(1);
+        Assert.assertEquals("", markdownStatus.getMarkdownKeys());
+        Assert.assertEquals("", markdownStatus.getAutoMarkdownKeys());
+        Assert.assertEquals(1, markdownStatus.getAutoMarkupDelay());
+        Assert.assertTrue(markdownStatus.isAppMarkdown());
+        Assert.assertTrue(markdownStatus.isEnableAutoMarkdown());
     }
 }

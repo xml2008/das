@@ -8,7 +8,9 @@ import com.ppdai.das.core.HaContextTest;
 import com.ppdai.das.core.KeyHolderTest;
 import com.ppdai.das.core.ResultMergerTest;
 import com.ppdai.das.core.TransactionServerTest;
+import com.ppdai.das.core.client.DalTransactionTest;
 import com.ppdai.das.core.configure.ConfigureTest;
+import com.ppdai.das.core.configure.DataSourceConfigureTest;
 import com.ppdai.das.core.helper.DalBase64Test;
 import com.ppdai.das.core.markdown.MarkdownTest;
 import com.ppdai.das.core.test.DasRunnerTest;
@@ -71,7 +73,9 @@ import com.ppdai.das.util.ConvertUtilsTest;
     TransactionServerTest.class,
     HaContextTest.class,
     DalBase64Test.class,
-    DatabaseSetTest.class
+    DatabaseSetTest.class,
+    DataSourceConfigureTest.class,
+    DalTransactionTest.class
 })
 public class AllDasClientTests {
 }

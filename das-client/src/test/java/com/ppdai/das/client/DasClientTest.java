@@ -23,9 +23,11 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.ppdai.das.client.sqlbuilder.InExpression;
+import com.ppdai.das.core.DasConfigureFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,6 +42,11 @@ public class DasClientTest extends DataPreparer {
     private final static String DATABASE_LOGIC_NAME_SQLSVR = "SqlSvrSimple";
 
     private static PersonDefinition p = Person.PERSON;
+
+    @BeforeClass
+    public static void beforeClass(){
+        DasConfigureFactory.warmUpAllConnections();
+    }
 
     @Parameters
     public static Collection data() {

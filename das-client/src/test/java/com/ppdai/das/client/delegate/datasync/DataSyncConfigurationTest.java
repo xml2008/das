@@ -1,7 +1,11 @@
 package com.ppdai.das.client.delegate.datasync;
 
+import com.ppdai.das.client.Hints;
+import com.ppdai.das.service.DasOperation;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
@@ -54,5 +58,35 @@ public class DataSyncConfigurationTest {
         configuration.sendContext(new DataSyncContext("dbB").setData("CA"));
         TimeUnit.SECONDS.sleep(1);
         assertEquals(2, dasDataSynchronizer1.syncCount);
+    }
+
+    @Test
+    public void testDataSyncContext() {
+        DataSyncContext context = new DataSyncContext("logicDbName");
+        Date date = new Date();
+        context.setData("d");
+        context.setHints(Hints.hints());
+        context.setResult("r");
+        context.setException(new Exception("test"));
+        context.setInTransaction(true);
+        context.setSequenceId(1L);
+        context.setGlobalSequenceId(2L);
+        context.setSinceTime(date);
+        context.setTimestamp(date);
+        context.setDasOperation(DasOperation.Insert);
+        context.setLogicDbName("l");
+        context.setIp("i");
+        Assert.assertEquals("d", context.getData());
+        Assert.assertEquals("r", context.getResult());
+        Assert.assertEquals("test", context.getException().getMessage());
+        Assert.assertTrue(context.isInTransaction());
+        Assert.assertEquals(1L, context.getSequenceId());
+        Assert.assertEquals(2L, context.getGlobalSequenceId());
+        Assert.assertEquals(date, context.getSinceTime());
+        Assert.assertEquals(date, context.getTimestamp());
+        Assert.assertEquals(DasOperation.Insert, context.getDasOperation());
+        Assert.assertEquals("l", context.getLogicDbName());
+        Assert.assertNotNull(context.getHints());
+        Assert.assertEquals("i", context.getIp());
     }
 }
