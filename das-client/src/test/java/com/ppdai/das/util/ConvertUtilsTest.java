@@ -36,28 +36,27 @@ public class ConvertUtilsTest {
         assertEquals(1, maps.size());
         Map<String, Object> map = maps.get(0);
 
-        //TODO:
-        //assertEquals(pojo.getMyID(), map.get("MyID"));
+        assertEquals(pojo.getMyID(), map.get("MyID"));
         assertEquals(pojo.getMyBit(), map.get("MyBit"));
-        //assertEquals(pojo.getMyTinyint(), Integer.valueOf(map.get("MyTinyint").toString()));
-        //assertEquals(pojo.getMySmallint(), Integer.valueOf(map.get("MySmallint").toString()));
-        //assertEquals(pojo.getMyMediumint(), map.get("MyMediumint"));
-        //assertEquals(pojo.getMyBigint(), map.get("MyBigint"));
-        //assertEquals(pojo.getMyDecimal(), map.get("MyDecimal"));
-        //assertEquals(pojo.getMyFloat(), map.get("MyFloat"));
+        assertEquals(pojo.getMyTinyint(), Integer.valueOf(map.get("MyTinyint").toString()));
+        assertEquals(pojo.getMySmallint(), Integer.valueOf(map.get("MySmallint").toString()));
+        assertEquals(pojo.getMyMediumint(), map.get("MyMediumint"));
+        assertEquals(pojo.getMyBigint(), map.get("MyBigint"));
+        assertEquals(pojo.getMyDecimal().doubleValue(), ((BigDecimal)map.get("MyDecimal")).doubleValue(), 1d);
+        assertEquals(pojo.getMyFloat(), map.get("MyFloat"));
         assertEquals(pojo.getMyDouble(), map.get("MyDouble"));
         assertEquals(pojo.getMyBool(), map.get("MyBool"));
-        //assertEquals(pojo.getMyDate(), map.get("MyDate"));
-        //assertEquals(pojo.getMyDatetime(), map.get("MyDatetime"));
-        //assertEquals(pojo.getMyTimestamp(), map.get("MyTimestamp"));
-        //assertEquals(pojo.getMyTime(), map.get("MyTime"));
-        //assertEquals(pojo.getMyYear(), map.get("MyYear"));
+        assertEquals(pojo.getMyDate(), map.get("MyDate"));
+        assertEquals(pojo.getMyDatetime(), map.get("MyDatetime"));
+        assertEquals(pojo.getMyTimestamp(), map.get("MyTimestamp"));
+        assertEquals(pojo.getMyTime(), map.get("MyTime"));
+        assertEquals(pojo.getMyYear(), map.get("MyYear"));
         assertEquals(pojo.getMyVarchar(), map.get("MyVarchar"));
         assertEquals(pojo.getMyChar(), map.get("MyChar"));
         assertEquals(pojo.getMyText(), map.get("MyText"));
-        //assertArrayEquals(pojo.getMyBinary(), (byte[]) map.get("MyBinary"));
-        //assertArrayEquals(pojo.getMyVarbinary(), (byte[])map.get("MyVarbinary"));
-        //assertArrayEquals(pojo.getMyBlob(), (byte[])map.get("MyBlob"));
+        assertArrayEquals(pojo.getMyBinary(), (byte[]) map.get("MyBinary"));
+        assertArrayEquals(pojo.getMyVarbinary(), (byte[])map.get("MyVarbinary"));
+        assertArrayEquals(pojo.getMyBlob(), (byte[])map.get("MyBlob"));
     }
 
     @Test
