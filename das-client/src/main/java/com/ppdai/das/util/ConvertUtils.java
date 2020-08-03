@@ -9,14 +9,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.ppdai.das.service.ColumnMeta;
 import com.ppdai.das.service.DasRequest;
 import com.ppdai.das.service.Entity;
 import com.ppdai.das.service.EntityMeta;
 import org.apache.commons.lang.reflect.FieldUtils;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.sql.JDBCType;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -76,11 +79,9 @@ public class ConvertUtils {
             } else if(clz == int.class) {
                 Integer i = new Gson().fromJson(r.getValue(), Integer.class);
                 return (T) i;
-            }else if (clz == Map.class) {
-                return (T) new Gson().fromJson(r.getValue(), Map.class);
-            }  else if (clz == String.class) {
+            } else if (clz == String.class) {
                 return (T) new Gson().fromJson(r.getValue(), String.class);
-            }else if(clz == Object.class) {
+            } else if(clz == Object.class) {
                 String str = new Gson().fromJson(r.getValue(), String.class);
                 Long l = Longs.tryParse(str);
                 if(l != null) {
@@ -91,49 +92,78 @@ public class ConvertUtils {
                     return (T) d;
                 }
                 return (T) str;
-            }
+            } else {
+                Map<String, Object> origin = new Gson().fromJson(r.getValue(), Map.class);
+                Object instance = clz == Map.class ? new HashMap<>() : clz.newInstance();
 
-            T obj = (T) clz.newInstance();
-            Map map = new Gson().fromJson(r.getValue(), Map.class);
-            for (String col : meta.getColumnNames()) {
-                Field f = clz.getDeclaredField(meta.getFieldMap().get(col));
-                f.setAccessible(true);
+                for(Map.Entry<String, Object> e: origin.entrySet()) {
+                    final String key = e.getKey();
+                    Object value = e.getValue();
+                    Object value2 = e.getValue();
 
-                if(Number.class.isAssignableFrom(f.getType())) {
-                    Number value = (Number) map.get(col);
-                    if (value == null) {
-                        continue;
-                    }
-                    String fieldName = meta.getFieldMap().get(col);
-                    Class fieldClz = FieldUtils.getField(clz, fieldName, true).getType();
+                    Optional optional = meta.getColumnNames().stream().filter(n -> n.equals(key)).findFirst();
+                    if(optional.isPresent() && value != null) {
+                        ColumnMeta columnMeta = meta.getMetaMap().get(key);
+                        if (columnMeta != null) {
+                            final String columnMetaType= columnMeta.getType();
 
-                    if (fieldClz == long.class || fieldClz == Long.class) {
-                        value = value.longValue();
-                    } else if (fieldClz == int.class || fieldClz == Integer.class) {
-                        value = value.intValue();
-                    } else if (fieldClz == float.class || fieldClz == Float.class) {
-                        value =  value.floatValue();
-                    } else if (fieldClz == double.class || fieldClz == Double.class) {
-                        value = value.doubleValue();
-                    }else if (fieldClz == BigDecimal.class) {
-                        value = BigDecimal.valueOf(value.doubleValue());
+                            if (columnMetaType.equals(JDBCType.INTEGER.getName()) ||
+                                    columnMetaType.equals(JDBCType.TINYINT.getName()) ||
+                                    columnMetaType.equals(JDBCType.SMALLINT.getName())) {
+                                value = ((Number)value).intValue();
+                                value2 = ((Number)value).shortValue();
+
+                            } else if (columnMetaType.equals(JDBCType.DOUBLE.getName())) {
+                                value = ((Number)value).doubleValue();
+
+                            } else if (columnMetaType.equals(JDBCType.REAL.getName())) {
+                                value = ((Number)value).floatValue();
+
+                            } else if (columnMetaType.equals(JDBCType.BIGINT.getName())) {
+                                value = ((Number)value).longValue();
+
+                            } else if(columnMetaType.equals(JDBCType.LONGVARBINARY.getName()) ||
+                                    columnMetaType.equals(JDBCType.BINARY.getName()) ||
+                                    columnMetaType.equals(JDBCType.VARBINARY.getName())) {
+
+                                byte[] bytes = new byte[((List)value).size()];
+                                for(int i = 0; i < bytes.length; i++) {
+                                    bytes[i] =  ((Number)((List)value).get(i)).byteValue();
+                                }
+                                value = bytes;
+
+                            } else if (columnMetaType.equals(JDBCType.DECIMAL.getName()) ||
+                                    columnMetaType.equals(JDBCType.NUMERIC.getName())) {
+                                value = BigDecimal.valueOf(((Number)value).doubleValue());
+
+                            } else if (columnMetaType.equals(JDBCType.TIME.getName())) {
+                                value = new Time(((Number)value).longValue());
+
+                            } else if (columnMetaType.equals(JDBCType.TIMESTAMP.getName())) {
+                                value = new Timestamp(((Number)value).longValue());
+
+                            } else if (columnMetaType.equals(JDBCType.DATE.getName())) {
+                                value = new java.sql.Date(((Number)value).longValue());
+                            }
+
+                            if (instance instanceof Map) {
+                                ((Map) instance).put(key, value);
+                            } else {
+                                String f = meta.getFieldMap().get(key);
+
+                                Field field = FieldUtils.getDeclaredField(instance.getClass(), f, true);
+                                if(field.getType().isAssignableFrom(value.getClass())) {
+                                    FieldUtils.writeField(instance, f, value, true);
+
+                                } else if(field.getType().isAssignableFrom(value2.getClass())) {
+                                    FieldUtils.writeField(instance, f, value2, true);
+                                }
+                            }
+                        }
                     }
-                    FieldUtils.writeField(obj, fieldName, value, true);
-                }else {
-                    if(f.getType().getSimpleName().equals("byte[]")) {
-                        //TODO:
-                        continue;
-                    }
-                    Object value = map.get(col);
-                    if(java.util.Date.class.isAssignableFrom(f.getType()) && value != null){
-                        Constructor constructor = f.getType().getDeclaredConstructor(long.class);
-                        constructor.setAccessible(true);
-                        value = constructor.newInstance(((Number)value).longValue());
-                    }
-                    FieldUtils.writeField(obj, meta.getFieldMap().get(col), value, true);
                 }
+                return (T) instance;
             }
-            return obj;
         }catch (Exception e){
             throw new RuntimeException(e);
         }
