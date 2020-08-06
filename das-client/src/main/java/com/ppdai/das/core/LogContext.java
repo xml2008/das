@@ -15,6 +15,7 @@ public class LogContext {
     private static String execludedPackageSpace = "com.ctrip.platform.dal.dao.";
     private boolean singleTask;
     private boolean seqencialExecution;
+    private boolean isRemote = false;
     private Set<String> shards;
     private DasDiagnose dasDiagnose;
     private Map<String, DasDiagnose> taskDiagnoseMap = new ConcurrentHashMap<>();
@@ -85,5 +86,14 @@ public class LogContext {
 
     public StackTraceElement getCaller() {
         return caller;
+    }
+
+    public boolean isRemote() {
+        return isRemote;
+    }
+
+    public LogContext setRemote(boolean remote) {
+        isRemote = remote;
+        return this;
     }
 }

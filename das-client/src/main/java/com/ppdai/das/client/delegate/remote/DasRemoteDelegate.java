@@ -21,9 +21,7 @@ import com.ppdai.das.client.delegate.DasDelegate;
 import com.ppdai.das.client.delegate.EntityMetaManager;
 import com.ppdai.das.client.sqlbuilder.SqlBuilderSerializer;
 import com.ppdai.das.core.DasDiagnose;
-import com.ppdai.das.core.DasException;
 import com.ppdai.das.core.DasLogger;
-import com.ppdai.das.core.ErrorCode;
 import com.ppdai.das.service.ColumnMeta;
 import com.ppdai.das.service.DasBatchUpdateBuilder;
 import com.ppdai.das.service.DasDiagInfo;
@@ -36,7 +34,6 @@ import com.ppdai.das.service.Entity;
 import com.ppdai.das.service.EntityList;
 import com.ppdai.das.service.EntityMeta;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.Iterables.getFirst;
@@ -90,14 +86,12 @@ public class DasRemoteDelegate implements DasDelegate {
         Throwable ex = null;
         try {
             return serverSelector.execute(dasRequest);
-        } catch (TException e) {
+        } catch (Exception e) {
             ex = e;
-            Throwable cause = e.getCause();
-            if(cause instanceof com.ppdai.das.service.DasException){
-                Optional<ErrorCode> eCode = Arrays.stream(ErrorCode.values()).filter(ec -> ("" + ec.getCode()).equals(((com.ppdai.das.service.DasException)cause).getCode())).findFirst();
-                throw eCode.isPresent() ? new com.ppdai.das.core.DasException(eCode.get()) : new com.ppdai.das.core.DasException(cause.getMessage(), cause);
+            if(e instanceof RuntimeException) {
+                throw (RuntimeException)e;
             } else {
-                throw new DasException(cause.getMessage(), cause);
+                throw new RuntimeException(e);
             }
         } finally {
             dalLogger.completeRemoteRequest(logContext, ex);

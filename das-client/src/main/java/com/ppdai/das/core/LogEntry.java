@@ -74,6 +74,9 @@ public class LogEntry {
 		return stackTraceElement;
 	}
 
+	public void clearStackTraceElement() {
+		stackTraceElement = null;
+	}
 	public void setEvent(EventEnum event) {
 		this.event = event;
 		
