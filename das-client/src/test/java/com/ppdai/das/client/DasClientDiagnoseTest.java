@@ -1,17 +1,10 @@
 package com.ppdai.das.client;
 
-import static com.ppdai.das.client.Hints.hints;
-import static com.ppdai.das.client.ParameterDefinition.integerVar;
-import static com.ppdai.das.client.ParameterDefinition.varcharVar;
 import static com.ppdai.das.client.SqlBuilder.*;
 import static com.ppdai.das.core.enums.DatabaseCategory.MySql;
 import static com.ppdai.das.core.enums.DatabaseCategory.SqlServer;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +14,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -90,211 +84,138 @@ public class DasClientDiagnoseTest extends DataPreparer {
         dao.batchUpdate(builder);
     }
 
-    private void test(Diagnose d) {
-        try {
-            d.run(null);
-            fail();
-        } catch (Exception e) {
-        }
-
-        Hints hints = new Hints();
+    private void test(RunDiagnose d) {
+        Hints hints = new Hints().diagnose();
         try {
             d.run(hints);
-            fail();
         } catch (Exception e) {
+        } finally {
+            String s = hints.getDiagnose().toString();
+            Assert.assertFalse(s.trim().isEmpty());
         }
     }
     
-    private interface Diagnose {
+    private interface RunDiagnose {
         void run(Hints hints) throws SQLException;
     }
     
-////    @Test
-////    public void testQueryById() throws Exception {
-////        test((hints)->{
-////            Person pk = new Person();
-////            pk.setPeopleID(null);
-////            pk = dao.queryByPk(pk, hints);
-////        });
-////    }
-////
-////    @Test
-////    public void testQueryx() throws Exception {
-////        test((hints)->{
-////            SqlBuilder builder = selectDistinct(p.Name).from(p).append("xxx").orderBy(p.Name.asc()).intoObject();
-////            builder.setHints(hints);
-////            dao.query(builder);
-////        });
-////    }
-////
-////    @Test
-////    public void testQueryBySample() throws Exception {
-////        test((hints)->{
-////            Person pk = new Person();
-////            List<Person> plist = dao.queryBySample(pk);
-////        });
-////    }
-////
-////    @Test
-////    public void testQueryBySamplePage() throws Exception {
-////        for(int j = 0; j < TABLE_MODE;j++) {
-////            List<Person> plist;
-////            Person pk = new Person();
-////            pk.setName("test");
-////
-////            plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID));
-////            assertList(4, plist);
-////            
-////            plist = dao.queryBySample(pk, PageRange.atPage(2, 2, p.CityID, p.CountryID));
-////            assertList(2, plist);
-////            
-////            if(dbCategory == DatabaseCategory.MySql) {
-////                plist = dao.queryBySample(pk, PageRange.atPage(3, 2));
-////                assertList(0, plist);
-////            }
-////        
-////            plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID.asc()));
-////            assertList(4, plist);
-////            assertOrder(plist, true);
-////            
-////            plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID.desc()));
-////            assertList(4, plist);
-////            assertOrder(plist, false);
-////            
-////            plist = dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID.asc(), p.CityID.desc()));
-////            assertList(4, plist);
-////            assertOrder(plist, true);
-////        }
-////    }
-////    
-////    private void assertList(int size, List<Person> plist) {
-////        assertNotNull(plist);
-////        assertEquals(size, plist.size());
-////        
-////        int id = -1;
-////        for(Person p: plist) {
-////            assertEquals("test", p.getName());
-////        }
-////    }
-////    
-////    private void assertOrder(List<Person> plist, boolean asc) {
-////        int id = asc ? -1 : 10000;
-////        for(Person p: plist) {
-////            if(asc)
-////                assertTrue(p.getPeopleID() > id);
-////            else
-////                assertTrue(p.getPeopleID() < id);
-////        }
-////    }
-////
-////    @Test
-////    public void testCountBySample() throws Exception {
-////        Person pk = new Person();
-////        pk.setName("test");
-////        assertEquals(4, dao.countBySample(pk));
-////        
-////        for(int j = 0; j < TABLE_MODE;j++) {
-////            pk = new Person();
-////            pk.setPeopleID(j+1);
-////            assertEquals(1, dao.countBySample(pk));
-////            
-////            pk = new Person();
-////            pk.setCountryID(j);
-////            pk.setCityID(j);
-////            assertEquals(1, dao.countBySample(pk));
-////        }
-////    }
-////
-//    @Test
-//    public void testInsertOne() throws Exception {
-//        test((hints)->{
-//            Person p = new Person();
-//            dao.insert(p, hints);
-//        });
-//
-//        test((hints)->{
-//            Person p = new Person();
-//            dao.insert(p);
-//        });
-//    }
-//
-//    @Test
-//    public void testInsertList() throws Exception {
-//        test((hints)->{
-//            List<Person> pl = new ArrayList<>();
-//            for(int k = 0; k < TABLE_MODE;k++) {
-//                Person p = new Person();
-//                pl.add(p);
-//            }
-//            assertEquals(TABLE_MODE, dao.insert(pl, hints));
-//        });
-//
-//        test((hints)->{
-//            List<Person> pl = new ArrayList<>();
-//            for(int k = 0; k < TABLE_MODE;k++) {
-//                Person p = new Person();
-//                pl.add(p);
-//            }
-//            assertEquals(TABLE_MODE, dao.insert(pl));
-//        });
-//    }
-//
-//    @Test
-//    public void testBatchInsert() throws Exception {
-//        List<Person> pl = new ArrayList<>();
-//        for(int k = 0; k < TABLE_MODE;k++) {
-//            Person p = new Person();
-//            pl.add(p);
-//        }
-//        
-//        test((hints)->{
-//            dao.batchInsert(pl, hints);
-//        });
-//    }
-//
-////    @Test
-////    public void testDeleteOne() throws Exception {
-////        test((hints)->{
-////            Person pk = new Person();
-////            dao.deleteByPk(pk);
-////        });
-////    }
-////
-////    @Test
-////    public void testDeleteBySample() throws Exception {
-////        Person sample = new Person();
-////        sample.setName("test");
-////        assertEquals(4, dao.deleteBySample(sample));
-////        assertEquals(0, dao.queryBySample(sample).size());
-////    }
-////
-////    @Test
-////    public void testBatchDelete() throws Exception {
-////        List<Person> pl = new ArrayList<>();
-////        for (int k = 0; k < TABLE_MODE; k++) {
-////            Person pk = new Person();
-////            pk.setPeopleID(k + 1);
-////            pk.setCountryID(k);
-////            pk.setCityID(k);
-////            pl.add(pk);
-////        }
-////
-////        test((hints)->{
-////            dao.batchDelete(pl);
-////        });
-////    }
-////
-////    @Test
-////    public void testUpdate() throws Exception {
-////        test((hints)->{
-////            Person pk = new Person();
-////            pk.setName("Tom");
-////            pk.setCountryID(100);
-////            pk.setCityID(200);
-////            assertEquals(1, dao.update(pk));
-////        });
-////    }
-////
+    @Test
+    public void testQueryById() throws Exception {
+        test((hints)->{
+            Person pk = new Person();
+            pk.setPeopleID(1);
+            dao.queryByPk(pk, hints);
+        });
+    }
+
+    @Test
+    public void testQueryBySample() throws Exception {
+        test((hints)->{
+            Person pk = new Person();
+            pk.setName("tom");
+            List<Person> plist = dao.queryBySample(pk, hints);
+        });
+    }
+
+    @Test
+    public void testQueryBySamplePage() throws Exception {
+        test((hints)-> {
+            for (int j = 0; j < TABLE_MODE; j++) {
+                Person pk = new Person();
+                pk.setName("test");
+                dao.queryBySample(pk, PageRange.atPage(1, 10, p.PeopleID), hints);
+            }
+        });
+    }
+
+    @Test
+    public void testCountBySample() throws Exception {
+        test((hints -> {
+            Person pk = new Person();
+            pk.setName("test");
+            dao.countBySample(pk, hints);
+        }));
+
+    }
+
+    @Test
+    public void testInsertOne() throws Exception {
+        test((hints)->{
+            Person p = new Person();
+            p.setName("tom");
+            dao.insert(p, hints);
+        });
+    }
+
+    @Test
+    public void testInsertList() throws Exception {
+        test((hints)->{
+            List<Person> pl = new ArrayList<>();
+            for(int k = 0; k < TABLE_MODE;k++) {
+                Person p = new Person();
+                pl.add(p);
+            }
+           dao.insert(pl, hints);
+        });
+    }
+
+    @Test
+    public void testBatchInsert() throws Exception {
+        List<Person> pl = new ArrayList<>();
+        for(int k = 0; k < TABLE_MODE;k++) {
+            Person p = new Person();
+            pl.add(p);
+        }
+
+        test((hints)->{
+            dao.batchInsert(pl, hints);
+        });
+    }
+
+    @Test
+    public void testDeleteOne() throws Exception {
+        test((hints)->{
+            Person pk = new Person();
+            dao.deleteByPk(pk, hints);
+        });
+    }
+
+    @Test
+    public void testDeleteBySample() throws Exception {
+        test((hints)->{
+            Person sample = new Person();
+            sample.setName("test");
+            dao.deleteBySample(sample, hints);
+         });
+    }
+
+    @Test
+    public void testBatchDelete() throws Exception {
+        List<Person> pl = new ArrayList<>();
+        for (int k = 0; k < TABLE_MODE; k++) {
+            Person pk = new Person();
+            pk.setPeopleID(k + 1);
+            pk.setCountryID(k);
+            pk.setCityID(k);
+            pl.add(pk);
+        }
+
+        test((hints)->{
+            dao.batchDelete(pl, hints);
+        });
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        test((hints)->{
+            Person pk = new Person();
+            pk.setName("Tom");
+            pk.setCountryID(100);
+            pk.setCityID(200);
+            dao.update(pk, hints);
+        });
+    }
+
 //    @Test
 //    public void testInsertBuilder() throws Exception {
 //        PersonDefinition p = Person.PERSON;
@@ -305,15 +226,15 @@ public class DasClientDiagnoseTest extends DataPreparer {
 //        });
 //    }
 //
-//    @Test
-//    public void testUpdateBuilder() throws Exception {
-//        PersonDefinition p = Person.PERSON;
-//        test((hints)->{
-//            int k = 1;
-//            SqlBuilder builder = update(Person.PERSON).set(p.Name.eq("Tom"), p.CountryID.eq(100), p.CityID.eq(200)).where(p.PeopleID.eq(k+1), 1234);
-//            dao.update(builder.setHints(hints));
-//        });
-//    }
+    @Test
+    public void testUpdateBuilder() throws Exception {
+        PersonDefinition p = Person.PERSON;
+        test((hints)->{
+            int k = 1;
+            SqlBuilder builder = update(Person.PERSON).set(p.Name.eq("Tom"), p.CountryID.eq(100), p.CityID.eq(200)).where(p.PeopleID.eq(k+1), 1234);
+            dao.update(builder.setHints(hints));
+        });
+    }
 //
 //    @Test
 //    public void testDeleteBuilder() throws Exception {
@@ -324,19 +245,19 @@ public class DasClientDiagnoseTest extends DataPreparer {
 //            dao.update(builder.setHints(hints));
 //        });
 //    }
-//
-//    @Test
-//    public void testBatchUpdate() throws Exception {
-//        List<Person> pl = new ArrayList<>();
-//        for (int k = 0; k < TABLE_MODE; k++) {
-//            Person pk = new Person();
-//            pl.add(pk);
-//        }
-//
-//        test((hints)->{
-//            dao.batchUpdate(pl, hints);
-//        });
-//    }
+
+    @Test
+    public void testBatchUpdate() throws Exception {
+        List<Person> pl = new ArrayList<>();
+        for (int k = 0; k < TABLE_MODE; k++) {
+            Person pk = new Person();
+            pl.add(pk);
+        }
+
+        test((hints)->{
+            dao.batchUpdate(pl, hints);
+        });
+    }
 
 //    @Test
 //    public void testBatchUpdateBuillder() throws Exception {
@@ -367,8 +288,9 @@ public class DasClientDiagnoseTest extends DataPreparer {
         builder.addBatch("test1", 10, 100, 200);
         builder.addBatch("test2", 20, 200, 100);
         builder.addBatch("test3", 30, 300, 0);
-        
+
         test((hints)->{
+            builder.setHints(hints);
             dao.batchUpdate(builder);
         });
     }
@@ -378,32 +300,32 @@ public class DasClientDiagnoseTest extends DataPreparer {
         PersonDefinition p = Person.PERSON;
         test((hints)->{
             SqlBuilder builder = selectAllFrom(p).where(p.PeopleID.eq(1), 1212).into(Person.class);
+            builder.setHints(hints);
             Person pk = dao.queryObject(builder);
         });
-        
-        //The following works for mysql!!!
-//        test((hints)->{
-//            SqlBuilder builder = selectCount().from(p).where("111").intoObject();
-//            Number n = dao.queryObject(builder);
-//        });
 
         test((hints)->{
             SqlBuilder builder = selectAllFrom(p).where(p.PeopleID.eq(1), 123).into(Person.class).withLock();
+            builder.setHints(hints);
             Person pk = dao.queryObject(builder);
         });
-        
-        //The following works for mysql!!!
-//        test((hints)->{
-//            SqlBuilder builder = selectCount().from(p).where(111).intoObject().withLock();
-//            dao.queryObject(builder);
-//        });
     }
 
     @Test
     public void testQueryAll() throws Exception {
         test((hints)->{
             SqlBuilder builder = selectAll().from(p).where(p.PeopleID.eq(1), 123).into(Person.class);
+            builder.setHints(hints);
             Person p = dao.queryObject(builder);
+        });
+    }
+
+    @Test
+    public void testQueryObjectNullable() throws Exception {
+        test((hints)->{
+            SqlBuilder builder = selectAll().from(p).where(p.PeopleID.eq(1), 123).into(Person.class);
+            builder.setHints(hints);
+            dao.queryObjectNullable(builder);
         });
     }
 
@@ -412,6 +334,7 @@ public class DasClientDiagnoseTest extends DataPreparer {
         test((hints)->{
             PersonDefinition p = Person.PERSON;
             SqlBuilder builder = selectDistinct(p.PeopleID).from(p).orderBy(111, p.PeopleID.asc()).intoObject();
+            builder.setHints(hints);
             dao.query(builder);
         });
     }
@@ -426,6 +349,7 @@ public class DasClientDiagnoseTest extends DataPreparer {
         }
         
         test((hints)->{
+            batchBuilder.setHints(hints);
             dao.batchQuery(batchBuilder);
         });
     }
@@ -437,6 +361,7 @@ public class DasClientDiagnoseTest extends DataPreparer {
         test((hints)->{
             dao.execute(() -> {
                 SqlBuilder builder = selectAllFrom(p).where(111, p.PeopleID.gt(0)).orderBy(p.PeopleID.asc()).into(Person.class);
+                builder.setHints(hints);
                 List<Person> plist = dao.query(builder);
             });
         });
@@ -448,6 +373,7 @@ public class DasClientDiagnoseTest extends DataPreparer {
         test((hints)->{
             dao.execute(() -> {
                 SqlBuilder builder = selectAllFrom(p).where(p.PeopleID.gt(0)).orderBy(p.PeopleID.asc()).into(Person.class);
+                builder.setHints(hints);
                 List<Person> plist = dao.query(builder);
     
                 assertEquals(4, plist.size());
@@ -455,11 +381,13 @@ public class DasClientDiagnoseTest extends DataPreparer {
                 testTransactionNestBatchDelete(plist);
                 
                 builder = selectAllFrom(p).where(p.PeopleID.gt(0)).orderBy(p.PeopleID.asc()).into(Person.class);
+                builder.setHints(hints);
                 assertEquals(0, dao.query(builder).size());
                 
                 testTransactionNestInsert(plist);
                 
                 builder = selectAllFrom(p).where(p.PeopleID.gt(0)).orderBy(p.PeopleID.asc()).into(Person.class);
+                builder.setHints(hints);
                 assertEquals(4, dao.query(builder).size());
             });
         });
@@ -471,6 +399,7 @@ public class DasClientDiagnoseTest extends DataPreparer {
         test((hints)->{
             List<Person> plistx = dao.execute(() -> {
                 SqlBuilder builder = selectAllFrom(p).where(111, p.PeopleID.gt(0)).orderBy(p.PeopleID.asc()).into(Person.class);
+                builder.setHints(hints);
                 List<Person> plist = dao.query(builder);
                 return plist;
             });            
@@ -483,6 +412,7 @@ public class DasClientDiagnoseTest extends DataPreparer {
         test((hints)->{
             List<Person> plistx = dao.execute(() -> {
                 SqlBuilder builder = selectAllFrom(p).where(p.PeopleID.gt(0)).orderBy(p.PeopleID.asc()).into(Person.class);
+                builder.setHints(hints);
                 List<Person> plist = dao.query(builder);
     
                 assertEquals(4, plist.size());
@@ -490,11 +420,13 @@ public class DasClientDiagnoseTest extends DataPreparer {
                 testTransactionNestBatchDelete(plist);
                 
                 builder = selectAllFrom(p).where(p.PeopleID.gt(0)).orderBy(p.PeopleID.asc()).into(Person.class);
+                builder.setHints(hints);
                 assertEquals(0, dao.query(builder).size());
                 
                 testTransactionNestInsert(plist);
                 
                 builder = selectAllFrom(p).where(p.PeopleID.gt(0)).orderBy(p.PeopleID.asc()).into(Person.class);
+                builder.setHints(hints);
                 assertEquals(4, dao.query(builder).size());
                 return plist;
             });

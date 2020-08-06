@@ -7,6 +7,7 @@ import com.ppdai.das.client.sqlbuilder.BuilderContext;
 import com.ppdai.das.client.sqlbuilder.DefaultBuilderContext;
 import com.ppdai.das.client.sqlbuilder.ParameterDefinitionProvider;
 import com.ppdai.das.client.sqlbuilder.Template;
+import com.ppdai.das.core.HintEnum;
 
 public class BatchUpdateBuilder implements Segment, ParameterDefinitionProvider {
     private SqlBuilder builder;
@@ -88,6 +89,9 @@ public class BatchUpdateBuilder implements Segment, ParameterDefinitionProvider 
 
     public BatchUpdateBuilder setHints(Hints hints) {
         this.hints = hints;
+        if(builder != null && hints.getDiagnose() != null) {
+           builder.hints().set(HintEnum.userDefined1, hints.getDiagnose());
+        }
         return this;
     }
 
