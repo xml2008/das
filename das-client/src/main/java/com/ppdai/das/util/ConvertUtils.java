@@ -15,6 +15,7 @@ import com.ppdai.das.service.Entity;
 import com.ppdai.das.service.EntityMeta;
 import org.apache.commons.lang.reflect.FieldUtils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.JDBCType;
@@ -71,6 +72,47 @@ public class ConvertUtils {
         return ((List<Object>)rows).stream().map(obj -> pojo2Entity(obj, meta)).collect(Collectors.toList());
     }
 
+    private static void queryEntity(Object obj, Map<String, Object> map, EntityMeta meta, Class clz) throws Exception{
+        for (String col : meta.getColumnNames()) {
+            Field f = clz.getDeclaredField(meta.getFieldMap().get(col));
+            f.setAccessible(true);
+
+            if(Number.class.isAssignableFrom(f.getType())) {
+                Number value = (Number) map.get(col);
+                if (value == null) {
+                    continue;
+                }
+                String fieldName = meta.getFieldMap().get(col);
+                Class fieldClz = FieldUtils.getField(clz, fieldName, true).getType();
+
+                if (fieldClz == long.class || fieldClz == Long.class) {
+                    value = value.longValue();
+                } else if (fieldClz == int.class || fieldClz == Integer.class) {
+                    value = value.intValue();
+                } else if (fieldClz == float.class || fieldClz == Float.class) {
+                    value =  value.floatValue();
+                } else if (fieldClz == double.class || fieldClz == Double.class) {
+                    value = value.doubleValue();
+                }else if (fieldClz == BigDecimal.class) {
+                    value = BigDecimal.valueOf(value.doubleValue());
+                }
+                FieldUtils.writeField(obj, fieldName, value, true);
+            }else {
+                if(f.getType().getSimpleName().equals("byte[]")) {
+                    //TODO:
+                    continue;
+                }
+                Object value = map.get(col);
+                if(java.util.Date.class.isAssignableFrom(f.getType()) && value != null){
+                    Constructor constructor = f.getType().getDeclaredConstructor(long.class);
+                    constructor.setAccessible(true);
+                    value = constructor.newInstance(((Number)value).longValue());
+                }
+                FieldUtils.writeField(obj, meta.getFieldMap().get(col), value, true);
+            }
+        }
+    }
+
     public static <T> T entity2POJO(Entity r, EntityMeta meta, Class clz) {
         try {
             if(clz == long.class) {
@@ -95,7 +137,11 @@ public class ConvertUtils {
             } else {
                 Map<String, Object> origin = new Gson().fromJson(r.getValue(), Map.class);
                 Object instance = clz == Map.class ? new HashMap<>() : clz.newInstance();
-
+                //For query object without enough EntityMeta
+                if(meta.getColumnTypes().isEmpty()) {
+                    queryEntity(instance, origin, meta, clz);
+                    return (T) instance;
+                }
                 for(Map.Entry<String, Object> e: origin.entrySet()) {
                     final String key = e.getKey();
                     Object value = e.getValue();
@@ -106,44 +152,45 @@ public class ConvertUtils {
                         ColumnMeta columnMeta = meta.getMetaMap().get(key);
                         if (columnMeta != null) {
                             final String columnMetaType= columnMeta.getType();
+                            if(columnMetaType !=null ) {
+                                if (columnMetaType.equals(JDBCType.INTEGER.getName()) ||
+                                        columnMetaType.equals(JDBCType.TINYINT.getName()) ||
+                                        columnMetaType.equals(JDBCType.SMALLINT.getName())) {
+                                    value = ((Number)value).intValue();
+                                    value2 = ((Number)value).shortValue();
 
-                            if (columnMetaType.equals(JDBCType.INTEGER.getName()) ||
-                                    columnMetaType.equals(JDBCType.TINYINT.getName()) ||
-                                    columnMetaType.equals(JDBCType.SMALLINT.getName())) {
-                                value = ((Number)value).intValue();
-                                value2 = ((Number)value).shortValue();
+                                } else if (columnMetaType.equals(JDBCType.DOUBLE.getName())) {
+                                    value = ((Number)value).doubleValue();
 
-                            } else if (columnMetaType.equals(JDBCType.DOUBLE.getName())) {
-                                value = ((Number)value).doubleValue();
+                                } else if (columnMetaType.equals(JDBCType.REAL.getName())) {
+                                    value = ((Number)value).floatValue();
 
-                            } else if (columnMetaType.equals(JDBCType.REAL.getName())) {
-                                value = ((Number)value).floatValue();
+                                } else if (columnMetaType.equals(JDBCType.BIGINT.getName())) {
+                                    value = ((Number)value).longValue();
 
-                            } else if (columnMetaType.equals(JDBCType.BIGINT.getName())) {
-                                value = ((Number)value).longValue();
+                                } else if(columnMetaType.equals(JDBCType.LONGVARBINARY.getName()) ||
+                                        columnMetaType.equals(JDBCType.BINARY.getName()) ||
+                                        columnMetaType.equals(JDBCType.VARBINARY.getName())) {
 
-                            } else if(columnMetaType.equals(JDBCType.LONGVARBINARY.getName()) ||
-                                    columnMetaType.equals(JDBCType.BINARY.getName()) ||
-                                    columnMetaType.equals(JDBCType.VARBINARY.getName())) {
+                                    byte[] bytes = new byte[((List)value).size()];
+                                    for(int i = 0; i < bytes.length; i++) {
+                                        bytes[i] =  ((Number)((List)value).get(i)).byteValue();
+                                    }
+                                    value = bytes;
 
-                                byte[] bytes = new byte[((List)value).size()];
-                                for(int i = 0; i < bytes.length; i++) {
-                                    bytes[i] =  ((Number)((List)value).get(i)).byteValue();
+                                } else if (columnMetaType.equals(JDBCType.DECIMAL.getName()) ||
+                                        columnMetaType.equals(JDBCType.NUMERIC.getName())) {
+                                    value = BigDecimal.valueOf(((Number)value).doubleValue());
+
+                                } else if (columnMetaType.equals(JDBCType.TIME.getName())) {
+                                    value = new Time(((Number)value).longValue());
+
+                                } else if (columnMetaType.equals(JDBCType.TIMESTAMP.getName())) {
+                                    value = new Timestamp(((Number)value).longValue());
+
+                                } else if (columnMetaType.equals(JDBCType.DATE.getName())) {
+                                    value = new java.sql.Date(((Number)value).longValue());
                                 }
-                                value = bytes;
-
-                            } else if (columnMetaType.equals(JDBCType.DECIMAL.getName()) ||
-                                    columnMetaType.equals(JDBCType.NUMERIC.getName())) {
-                                value = BigDecimal.valueOf(((Number)value).doubleValue());
-
-                            } else if (columnMetaType.equals(JDBCType.TIME.getName())) {
-                                value = new Time(((Number)value).longValue());
-
-                            } else if (columnMetaType.equals(JDBCType.TIMESTAMP.getName())) {
-                                value = new Timestamp(((Number)value).longValue());
-
-                            } else if (columnMetaType.equals(JDBCType.DATE.getName())) {
-                                value = new java.sql.Date(((Number)value).longValue());
                             }
 
                             if (instance instanceof Map) {
@@ -152,11 +199,30 @@ public class ConvertUtils {
                                 String f = meta.getFieldMap().get(key);
 
                                 Field field = FieldUtils.getDeclaredField(instance.getClass(), f, true);
+
                                 if(field.getType().isAssignableFrom(value.getClass())) {
                                     FieldUtils.writeField(instance, f, value, true);
 
                                 } else if(field.getType().isAssignableFrom(value2.getClass())) {
                                     FieldUtils.writeField(instance, f, value2, true);
+
+                                } else {
+                                    //Number types
+                                    if(field.getType() == Long.class || field.getType() == long.class) {
+                                        value = ((Number)value).longValue();
+                                    } else if(field.getType() == Integer.class || field.getType() == int.class) {
+                                        value = ((Number)value).intValue();
+                                    } else if(field.getType() == Double.class || field.getType() == double.class) {
+                                        value = ((Number)value).doubleValue();
+                                    } else if(field.getType() == Float.class || field.getType() == float.class) {
+                                        value = ((Number)value).floatValue();
+                                    } else if(field.getType() == Short.class || field.getType() == short.class) {
+                                        value = ((Number)value).shortValue();
+                                    } else if(field.getType() == Byte.class || field.getType() == byte.class) {
+                                        value = ((Number)value).byteValue();
+                                    }
+
+                                    FieldUtils.writeField(instance, f, value, true);
                                 }
                             }
                         }

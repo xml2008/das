@@ -117,6 +117,7 @@ public class KeyHolderTest {
         EntityMeta meta = new EntityMeta();
         meta.setPrimaryKeyNames(Lists.newArrayList("keyC"));
         meta.setColumnNames(Lists.newArrayList("keyC"));
+        meta.setColumnTypes(Lists.newArrayList("INTEGER"));
         ColumnMeta columnMeta = new ColumnMeta();
         columnMeta.setType(JDBCType.INTEGER.getName());
         meta.setMetaMap(ImmutableMap.of("keyC", columnMeta));
