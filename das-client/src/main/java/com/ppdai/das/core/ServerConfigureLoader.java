@@ -2,6 +2,7 @@ package com.ppdai.das.core;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ppdai.das.core.task.TaskFactory;
 
@@ -30,7 +31,7 @@ public interface ServerConfigureLoader {
      *
      * @return
      */
-    String[] getAppIds(String serverGroupId) throws Exception;
+    Set<String> getAppIds(String serverGroupId) throws Exception;
 
     /**
      * When build DalConfigure, make sure appId is set, so that DalConfigure.getAppId() is present
