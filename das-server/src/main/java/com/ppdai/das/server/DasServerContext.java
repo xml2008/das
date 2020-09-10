@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Preconditions;
 import com.ppdai.das.core.DataBase;
 import com.ppdai.das.core.DatabaseSet;
 import org.slf4j.Logger;
@@ -32,47 +35,60 @@ public class DasServerContext {
     private ServerConfigureLoader serverLoader;
     
     public DasServerContext(String address, int port) {
-        // This can be designate
-        // This is just for test
         workerId = String.format("Server-%s-%d", address, port);
         Map<String, DasConfigure> configureMap = new HashMap<>();
 
         try {
             logger.info("Load Das Server configure");
-            
             serverLoader = ServiceLoaderHelper.getInstance(ServerConfigureLoader.class);
             if(serverLoader == null)
                 return;
-            
-            logger.info("Load Das Server Group");
-            serverGroup = serverLoader.getServerGroupId(address, port);
-            logger.info("Das Server Group is " + serverGroup);
 
-            logger.info("Load Das Server Configure");
+            serverGroup = serverLoader.getServerGroupId(address, port);
+            logger.info("Das Server Group: [" + serverGroup + "]");
+
             serverConfigure = serverLoader.getServerConfigure();
-            logger.info("Das Server Configures are " + serverConfigure);
+            logger.info("Das Server Configures: " + serverConfigure);
             
             String poolSize = serverConfigure.get(SqlRequestExecutor.MAX_POOL_SIZE);
             String keepAliveTime = serverConfigure.get(SqlRequestExecutor.KEEP_ALIVE_TIME);
 
             SqlRequestExecutor.init(poolSize, keepAliveTime);
             StatusManager.initializeGlobal();
-
-            for(String appId: serverLoader.getAppIds(serverGroup)) {
-                DasConfigure config = serverLoader.load(appId);
-                if(config == null)
-                    throw new IllegalStateException("Can not load dal confiure for app: " + appId);
-                configureMap.put(appId, config);
-            }
-            
-            DasConfigureContext configContext = new DasConfigureContext(configureMap, serverLoader.getDasLogger(), serverLoader.getTaskFactory(), serverLoader.getConnectionLocator(), serverLoader.getDatabaseSelector());
+            Set<String> appIds = serverLoader.getAppIds(serverGroup);
+            DasConfigureContext configContext = createDasConfigureContext(appIds, address, port);
             DasConfigureFactory.initialize(configContext);
-
+            refreshAppIds(address, port);
         } catch (Throwable e) {
             throw new IllegalStateException("Das Server Context initilization fail", e);
-        } finally {
-            logDalConfigure(configureMap, address, port);
         }
+    }
+
+    DasConfigureContext createDasConfigureContext(Set<String> appIds, String address, int port) throws Exception {
+        Map<String, DasConfigure> configureMap = new HashMap<>();
+
+        for (String appId : appIds) {//load app ids from multiple app groups
+            DasConfigure config = serverLoader.load(appId);
+            Preconditions.checkNotNull(config, "Can not load dal confiure for app: " + appId);
+            configureMap.put(appId, config);
+        }
+        logDalConfigure(configureMap, address, port);
+        return new DasConfigureContext(configureMap, serverLoader.getDasLogger(), serverLoader.getTaskFactory(), serverLoader.getConnectionLocator(), serverLoader.getDatabaseSelector());
+    }
+
+    void refreshAppIds(String address, int port) {
+        Executors.newScheduledThreadPool(2).scheduleAtFixedRate(() -> {
+            try{
+                Set<String> appIds = serverLoader.getAppIds(serverGroup);
+                if(!appIds.equals(DasConfigureFactory.getAppIds())){
+                    DasConfigureContext configContext = createDasConfigureContext(appIds, address, port);
+                    DasConfigureFactory.refresh(configContext);
+                    logger.info("application ids changed, and reloaded");
+                }
+            } catch (Exception e) {
+                logger.error("Exception occurs in refreshAppIds", e);
+            }
+        }, 1, 5, TimeUnit.MINUTES);
     }
 
     void logDalConfigure( Map<String, DasConfigure> configureMap, String address, int port){
