@@ -1,7 +1,17 @@
 package com.ppdai.das.client.sqlbuilder;
 
-import static com.ppdai.das.client.SegmentConstants.*;
-import static com.ppdai.das.client.SqlBuilder.*;
+import static com.ppdai.das.client.SegmentConstants.AND;
+import static com.ppdai.das.client.SegmentConstants.OR;
+import static com.ppdai.das.client.SegmentConstants.allOf;
+import static com.ppdai.das.client.SegmentConstants.anyOf;
+import static com.ppdai.das.client.SegmentConstants.bracket;
+import static com.ppdai.das.client.SegmentConstants.expression;
+import static com.ppdai.das.client.SegmentConstants.text;
+import static com.ppdai.das.client.SqlBuilder.select;
+import static com.ppdai.das.client.SqlBuilder.selectAll;
+import static com.ppdai.das.client.SqlBuilder.selectCount;
+import static com.ppdai.das.client.SqlBuilder.selectDistinct;
+import static com.ppdai.das.client.SqlBuilder.selectTop;
 import static com.ppdai.das.client.sqlbuilder.Person.PERSON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -9,18 +19,17 @@ import static org.junit.Assert.fail;
 import java.sql.JDBCType;
 import java.util.List;
 
-import com.ppdai.das.client.delegate.local.DasBuilderContext;
-import com.ppdai.das.client.Hints;
-
-import com.ppdai.das.core.enums.ParameterDirection;
 import org.junit.Test;
 
+import com.ppdai.das.client.Hints;
 import com.ppdai.das.client.Parameter;
 import com.ppdai.das.client.ParameterDefinition;
-
+import com.ppdai.das.client.SegmentConstants;
 import com.ppdai.das.client.SqlBuilder;
 import com.ppdai.das.client.TableDefinition;
+import com.ppdai.das.client.delegate.local.DasBuilderContext;
 import com.ppdai.das.client.sqlbuilder.Person.PersonDefinition;
+import com.ppdai.das.core.enums.ParameterDirection;
 
 import junit.framework.Assert;
 
@@ -786,6 +795,20 @@ public class SqlBuilderTest {
         // Auto removed
         assertEquals("1=1", new SqlBuilder().includeAll().append(expression("aaa").when(false)).build(ctx));
         
+        //Verify issue 56898
+        PersonDefinition p = PERSON.as("p");
+        
+        assertEquals("SELECT p.CityID FROM person p WHERE 1=1 AND aaa", SqlBuilder.select(p.CityID).from(p).where().includeAll().and(expression("aaa")).build(ctx));
+        assertEquals("SELECT p.CityID FROM person p WHERE 1<>1 OR aaa", SqlBuilder.select(p.CityID).from(p).where().excludeAll().and(expression("aaa")).build(ctx));
+        
+        assertEquals("SELECT p.CityID FROM person p WHERE 1=1 AND aaa AND TRUE", SqlBuilder.select(p.CityID).from(p).where().includeAll().and(expression("aaa")).and(SegmentConstants.TRUE).build(ctx));
+        assertEquals("SELECT p.CityID FROM person p WHERE 1<>1 OR aaa AND TRUE", SqlBuilder.select(p.CityID).from(p).where().excludeAll().and(expression("aaa")).and(SegmentConstants.TRUE).build(ctx));
+        
+        assertEquals("SELECT p.CityID FROM person p WHERE 1=1 AND aaa AND FALSE", SqlBuilder.select(p.CityID).from(p).where().includeAll().and(expression("aaa")).and(SegmentConstants.FALSE).build(ctx));
+        assertEquals("SELECT p.CityID FROM person p WHERE 1<>1 OR aaa AND FALSE", SqlBuilder.select(p.CityID).from(p).where().excludeAll().and(expression("aaa")).and(SegmentConstants.FALSE).build(ctx));
+
+        assertEquals("SELECT p.CityID FROM person p WHERE 1=1 AND FALSE", SqlBuilder.select(p.CityID).from(p).where().includeAll().and().and(SegmentConstants.FALSE).build(ctx));
+        assertEquals("SELECT p.CityID FROM person p WHERE 1<>1 OR FALSE", SqlBuilder.select(p.CityID).from(p).where().excludeAll().and().and(SegmentConstants.FALSE).build(ctx));
     }
     
     @Test
