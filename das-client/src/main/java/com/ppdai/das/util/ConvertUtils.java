@@ -18,6 +18,7 @@ import org.apache.commons.lang.reflect.FieldUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.JDBCType;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -208,18 +209,21 @@ public class ConvertUtils {
 
                                 } else {
                                     //Number types
-                                    if(field.getType() == Long.class || field.getType() == long.class) {
+                                    final Class fieldType = field.getType();
+                                    if(fieldType == Long.class || fieldType == long.class) {
                                         value = ((Number)value).longValue();
-                                    } else if(field.getType() == Integer.class || field.getType() == int.class) {
+                                    } else if(fieldType == Integer.class || fieldType == int.class) {
                                         value = ((Number)value).intValue();
-                                    } else if(field.getType() == Double.class || field.getType() == double.class) {
+                                    } else if(fieldType == Double.class || fieldType == double.class) {
                                         value = ((Number)value).doubleValue();
-                                    } else if(field.getType() == Float.class || field.getType() == float.class) {
+                                    } else if(fieldType == Float.class || fieldType == float.class) {
                                         value = ((Number)value).floatValue();
-                                    } else if(field.getType() == Short.class || field.getType() == short.class) {
+                                    } else if(fieldType == Short.class || fieldType == short.class) {
                                         value = ((Number)value).shortValue();
-                                    } else if(field.getType() == Byte.class || field.getType() == byte.class) {
+                                    } else if(fieldType == Byte.class || fieldType == byte.class) {
                                         value = ((Number)value).byteValue();
+                                    } else if(fieldType == BigInteger.class) {
+                                        value = BigInteger.valueOf(((Number)value).longValue());
                                     }
 
                                     FieldUtils.writeField(instance, f, value, true);
