@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.JDBCType;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
@@ -284,10 +285,12 @@ public class BuilderUtilsTest {
         final Date date = new Date(1);
         final java.sql.Date sqlDate = new java.sql.Date(5);
         final Timestamp timestamp = new Timestamp(10);
+        final Time time = new Time(12);
         SqlBuilder builderX = new SqlBuilder()
                 .where(p.DataChange_LastTime.eq(date),
                        p.DataChange_LastTime.eq(sqlDate),
                        p.DataChange_LastTime.eq(timestamp),
+                       p.DataChange_LastTime.eq(time),
                        p.CountryID.eq(2),
                        p.CountryID.eq(2.5),
                        p.CountryID.eq(2.8f),

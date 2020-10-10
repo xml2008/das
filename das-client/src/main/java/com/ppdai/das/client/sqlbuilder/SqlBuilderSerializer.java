@@ -16,6 +16,7 @@ import com.ppdai.das.core.DasDiagnose;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -170,6 +171,12 @@ public class SqlBuilderSerializer implements Serializer {
                 root.add("value", new JsonPrimitive(l.getTime()));
                 return root;
             })
+            .registerTypeHierarchyAdapter(Time.class, (JsonSerializer<Time>) (l, typeOfSrc, context) -> {
+                JsonObject root = new JsonObject();
+                root.addProperty("type", typeOfSrc.getTypeName());
+                root.add("value", new JsonPrimitive(l.getTime()));
+                return root;
+            })
             .registerTypeHierarchyAdapter(Supplier.class, (JsonDeserializer<Supplier>) (json, typeOfT, context) -> {
                 if(json instanceof JsonArray) {
                     JsonArray array = (JsonArray)json;
@@ -225,6 +232,9 @@ public class SqlBuilderSerializer implements Serializer {
         }
         if(type.equals(Timestamp.class.getName())){
             return () -> new Timestamp(primitive.getAsLong());
+        }
+        if(type.equals(Time.class.getName())){
+            return () -> new Time(primitive.getAsLong());
         }
         if(type.equals(BigInteger.class.getSimpleName())){
             return () -> BigInteger.valueOf(primitive.getAsLong());
