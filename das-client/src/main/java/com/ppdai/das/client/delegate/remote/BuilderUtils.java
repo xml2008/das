@@ -35,7 +35,7 @@ public class BuilderUtils {
         return new DasSqlBuilder()
                 .setPartials(SqlBuilderSerializer.serializeSegment(builder))
                 .setParameters(new DasParameters().setParameters(buildParameters(builder.buildParameters())))
-                .setDefinitions(Collections.emptyList())
+                .setDefinitions(buildParameterDefinition(builder.buildDefinitions()))
                 .setEntityMeta(builder.getEntityMeta())
                 .setEntityType(builder.getEntityType() == null ? null : builder.getEntityType().getName());
     }
