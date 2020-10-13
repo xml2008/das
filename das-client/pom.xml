@@ -7,7 +7,7 @@
 	<version>2.4.8-SNAPSHOT</version>
 	<properties>
 		<ver.version>${project.version}</ver.version>
-		<junit-version>4.13</junit-version>
+		<junit-version>4.13.1</junit-version>
 		<javax-persistence-version>1.0.2</javax-persistence-version>
 		<sqljdbc-version>6.2.2.jre7.ctrip</sqljdbc-version>
 		<mysql-connector-version>5.1.40</mysql-connector-version>
