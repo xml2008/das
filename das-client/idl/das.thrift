@@ -100,7 +100,8 @@ enum DasHintEnum {
     includedColumns,
     excludedColumns,
 
-    diagnoseMode
+    diagnoseMode,
+    updateNullField
 }
 
 struct DasHints {

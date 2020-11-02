@@ -429,6 +429,9 @@ public class DasServer implements DasService.Iface {
         if(Boolean.valueOf(map.get(DasHintEnum.diagnoseMode))) {
             result.diagnose();
         }
+        if(Boolean.valueOf(map.get(DasHintEnum.updateNullField))) {
+            result.updateNullField();
+        }
         return result;
     }
 
@@ -566,7 +569,7 @@ public class DasServer implements DasService.Iface {
     private static void startupHSServer() {
         HttpServer server;
         try {
-            server = HttpServer.create(new InetSocketAddress(8080), 0);
+            server = HttpServer.create(new InetSocketAddress(8085), 0);
         } catch (IOException e) {
             logger.error("Fail to startup HSServer", e);
             throw new RuntimeException(e);

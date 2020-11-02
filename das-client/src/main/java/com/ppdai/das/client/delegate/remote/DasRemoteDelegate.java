@@ -107,6 +107,7 @@ public class DasRemoteDelegate implements DasDelegate {
                 .put(DasHintEnum.setIdentityBack, Boolean.toString(hints.isSetIdBack()))
                 .put(DasHintEnum.enableIdentityInsert, Boolean.toString(hints.isInsertWithId()))
                 .put(DasHintEnum.diagnoseMode, Boolean.toString(hints.isDiagnose()))
+                .put(DasHintEnum.updateNullField, Boolean.toString(hints.isUpdateNullField()))
                 .build();
         return new DasHints().setHints(map);
     }
