@@ -1,5 +1,6 @@
 package com.ppdai.das.client.sqlbuilder;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -9,11 +10,13 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import com.ppdai.das.client.BatchUpdateBuilder;
 import com.ppdai.das.client.Segment;
 import com.ppdai.das.client.SqlBuilder;
 import com.ppdai.das.core.DasDiagnose;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
@@ -51,6 +54,19 @@ public class SqlBuilderSerializer implements Serializer {
 
     public static String serializeSegment(SqlBuilder segment) {
         return instance.outGson.toJson(segment);
+    }
+
+    public static String serializeColumnOrders(List<ColumnOrder> columnOrders) {
+        return instance.outGson.toJson(columnOrders);
+    }
+
+    public static List<ColumnOrder> deserializeColumnOrders(String json) {
+        if(Strings.isNullOrEmpty(json)){
+            return new ArrayList<>();
+        }
+
+        Type jsonType = new TypeToken<List<ColumnOrder>>() {}.getType();
+        return instance.outGson.fromJson(json, jsonType);
     }
 
     public static SqlBuilder deserializeSegment(String json) {

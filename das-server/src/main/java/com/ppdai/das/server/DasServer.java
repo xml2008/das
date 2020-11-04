@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import com.google.gson.Gson;
 import com.ppdai.das.client.*;
+import com.ppdai.das.client.sqlbuilder.ColumnOrder;
 import com.ppdai.das.client.sqlbuilder.SqlBuilderSerializer;
 
 import com.ppdai.das.core.DasLogger;
@@ -432,6 +433,12 @@ public class DasServer implements DasService.Iface {
         if(Boolean.valueOf(map.get(DasHintEnum.updateNullField))) {
             result.updateNullField();
         }
+        String sortJson = map.get(DasHintEnum.sortColumns);
+        List<ColumnOrder> columnOrders = SqlBuilderSerializer.deserializeColumnOrders(sortJson);
+        if(!columnOrders.isEmpty()){
+            result.sortBy(columnOrders.toArray(new ColumnOrder[columnOrders.size()]));
+        }
+
         return result;
     }
 

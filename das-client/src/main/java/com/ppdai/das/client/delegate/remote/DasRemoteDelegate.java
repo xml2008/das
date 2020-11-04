@@ -108,7 +108,9 @@ public class DasRemoteDelegate implements DasDelegate {
                 .put(DasHintEnum.enableIdentityInsert, Boolean.toString(hints.isInsertWithId()))
                 .put(DasHintEnum.diagnoseMode, Boolean.toString(hints.isDiagnose()))
                 .put(DasHintEnum.updateNullField, Boolean.toString(hints.isUpdateNullField()))
+                .put(DasHintEnum.sortColumns, SqlBuilderSerializer.serializeColumnOrders(hints.getSorter()))
                 .build();
+
         return new DasHints().setHints(map);
     }
 
