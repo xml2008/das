@@ -138,6 +138,10 @@ public class ConvertUtils {
             } else {
                 Map<String, Object> origin = new Gson().fromJson(r.getValue(), Map.class);
                 Object instance = clz == Map.class ? new HashMap<>() : clz.newInstance();
+
+                if(meta.getColumnTypes() == null) {
+                    return (T) origin;
+                }
                 //For query object without enough EntityMeta
                 if(meta.getColumnTypes().isEmpty()) {
                     queryEntity(instance, origin, meta, clz);
