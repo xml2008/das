@@ -592,6 +592,11 @@ public class Hints {
         return getStringSet(HintEnum.excludedColumns);
     }
 
+    public Hints setExcluded(Set<String> excludedColumns) {
+        return set(HintEnum.excludedColumns, excludedColumns);
+    }
+
+
     /**
      * Returns columns that will be included for query.
      *

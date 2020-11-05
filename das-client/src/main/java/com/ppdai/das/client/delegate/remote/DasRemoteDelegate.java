@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Ints;
+import com.google.gson.Gson;
 import com.ppdai.das.client.BatchCallBuilder;
 import com.ppdai.das.client.BatchQueryBuilder;
 import com.ppdai.das.client.BatchUpdateBuilder;
@@ -44,9 +45,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.Iterables.getFirst;
@@ -99,6 +102,7 @@ public class DasRemoteDelegate implements DasDelegate {
     }
 
     public static DasHints toDasHints(Hints hints) {
+        Set<String> excludedColumns = hints.getExcluded() == null ? new HashSet<>() : hints.getExcluded();
         Map<DasHintEnum, String> map = ImmutableMap.<DasHintEnum, String>builder()
                 .put(DasHintEnum.dbShard, Objects.toString(hints.getShard(), ""))
                 .put(DasHintEnum.tableShard, Objects.toString(hints.getTableShard(), ""))
@@ -109,6 +113,7 @@ public class DasRemoteDelegate implements DasDelegate {
                 .put(DasHintEnum.diagnoseMode, Boolean.toString(hints.isDiagnose()))
                 .put(DasHintEnum.updateNullField, Boolean.toString(hints.isUpdateNullField()))
                 .put(DasHintEnum.sortColumns, SqlBuilderSerializer.serializeColumnOrders(hints.getSorter()))
+                .put(DasHintEnum.excludedColumns, new Gson().toJson(excludedColumns))
                 .build();
 
         return new DasHints().setHints(map);

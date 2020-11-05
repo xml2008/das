@@ -7,6 +7,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -25,6 +26,7 @@ import static com.ppdai.das.util.ConvertUtils.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ppdai.das.client.*;
 import com.ppdai.das.client.sqlbuilder.ColumnOrder;
 import com.ppdai.das.client.sqlbuilder.SqlBuilderSerializer;
@@ -437,6 +439,13 @@ public class DasServer implements DasService.Iface {
         List<ColumnOrder> columnOrders = SqlBuilderSerializer.deserializeColumnOrders(sortJson);
         if(!columnOrders.isEmpty()){
             result.sortBy(columnOrders.toArray(new ColumnOrder[columnOrders.size()]));
+        }
+
+        String excludedColumnsString = map.get(DasHintEnum.excludedColumns);
+        Type jsonType = new TypeToken<Set<String>>() {}.getType();
+        Set<String> excludedColumns = new Gson().fromJson(excludedColumnsString, jsonType);
+        if(!excludedColumns.isEmpty()){
+            result.setExcluded(excludedColumns);
         }
 
         return result;
