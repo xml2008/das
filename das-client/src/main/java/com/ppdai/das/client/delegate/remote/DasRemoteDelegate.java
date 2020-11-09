@@ -114,6 +114,7 @@ public class DasRemoteDelegate implements DasDelegate {
                 .put(DasHintEnum.updateNullField, Boolean.toString(hints.isUpdateNullField()))
                 .put(DasHintEnum.sortColumns, SqlBuilderSerializer.serializeColumnOrders(hints.getSorter()))
                 .put(DasHintEnum.excludedColumns, new Gson().toJson(excludedColumns))
+                .put(DasHintEnum.crossShardsPageRoughly, Boolean.toString(hints.isCrossShardsPageRoughly()))
                 .build();
 
         return new DasHints().setHints(map);

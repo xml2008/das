@@ -514,23 +514,28 @@ public class SqlBuilder implements Segment, ParameterProvider, ParameterDefiniti
         }
     }
 
+    public List<Parameter> getBuiltParameters() {
+        return builtParameters;
+    }
+
     @Override
     public List<Parameter> buildParameters() {
-        List<Parameter> params;
         if(builtParameters.isEmpty()) {
-            params = new ArrayList<>();
-            List<Segment> filtered = getFilteredSegments();
-
-            for(Segment seg: filtered) {
-                if(seg instanceof ParameterProvider) {
-                    params.addAll(((ParameterProvider)seg).buildParameters());
-                }
-            }
-        }else {
-            params = builtParameters;
+            buildParameterSegments();
         }
-        
-        return Parameter.reindex(params);
+        return Parameter.reindex(builtParameters);
+    }
+
+    public void buildParameterSegments() {
+        List<Parameter> params = new ArrayList<>();
+        List<Segment> filtered = getFilteredSegments();
+
+        for (Segment seg : filtered) {
+            if (seg instanceof ParameterProvider) {
+                params.addAll(((ParameterProvider) seg).buildParameters());
+            }
+        }
+        this.builtParameters = params;
     }
 
     public SqlBuilder setBuiltParameters(List<Parameter> builtParameters) {
