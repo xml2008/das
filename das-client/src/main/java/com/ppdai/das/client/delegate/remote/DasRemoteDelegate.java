@@ -23,6 +23,7 @@ import com.ppdai.das.client.delegate.EntityMetaManager;
 import com.ppdai.das.client.sqlbuilder.SqlBuilderSerializer;
 import com.ppdai.das.core.DasDiagnose;
 import com.ppdai.das.core.DasLogger;
+import com.ppdai.das.core.HintEnum;
 import com.ppdai.das.service.ColumnMeta;
 import com.ppdai.das.service.DasBatchUpdateBuilder;
 import com.ppdai.das.service.DasDiagInfo;
@@ -105,6 +106,7 @@ public class DasRemoteDelegate implements DasDelegate {
         Set<String> excludedColumns = hints.getExcluded() == null ? new HashSet<>() : hints.getExcluded();
         Map<DasHintEnum, String> map = ImmutableMap.<DasHintEnum, String>builder()
                 .put(DasHintEnum.dbShard, Objects.toString(hints.getShard(), ""))
+                .put(DasHintEnum.applyDefaultShard, Boolean.toString(hints.is(HintEnum.applyDefaultShard)))
                 .put(DasHintEnum.tableShard, Objects.toString(hints.getTableShard(), ""))
                 .put(DasHintEnum.dbShardValue, Objects.toString(hints.getShardValue(), ""))
                 .put(DasHintEnum.tableShardValue, Objects.toString(hints.getTableShardValue(), ""))
@@ -463,6 +465,6 @@ public class DasRemoteDelegate implements DasDelegate {
     @Override
     public <T> T execute(CallableTransaction<T> transaction, Hints hints) throws SQLException {
         serverSelector.stickServerMode();
-        return transactionClient.doInTransaction(transaction, hints);
+        return (T)transactionClient.doInTransaction(transaction, hints);
     }
 }

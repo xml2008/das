@@ -55,7 +55,11 @@ public class DasClientFactory {
 	public static String getAppId() {
 	    return appIdRef.get();
 	}
-	
+
+    public static boolean isProxyMode() {
+        return proxyModeRef.get();
+    }
+
     public static void initClientFactory() {
         if(initialzed.get()) {
             return;

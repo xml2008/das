@@ -512,7 +512,7 @@ public class DirectClient {
     }
 
     private <T> T doInTransaction(ConnectionAction<T> action, Hints hints) throws SQLException {
-        return transManager.doInTransaction(action, hints);
+        return (T)transManager.doInTransaction(action, hints);
     }
 
     public Connection getConnection(Hints hints, ConnectionAction<?> action) throws SQLException {

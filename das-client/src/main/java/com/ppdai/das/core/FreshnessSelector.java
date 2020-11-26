@@ -146,7 +146,7 @@ public class FreshnessSelector implements DatabaseSelector {
                     return new Thread(r, "Dal-FreshnessScanner" + this.atomic.getAndIncrement());
                 }
             });
-            executer.scheduleWithFixedDelay(new FreshnessScanner(reader), 0, interval, TimeUnit.SECONDS);
+          //  executer.scheduleWithFixedDelay(new FreshnessScanner(reader), 0, interval, TimeUnit.SECONDS); //TEST----
             freshnessUpdatorRef.set(executer);
         }
     }

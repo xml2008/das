@@ -435,6 +435,12 @@ public class DasServer implements DasService.Iface {
         if(Boolean.valueOf(map.get(DasHintEnum.updateNullField))) {
             result.updateNullField();
         }
+        if(Boolean.valueOf(map.get(DasHintEnum.crossShardsPageRoughly))) {
+            result.crossShardsPageRoughly();
+        }
+        if(Boolean.valueOf(map.get(DasHintEnum.applyDefaultShard))) {
+            result.applyDefaultShard();
+        }
         String sortJson = map.get(DasHintEnum.sortColumns);
         List<ColumnOrder> columnOrders = SqlBuilderSerializer.deserializeColumnOrders(sortJson);
         if(!columnOrders.isEmpty()){

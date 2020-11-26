@@ -57,7 +57,15 @@ public class DasTransactionalEnabler{
             i++;
         }
 
-        hints = hints == null ? new Hints():hints.clone();
+        if(DasClientFactory.isProxyMode()){
+            if(hints == null) {
+                hints = new Hints();
+            } else if(defaultShardParaIndex == -1){
+                hints = hints.clone();
+            }
+        } else {
+            hints = hints == null ? new Hints():hints.clone();
+        }
 
         if(shardParaIndex != -1) {
             Object shard = args[shardParaIndex];

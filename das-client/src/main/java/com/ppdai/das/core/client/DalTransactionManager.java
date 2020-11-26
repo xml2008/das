@@ -1,12 +1,10 @@
 package com.ppdai.das.core.client;
 
-import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
 import com.ppdai.das.client.Hints;
-import com.ppdai.das.client.annotation.DasTransactional;
 import com.ppdai.das.core.DasException;
 import com.ppdai.das.core.ErrorCode;
 import com.ppdai.das.core.EventEnum;
@@ -15,10 +13,8 @@ import com.ppdai.das.core.HintEnum;
 import com.ppdai.das.core.markdown.MarkdownManager;
 
 
-public class DalTransactionManager {
+public class DalTransactionManager extends TransactionManager<ConnectionAction>{
 	private DalConnectionManager connManager;
-
-	private static final ThreadLocal<DalTransaction> transactionHolder = new ThreadLocal<DalTransaction>();
 
 	public DalTransactionManager(DalConnectionManager connManager) {
 		this.connManager = connManager;
@@ -28,8 +24,9 @@ public class DalTransactionManager {
         transactionHolder.set(transaction);
     }
 
+
 	private <T> int startTransaction(Hints hints, ConnectionAction<T> action) throws SQLException {
-		DalTransaction transaction = transactionHolder.get();
+		DalTransaction transaction = getCurrentTransaction();
 
 		if(transaction == null) {
 			transaction = new DalTransaction( 
@@ -46,17 +43,13 @@ public class DalTransactionManager {
 	}
 
 	private void endTransaction(int startLevel) throws SQLException {
-		DalTransaction transaction = transactionHolder.get();
-		
+		DalTransaction transaction = getCurrentTransaction();
+
 		if(transaction == null) {
             throw new SQLException("calling endTransaction with empty ConnectionCache");
         }
 
 		transaction.endTransaction(startLevel);
-	}
-
-	public static boolean isInTransaction() {
-		return transactionHolder.get() != null;
 	}
 	
 	private static void reqiresTransaction() throws DasException {
@@ -66,19 +59,20 @@ public class DalTransactionManager {
 	}
 	
 	public static List<DalTransactionListener> getCurrentListeners() throws DasException {
-		reqiresTransaction();		
-		return transactionHolder.get().getListeners();
+		reqiresTransaction();
+		DalTransaction transaction = getCurrentTransaction();
+		return transaction.getListeners();
 	}
 	
 	public static void register(DalTransactionListener listener) throws DasException {
 		reqiresTransaction();
 		Objects.requireNonNull(listener, "The listener should not be null");
-		
-		transactionHolder.get().register(listener);
+		DalTransaction transaction = getCurrentTransaction();
+		transaction.register(listener);
 	}
 	
 	private void rollbackTransaction() throws SQLException {
-		DalTransaction transaction = transactionHolder.get();
+		DalTransaction transaction = getCurrentTransaction();
 		
 		// Already handled in deeper level
 		if(transaction == null) {
@@ -93,31 +87,32 @@ public class DalTransactionManager {
 	}
 	
 	public static String getLogicDbName() {
+		DalTransaction dalTransaction = getCurrentTransaction();
 		return isInTransaction() ?
-				transactionHolder.get().getLogicDbName() :
-					null;
+				dalTransaction.getLogicDbName() : null;
 	}
-	
+
 	public static String getCurrentShardId() {
+		DalTransaction dalTransaction = getCurrentTransaction();
         return isInTransaction() ?
-                transactionHolder.get().getConnection().getShardId() :
-                    null;
+				dalTransaction.getConnection().getShardId() : null;
 	}
 
 	public static boolean isDefaultShardApplied() {
+		DalTransaction dalTransaction = getCurrentTransaction();
 		return isInTransaction() ?
-				transactionHolder.get().isDefaultShardApplied():
-				false;
+				dalTransaction.isDefaultShardApplied(): false;
 	}
 
 	public static DbMeta getCurrentDbMeta() {
+		DalTransaction dalTransaction = getCurrentTransaction();
 		return isInTransaction() ?
-				transactionHolder.get().getConnection().getMeta() :
+				dalTransaction.getConnection().getMeta() :
 					null;
 	}
 	
 	private DalConnection getConnection(Hints hints, boolean useMaster, EventEnum operation, HaContext ha) throws SQLException {
-		DalTransaction transaction = transactionHolder.get();
+		DalTransaction transaction = getCurrentTransaction();
 		
 		if(transaction == null) {
 			return connManager.getNewConnection(hints, useMaster, operation, ha);
@@ -126,18 +121,15 @@ public class DalTransactionManager {
 			return transaction.getConnection();
 		}
 	}
-	
-	public static void clearCurrentTransaction() {
-		transactionHolder.set(null);
-	}
-    
-	public <T> T doInTransaction(ConnectionAction<T> action, Hints hints)throws SQLException{
-	    action.config = connManager.getConfig();
+
+	@Override
+	public Object doInTransaction(ConnectionAction action, Hints hints)throws SQLException{
+		action.config = connManager.getConfig();
 		action.initLogEntry(connManager.getLogicDbName(), hints);
 		action.start();
 
 		Throwable ex = null;
-		T result = null;
+		Object result = null;
 		int level;
 		try {
 			level = startTransaction(hints, action);
@@ -162,4 +154,6 @@ public class DalTransactionManager {
 
 		return result;
 	}
+
+
 }

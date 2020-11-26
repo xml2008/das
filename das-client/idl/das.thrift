@@ -104,7 +104,8 @@ enum DasHintEnum {
     updateNullField,
 
     sortColumns,
-    crossShardsPageRoughly
+    crossShardsPageRoughly,
+    applyDefaultShard
 }
 
 struct DasHints {

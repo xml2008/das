@@ -7,31 +7,38 @@ import com.ppdai.das.core.DasConfigureFactory;
 import com.ppdai.das.core.DasException;
 import com.ppdai.das.core.DasLogger;
 import com.ppdai.das.core.ErrorCode;
+import com.ppdai.das.core.client.TransactionManager;
 import com.ppdai.das.service.DasHints;
 import com.ppdai.das.service.DasTransactionId;
 
 import java.sql.SQLException;
 
-public class TransactionClient {
+public class TransactionClient extends TransactionManager<CallableTransaction> {
     private String logicDbName;
     private DasLogger logger;
     private ServerSelector serverSelector;
-
-    private static final ThreadLocal<DasTransactionId> transactionHolder = new ThreadLocal<>();
 
     public TransactionClient(String logicDbName, ServerSelector serverSelector) {
         this.logicDbName = logicDbName;
         this.serverSelector = serverSelector;
         logger = DasConfigureFactory.getLogger();
     }
-    
-    public static DasTransactionId getCurrentTransaction() {
-        return transactionHolder.get();
+
+    public static String getCurrentShardId() {
+        DasTransactionId dasTransactionId = getCurrentTransaction();
+        return isInTransaction() ?
+                dasTransactionId.getShardId() : null;
     }
-    
-    public <T> T doInTransaction(CallableTransaction<T> transaction, Hints hints)throws SQLException{
+
+    public static String getLogicDbName() {
+        DasTransactionId dasTransactionId = getCurrentTransaction();
+        return isInTransaction() ?
+                dasTransactionId.getLogicDbName() : null;
+    }
+    @Override
+    public Object doInTransaction(CallableTransaction transaction, Hints hints)throws SQLException{
         Throwable ex = null;
-        T result = null;
+        Object result = null;
         int level;
         try {
             level = startTransaction(hints);
@@ -53,7 +60,7 @@ public class TransactionClient {
     }
 
     private <T> int startTransaction(Hints hints) throws Exception {
-        DasTransactionId transactionId = transactionHolder.get();
+        DasTransactionId transactionId = getCurrentTransaction();
 
         String appId = DasClientFactory.getAppId();
         
@@ -95,7 +102,7 @@ public class TransactionClient {
     }
 
     private void endTransaction(int startLevel) throws Exception {
-        DasTransactionId transactionId = transactionHolder.get();
+        DasTransactionId transactionId = getCurrentTransaction();
         
         if(transactionId == null) {
             throw new SQLException("calling endTransaction with empty ConnectionCache");
@@ -149,7 +156,7 @@ public class TransactionClient {
     }
 
     private void rollbackTransaction() throws SQLException {
-        DasTransactionId transactionId = transactionHolder.get();
+        DasTransactionId transactionId = getCurrentTransaction();
         
         // Already handled in deeper level
         if(transactionId == null) {
@@ -164,10 +171,7 @@ public class TransactionClient {
         // Even the rollback fails, we still set the flag to true;
         cleanup(transactionId, false);
     }    
-    
-    public static void clearCurrentTransaction() {
-        transactionHolder.set(null);
-    }
+
     
     private void end(Object result, Throwable e) throws SQLException {
         log(result, e);
