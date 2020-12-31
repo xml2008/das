@@ -160,5 +160,20 @@ public class ServerSelectorTest {
         public DasServerStatus check(DasCheckRequest request) throws DasException, TException {
             return new DasServerStatus().setOnline(true);
         }
+
+        @Override
+        public TxRegisterApplicationResponse registerApplication(TxRegisterApplicationRequest req) throws TException {
+            return null;
+        }
+
+        @Override
+        public TxBeginResponse txBegin(TxBeginRequest req) throws TException {
+            return null;
+        }
+
+        @Override
+        public TxNodeStartResponse nodeStart(TxNodeStartRequest req) throws TException {
+            return null;
+        }
     }
 }

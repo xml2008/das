@@ -253,6 +253,45 @@ exception DasException {
     2: string message;
 }
 
+enum TxType {
+    TCC,
+    SAGA,
+}
+
+struct TxRegisterApplicationRequest {
+    1: required string appId;
+    2: required TxType txType;
+    3: required list<string> nodes;
+}
+
+struct TxRegisterApplicationResponse {
+    1: required string result;
+    2: optional string errorMessage;
+}
+
+struct TxBeginRequest {
+    1: required string txName;
+}
+
+struct TxXID {
+    1: required string ip;
+    2: required string number;
+}
+
+struct TxBeginResponse {
+    1: required TxXID xid;
+    2: optional string errorMessage;
+}
+
+struct TxNodeStartRequest{
+   1: required TxXID xid;
+   2: required string txName;
+}
+
+struct TxNodeStartResponse{
+   1: required string nodeID;
+}
+
 service DasService  {
 
    DasResult execute(1:DasRequest request) throws (1:DasException e),
@@ -264,4 +303,10 @@ service DasService  {
    void rollback(1:DasTransactionId tranId) throws (1:DasException e)
    
    DasServerStatus check(1:DasCheckRequest request) throws (1:DasException e),
+
+   TxRegisterApplicationResponse registerApplication(1:TxRegisterApplicationRequest req),
+
+   TxBeginResponse txBegin(1:TxBeginRequest req),
+
+   TxNodeStartResponse nodeStart(1:TxNodeStartRequest req)
 }
