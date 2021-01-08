@@ -5,23 +5,15 @@ import com.ppdai.das.service.TxNodeStartRequest;
 import com.ppdai.das.service.TxNodeStartResponse;
 import com.ppdai.das.service.TxXID;
 import com.ppdai.das.tx.DasTxContext;
-import com.ppdai.das.tx.XID;
-import com.ppdai.das.tx.annotation.DasTransactional;
+import com.ppdai.das.tx.event.BusEvent;
+import com.ppdai.das.tx.monitor.BusEventManager;
 import org.apache.thrift.TException;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 
 @Aspect
 @Component
@@ -31,39 +23,36 @@ public class MethodAspect implements Ordered {
 
     private DasService.Client client;
 
+    public MethodAspect() {
+        BusEventManager.register(this);
+    }
+
     @Pointcut("@annotation(com.ppdai.das.tx.annotation.DasTransactional)")
     public void txTransactionMethodPointcut() {
     }
 
     @Before("txTransactionMethodPointcut()")
     public void transactionRunning(JoinPoint point) throws Throwable {
-        System.out.println("txTransactionMethodPointcut");
-        //DasTransactional annotation = getDasTransactional(point);
-        //sendNodeStart();
-        //return point.
+        if(DasTxContext.getAndIncrease() > 0) {
+            return;
+        }
+        BusEventManager.post(new BusEvent("start MethodAspect"));
     }
 
     private void sendNodeStart() throws TException {
         TxNodeStartRequest request = new TxNodeStartRequest();
-        XID xid = DasTxContext.getXID();
-
         TxXID txXID = new TxXID();
-        txXID.setIp(xid.getIp());
         txXID.setNumber(txXID.getNumber());
         request.setXid(txXID);
         request.setTxName("");//TODO:
-
         TxNodeStartResponse response = client.nodeStart(request);
         //TODO: keep node id
     }
 
-    DasTransactional getDasTransactional(ProceedingJoinPoint point) throws NoSuchMethodException {
-        MethodSignature methodSignature = (MethodSignature) point.getSignature();
-        Method method = methodSignature.getMethod();
-        Class<?> targetClass = point.getTarget().getClass();
-        Method thisMethod = targetClass.getMethod(method.getName(), method.getParameterTypes());
-        return thisMethod.getAnnotation(DasTransactional.class);
+    public void setClient(DasService.Client client) {
+        this.client = client;
     }
+
     @Override
     public int getOrder() {
         return ORDER;

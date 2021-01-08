@@ -162,12 +162,12 @@ public class ServerSelectorTest {
         }
 
         @Override
-        public TxRegisterApplicationResponse registerApplication(TxRegisterApplicationRequest req) throws TException {
+        public TxGeneralResponse registerApplication(TxGeneralRequest req) throws TException {
             return null;
         }
 
         @Override
-        public TxBeginResponse txBegin(TxBeginRequest req) throws TException {
+        public TxGeneralResponse txBegin(TxGeneralRequest req) throws TException {
             return null;
         }
 
@@ -175,5 +175,17 @@ public class ServerSelectorTest {
         public TxNodeStartResponse nodeStart(TxNodeStartRequest req) throws TException {
             return null;
         }
+
+        @Override
+        public TxGeneralResponse txCommit(TxGeneralRequest req) throws TException {
+            return null;
+        }
+
+        @Override
+        public TxGeneralResponse txRollback(TxGeneralRequest req) throws TException {
+            return null;
+        }
+
+
     }
 }

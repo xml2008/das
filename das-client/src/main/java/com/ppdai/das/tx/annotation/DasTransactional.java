@@ -16,8 +16,9 @@ import java.lang.annotation.Target;
 public @interface DasTransactional {
     TxTypeEnum type();
 
-    String confirmMethod() default  "confirmMethod";
+    String confirmMethod() default  "";
 
-    String cancelMethod() default  "cancelMethod";
+    String cancelMethod() default  "";
 
+    int retry() default 0;
 }

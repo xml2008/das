@@ -262,6 +262,7 @@ struct TxRegisterApplicationRequest {
     1: required string appId;
     2: required TxType txType;
     3: required list<string> nodes;
+    4: required string ip;
 }
 
 struct TxRegisterApplicationResponse {
@@ -271,6 +272,7 @@ struct TxRegisterApplicationResponse {
 
 struct TxBeginRequest {
     1: required string txName;
+    2: required string ip;
 }
 
 struct TxXID {
@@ -292,6 +294,37 @@ struct TxNodeStartResponse{
    1: required string nodeID;
 }
 
+struct TxCommitRequest{
+  1: required TxXID xid;
+}
+
+struct TxCommitResponse{
+  1: required string result;
+  2: optional string errorMessage;
+}
+
+struct TxCommitCommandRequest{
+  1: required TxXID xid;
+  2: required string txName;
+}
+struct TxCommitCommandResonse{
+   1: required string result;
+   2: optional string errorMessage;
+}
+
+struct TxGeneralRequest {
+    1: required string appId;
+    2: required TxType txType;
+    3: required string node;
+    4: required string ip;
+    5: required string xid;
+}
+
+struct TxGeneralResponse {
+    1: required string xid;
+    2: required string result;
+    3: optional string errorMessage;
+}
 service DasService  {
 
    DasResult execute(1:DasRequest request) throws (1:DasException e),
@@ -304,9 +337,13 @@ service DasService  {
    
    DasServerStatus check(1:DasCheckRequest request) throws (1:DasException e),
 
-   TxRegisterApplicationResponse registerApplication(1:TxRegisterApplicationRequest req),
+   TxGeneralResponse registerApplication(1:TxGeneralRequest req),
 
-   TxBeginResponse txBegin(1:TxBeginRequest req),
+   TxGeneralResponse txBegin(1:TxGeneralRequest req),
 
    TxNodeStartResponse nodeStart(1:TxNodeStartRequest req)
+
+   TxGeneralResponse txCommit(1:TxGeneralRequest req)
+
+   TxGeneralResponse txRollback(1:TxGeneralRequest req)
 }
