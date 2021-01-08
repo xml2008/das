@@ -35,6 +35,7 @@ import com.ppdai.das.core.DasLogger;
 
 import com.ppdai.das.core.LogContext;
 import com.ppdai.das.service.*;
+import com.ppdai.das.tx.Txlog;
 import com.ppdai.das.util.ConvertUtils;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.thrift.TException;
@@ -553,7 +554,147 @@ public class DasServer implements DasService.Iface {
     public DasServerStatus check(DasCheckRequest request) throws DasException, TException {
         return monitor.getStatues();
     }
-    
+
+    @Override
+    public TxGeneralResponse registerApplication(TxGeneralRequest req) throws TException {
+        TxGeneralResponse response = new TxGeneralResponse();
+        response.setXid("na");
+        try {
+            DasClient dasClient = DasClientFactory.getClient("das_tx");
+            Txlog toInsert = new Txlog();
+            toInsert.setApplicationID(req.getAppId());
+            toInsert.setNodeID(req.getNode());
+            toInsert.setType(req.getTxType().name());
+            toInsert.setXID(req.getXid());
+            toInsert.setIp(req.getIp());
+            toInsert.setStatus("register");
+            int result = dasClient.insert(toInsert );
+           // List<Txlog> list = dasDelegate.query(SqlBuilder.selectAllFrom(Txlog.TXLOG).into(Txlog.class));
+            //list.size();
+
+            if(result == 1){
+                response.setResult("success");
+            } else {
+                response.setResult("error");
+            }
+            return response;
+        } catch (Exception throwables) {
+            throwables.printStackTrace();
+            response.setResult("error");
+            response.setErrorMessage(throwables.getMessage());
+            return response;
+        }
+
+    }
+
+    @Override
+    public TxGeneralResponse txBegin(TxGeneralRequest req) throws TException {
+        TxGeneralResponse response = new TxGeneralResponse();
+
+        Txlog toInsert = new Txlog();
+        toInsert.setApplicationID(req.getAppId());
+        toInsert.setNodeID(req.getNode());
+        toInsert.setType(req.getTxType().name());
+
+        toInsert.setIp(req.getIp());
+        toInsert.setStatus("begin");
+
+        final String xid = generateXID(req.getIp());
+        toInsert.setXID(xid);
+        try {
+            DasClient dasClient = DasClientFactory.getClient("das_tx");
+            int result = dasClient.insert(toInsert);
+
+            if(result == 1){
+                response.setResult("success");
+            } else {
+                response.setResult("error");
+            }
+            response.setXid(xid);
+            return response;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            response.setResult("error");
+            response.setErrorMessage(throwables.getMessage());
+            return response;
+        }
+
+    }
+
+    String generateXID(String ip) {
+        return ip +":" + Math.abs(new Random().nextInt());
+    }
+
+    @Override
+    public TxNodeStartResponse nodeStart(TxNodeStartRequest req) throws TException {
+        return null;
+    }
+
+    @Override
+    public TxGeneralResponse txCommit(TxGeneralRequest req) throws TException {
+        TxGeneralResponse response = new TxGeneralResponse();
+
+        Txlog toInsert = new Txlog();
+        toInsert.setApplicationID(req.getAppId());
+        toInsert.setNodeID(req.getNode());
+        toInsert.setType(req.getTxType().name());
+
+        toInsert.setIp(req.getIp());
+        toInsert.setStatus("commit");
+
+        toInsert.setXID(req.getXid());
+        try {
+            DasClient dasClient = DasClientFactory.getClient("das_tx");
+            int result = dasClient.insert(toInsert);
+
+            if(result == 1){
+                response.setResult("success");
+            } else {
+                response.setResult("error");
+            }
+            response.setXid(req.getXid());
+            return response;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            response.setResult("error");
+            response.setErrorMessage(throwables.getMessage());
+            return response;
+        }
+
+    }
+
+    @Override
+    public TxGeneralResponse txRollback(TxGeneralRequest req) throws TException {
+        TxGeneralResponse response = new TxGeneralResponse();
+
+        Txlog toInsert = new Txlog();
+        toInsert.setApplicationID(req.getAppId());
+        toInsert.setNodeID(req.getNode());
+        toInsert.setType(req.getTxType().name());
+
+        toInsert.setIp(req.getIp());
+        toInsert.setStatus("rollback");
+
+        toInsert.setXID(req.getXid());
+        try {
+            DasClient dasClient = DasClientFactory.getClient("das_tx");
+            int result = dasClient.insert(toInsert);
+
+            if(result == 1){
+                response.setResult("success");
+            } else {
+                response.setResult("error");
+            }
+            response.setXid(req.getXid());
+            return response;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            response.setResult("error");
+            response.setErrorMessage(throwables.getMessage());
+            return response;
+        }
+    }
+
     private DasException toDasException(SQLException e) {
         return new DasException().setCode(String.valueOf(e.getErrorCode())).setMessage(e.getMessage());
     }
