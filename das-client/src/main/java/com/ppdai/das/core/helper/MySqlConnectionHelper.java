@@ -1,14 +1,14 @@
 package com.ppdai.das.core.helper;
 
-import com.mysql.jdbc.MySQLConnection;
+import com.mysql.cj.jdbc.ConnectionImpl;
 
 public class MySqlConnectionHelper {
 
-    public static boolean isValid(MySQLConnection connection, int timeout) {
+    public static boolean isValid(ConnectionImpl connection, int timeout) {
         return pingInternal(connection, timeout);
     }
 
-    private static boolean pingInternal(MySQLConnection connection, int timeout) {
+    private static boolean pingInternal(ConnectionImpl connection, int timeout) {
         if (connection == null) {
             return false;
         }
