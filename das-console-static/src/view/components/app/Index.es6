@@ -5,7 +5,7 @@ export GroupManage from '../pages/group/GroupManage'
 export MemberManage from '../pages/member/MemberManage'
 export DatabaseManage from '../pages/databaseManage/DatabaseManage'
 export DataBaseGroupManage from '../pages/db/groupManage/DataBaseGroupManage'
-export DataBaseSetManage from '../pages/db/logicDBManage/DataBaseSetManage'
+export DataBaseSetManage from '../pages/db/logic/DataBaseSetManage'
 export ProjectManage from '../pages/project/ProjectManage'
 export ProjectListManage from '../pages/project/ProjectListManage'
 export AppGroupManage from '../pages/appGroup/AppGroupManage'
@@ -21,7 +21,8 @@ import GroupManage from '../pages/group/GroupManage'
 import MemberManage from '../pages/member/MemberManage'
 import DatabaseManage from '../pages/databaseManage/DatabaseManage'
 import DataBaseGroupManage from '../pages/db/groupManage/DataBaseGroupManage'
-import DataBaseSetManage from '../pages/db/logicDBManage/DataBaseSetManage'
+import DataBaseSetManage from '../pages/db/logic/DataBaseSetManage'
+import DatabaseBatchManage from '../pages/db/physical/batch/DatabaseBatchManage'
 import ProjectManage from '../pages/project/ProjectManage'
 import ProjectListManage from '../pages/project/ProjectListManage'
 import AppGroupManage from '../pages/appGroup/AppGroupManage'
@@ -34,6 +35,7 @@ import DataBaseSyncManage from '../pages/sync/DataBaseSyncManage'
 import DataBaseSetSyncManage from '../pages/sync/dbset/DataBaseSetSyncManage'
 import TransManage from '../pages/trans/TransManage'
 import DataSearchMain from '../pages/dataSearch/DataSearchMain'
+import QueryIndex from '../pages/query/QueryIndex'
 
 export const pageMages = {
     serverManage: <ServerGroupManage/>,
@@ -41,6 +43,7 @@ export const pageMages = {
     memberManage: <MemberManage/>,
     databaseManage: <DatabaseManage/>,
     dataBaseGroupManage: <DataBaseGroupManage/>,
+    databaseBatchManage: <DatabaseBatchManage/>,
     dataBaseSetManage: <DataBaseSetManage/>,
     projectManage: <ProjectManage/>,
     projectListManage: <ProjectListManage/>,
@@ -53,5 +56,6 @@ export const pageMages = {
     dataBaseSyncManage: <DataBaseSyncManage/>,
     dataBaseSetSyncManage: <DataBaseSetSyncManage/>,
     transManage: <TransManage/>,
-    dataSearchMain: <DataSearchMain/>
+    dataSearchMain: <DataSearchMain/>,
+    queryIndex: <QueryIndex/>
 }

@@ -61,7 +61,7 @@ export default class UserModel {
             {
                 name: '组名',
                 width: 15,
-                key: 'group_name',
+                key: 'groupName',
                 search: false
             },
             {

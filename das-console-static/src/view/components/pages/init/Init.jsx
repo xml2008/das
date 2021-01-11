@@ -1,7 +1,7 @@
 import React from 'react'
 import Component from '../../utils/base/ComponentAlert'
 import {Grid, Panel, PanelContent, PanelHeader} from 'eagle-ui'
-import {Inputlabel, InputPlus} from '../../utils/index'
+import {Inputlabel, InputPlus} from '../../utils/Index'
 import {Row, Col, Select, Button, Steps, Alert as AlertMsg, Modal} from 'antd'
 import {InitControl} from '../../../../controller/Index'
 import {View} from 'ea-react-dm-v14'

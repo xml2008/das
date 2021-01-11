@@ -7,7 +7,7 @@ import TablePanle from '../base/TablePanle'
 import {View} from 'ea-react-dm-v14'
 import {AppGroupControl} from '../../../../controller/Index'
 import {Modal, Row, Col, Button} from 'antd'
-import {Inputlabel, InputPlus, SelectPlus, RadioPlus, TextArea} from '../../utils/index'
+import {Inputlabel, InputPlus, SelectPlus, RadioPlus, TextArea} from '../../utils/Index'
 import DataUtil from '../../utils/util/DataUtil'
 import FrwkUtil from '../../utils/util/FrwkUtil'
 import {das_msg, serverEnabled} from '../../../../model/base/BaseModel'
@@ -60,11 +60,11 @@ export default class AppGroupManage extends ManagePanle {
     }
 
     /** @Override **/
-    /*editorFiler = item => {
-        if (!item.projects) {
-            item.projects = []
+    /*editorFiler = itemLabel => {
+        if (!itemLabel.projects) {
+            itemLabel.projects = []
         }
-        return Immutable.fromJS(item)
+        return Immutable.fromJS(itemLabel)
     }*/
 
     loadProjects = isAll => {
@@ -119,7 +119,7 @@ export default class AppGroupManage extends ManagePanle {
             <Inputlabel title='应用组名称'>
                 <InputPlus {..._props}
                            valueLink={this.objName + '.name'} validRules={{isDbName: true, maxLength: 24}}
-                           defaultValue={appGroup.name} placeholder={das_msg.apollo_namespace}
+                           defaultValue={appGroup.name} placeholder={das_msg.apollo_namespace()}
                            disabled={states.editerType == 1}/>
             </Inputlabel>
             <Inputlabel title='是否是远程连接Das Server'>

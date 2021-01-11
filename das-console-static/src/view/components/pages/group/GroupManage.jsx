@@ -7,7 +7,7 @@ import TablePanle from '../base/TablePanle'
 import {View} from 'ea-react-dm-v14'
 import {GroupControl} from '../../../../controller/Index'
 import {Modal} from 'antd'
-import {Inputlabel, InputPlus, TextArea} from '../../utils/index'
+import {Inputlabel, InputPlus, TextArea} from '../../utils/Index'
 import {das_msg} from '../../../../model/base/BaseModel'
 
 @View(GroupControl)
@@ -49,7 +49,7 @@ export default class GroupManage extends ManagePanle {
                 <InputPlus groupmodel={groupmodel} disabled={states.editerType == 1}
                            setValueByReducers={setValueByReducers}
                            valueLink={this.objName + '.group_name'} validRules={{isDbName: true, maxLength: 24}}
-                           defaultValue={item.group_name} placeholder={das_msg.apollo_namespace}/>
+                           defaultValue={item.group_name} placeholder={das_msg.apollo_namespace()}/>
             </Inputlabel>
             <Inputlabel title='项目描述'>
                 <TextArea {...this.props} defaultValue={item.group_comment}

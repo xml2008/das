@@ -114,7 +114,7 @@ export default class App extends Common {
                 this.setState(pages)
             }, 600)
         })
-        //tems.push(<li key={Date.now()}>{item.value}</li>)
+        //tems.push(<li key={Date.now()}>{itemLabel.value}</li>)
     }
 
     render() {

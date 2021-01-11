@@ -7,7 +7,7 @@ import TablePanle from '../../base/TablePanle'
 import {View} from 'ea-react-dm-v14'
 import {DatabaseSetEntryControl} from '../../../../../controller/Index'
 import {Modal} from 'antd'
-import {Inputlabel, InputPlus, RadioPlus, SelectPlus, TextArea} from '../../../utils/index'
+import {Inputlabel, InputPlus, RadioPlus, SelectPlus, TextArea} from '../../../utils/Index'
 import Immutable from 'immutable'
 import {das_msg, databaseShardingTypes, display} from '../../../../../model/base/BaseModel'
 import DbSetEntryTab from './DbSetEntryTab'
@@ -207,12 +207,12 @@ export default class DatabaseSetEntry extends ManagePanle {
     }
 
     /*
-        onChangeCheckbox = item => {
-            item = item.toJS()
+        onChangeCheckbox = itemLabel => {
+            itemLabel = itemLabel.toJS()
             const link = this.modelName + '.list'
             let dbsets = this.getValueByReducers(link).toJS()
             dbsets.list && dbsets.list.forEach(e => {
-                if (item.id == e.id) {
+                if (itemLabel.id == e.id) {
                     e.checkbox = true
                 } else {
                     e.checkbox = false

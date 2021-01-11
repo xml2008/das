@@ -6,17 +6,17 @@ const styles = {
         fontSize: 15,
         fontWeight: typography.fontWeightLight,
         color: grey600,
-        paddingBottom: 15,
+        paddingBottom: 10,
         display: 'block'
     },
     title: {
         fontSize: 24,
         fontWeight: typography.fontWeightLight,
-        marginBottom: 20,
+        marginBottom: 10,
         color: '#0583f3'
     },
     paper: {
-        padding: '30px 20px 30px 20px'
+        padding: '10px 10px 0px 10px'
     },
     clear: {
         clear: 'both'

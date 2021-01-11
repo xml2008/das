@@ -1,6 +1,6 @@
 import React from 'react'
 import Component from '../../utils/base/ComponentAlert'
-import {DropDownSuggestion, TreeSelectPlus} from '../../utils/index'
+import {DropDownSuggestion, TreeSelectPlus} from '../../utils/Index'
 import {Row, Col, Select, Button, Steps, Icon, Tabs, Alert, Spin} from 'antd'
 import DatabaseTab from './DatabaseTab'
 import {DasUtil, DataUtil} from '../../utils/util/Index'

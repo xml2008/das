@@ -102,7 +102,7 @@ export default class ManagePanle extends Component {
     }
 
     cleanObjName = () => {
-        let item = this.getValueByReducers(this.objName).toJS()
+        let item = this.getValueToJson(this.objName)
         this.setValueByReducers(this.objName, Immutable.fromJS(DataUtil.ObjUtils.cleanJson(item, this.cleanExceptKeys)))
     }
 
@@ -212,7 +212,7 @@ export default class ManagePanle extends Component {
     check = item => {
         if (this.checkLink && this.checkLink.length > 5) {
             FrwkUtil.fetch.fetchGet(this.checkLink, {id: item.id}, this, data => {
-                if ((data.code == 500 && DataUtil.is.String(data.msg) && ((DataUtil.is.Array(data.item) && data.item.length === 0) || data.item == null)) || (!data.item.appId && !data.item.namespace && data.item.message)) {
+                if ((data.code == 500 && DataUtil.is.String(data.msg) && ((DataUtil.is.Object(data.item) && data.item.list.length === 0) || data.item == null))) {
                     this.showErrorsNotification(data.msg)
                 } else if (DataUtil.is.Object(data.item)) {
                     const states = {
@@ -231,11 +231,6 @@ export default class ManagePanle extends Component {
 
     createCheckModel = () => {
         const states = this.getValueToJson(this.states)
-        if (states.checkData && states.checkData.code === 500) {
-            this.handleCheckCancel()
-            this.showErrorsNotification(states.checkData.msg)
-            return
-        }
         if (states.checkData && states.checkData.item && states.checkData.item.list && states.checkData.item.list.length > 0) {
             const size = DataUtil.ObjUtils.getAtrNumber(states.checkData.item.list[0]).length
             if (size === 2) {

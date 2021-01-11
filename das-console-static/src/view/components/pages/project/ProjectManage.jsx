@@ -8,9 +8,9 @@ import {View} from 'ea-react-dm-v14'
 import {PojectControl} from '../../../../controller/Index'
 import TreePanle from '../base/TreePanle'
 import {Button, Modal, Popconfirm, Tooltip, Progress, Alert, Icon} from 'antd'
-import {InputPlus, Inputlabel, SelectPlus, DatePickerPuls, CodeEditor} from '../../utils/index'
+import {InputPlus, Inputlabel, SelectPlus, DatePickerPuls, CodeEditor, RadioPlus} from '../../utils/Index'
 import Immutable from 'immutable'
-import {das_msg, display} from '../../../../model/base/BaseModel'
+import {autoReloadEnabledTypes, das_msg, display} from '../../../../model/base/BaseModel'
 import {FrwkUtil, DataUtil, UserEnv} from '../../utils/util/Index'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import './ProjectManage.less'
@@ -29,7 +29,10 @@ export default class ProjectManage extends ManagePanle {
         this.syncLink = '/project/sync'
         this.checkLink = '/project/check'
         this.addButtonBiden = [0]
-        this.cleanExceptKeys = ['namespace', 'dal_group_id', {k: 'app_id', v: ''}]
+        this.cleanExceptKeys = ['namespace', 'dal_group_id', {k: 'app_id', v: ''}, {
+            k: 'attributes',
+            v: {autoReloadEnabled: 0}
+        }]
         this.loadList = this.props.loadList
         this.addItem = this.props.addProject
         this.deleteItem = this.props.deleteProject
@@ -178,6 +181,11 @@ export default class ProjectManage extends ManagePanle {
                 <SelectPlus {..._props}
                             selectedIds={item.dbsetIds} items={dbSetlist} mode='multiple' isSearch={true}
                             valueLink={this.objName + '.items'}/>
+            </Inputlabel>
+            <Inputlabel title='自动Reload'>
+                <RadioPlus {..._props} items={autoReloadEnabledTypes}
+                           valueLink={this.objName + '.attributes.autoReloadEnabled'}
+                           selectedId={item.attributes.autoReloadEnabled}/>
             </Inputlabel>
             <Inputlabel title='预计上线时间'>
                 <DatePickerPuls {..._props}
@@ -383,8 +391,7 @@ export default class ProjectManage extends ManagePanle {
                             format={{tree: {title: 'group_name', key: 'id', tooltip: 'group_comment', isLeaf: true}}}
                             showLine={true}
                             onSelect={::this.onSelect}
-                            getDefaultSelected={::this.getDefaultSelected}/>}
-            />
+                            getDefaultSelected={::this.getDefaultSelected}/>}/>
         </div>)
     }
 }

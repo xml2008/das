@@ -1,6 +1,7 @@
 import MathUtil from './MathUtil'
 import _ from 'underscore'
 import $ from 'jquery'
+import CoreUtil from './CoreUtil'
 
 let DataUtil = DataUtil || {}
 
@@ -28,6 +29,9 @@ DataUtil.array = {
         if (index > -1) {
             arr.splice(index, 1)
         }
+    },
+    unique: function (arr) {
+        return [...new Set(arr)]
     }
 }
 
@@ -68,26 +72,57 @@ DataUtil.StringUtils = {
     /**
      * 取字符串int部分
      */
+    /**
+     * 取字符串int部分
+     */
     getInt: function (val) {
         if (val == '0' || val == 0) {
             return val
         }
-        if (!DataUtil.TypeUtils.isInt(val)) {
-            val = DataUtil.StringUtils.getInt(val.substring(0, val.length - 1))
+        if (_.isEmpty(val)) {
+            return ''
         }
-        return val
+        if (!DataUtil.TypeUtils.isInt(val)) {
+            val = val.replace(/[^0-9]/ig, '')
+            if (!DataUtil.TypeUtils.isInt(val)) {
+                return ''
+            }
+        }
+        return parseInt(val)
     },
     /**
      * 取字符串float部分
      */
     getFloat: function (val) {
-        if (val == '0.' || val == 0) {
+        if (val == '0.') {
             return val
         }
-        if (!DataUtil.TypeUtils.isFloat(val)) {
-            val = DataUtil.StringUtils.getFloat(val.substring(0, val.length - 1))
+        if (val == '0') {
+            return parseFloat(val)
         }
-        return val
+        if (_.isEmpty(val) || val == '.') {
+            return ''
+        }
+        if (!DataUtil.TypeUtils.isFloat(val)) {
+            if (val.includes('.')) {
+                const arr = val.split('.')
+                if (arr.length > 1) {
+                    const a = DataUtil.StringUtils.getInt(arr[0])
+                    if (_.isEmpty(val)) {
+                        return ''
+                    } else if (DataUtil.TypeUtils.isInt(a)) {
+                        return String(a + '.' + DataUtil.StringUtils.getInt(arr[1]))
+                    }
+                }
+            } else {
+                const a = DataUtil.StringUtils.getInt(val)
+                if (DataUtil.TypeUtils.isInt(a)) {
+                    return a
+                }
+                return ''
+            }
+        }
+        return parseFloat(val)
     },
     /**
      * 取字符串小写和下划线
@@ -147,8 +182,14 @@ DataUtil.StringUtils = {
      */
     upperCase: function (val) {
         return val.substring(0, 1).toUpperCase() + val.substring(1)
+    },
+    /**
+     * 去掉双引号
+     */
+    filterQuotes: function (val) {
+        const reg = new RegExp('"', 'g')
+        return val.replace(reg, '')
     }
-
 }
 
 DataUtil.ObjUtils = {
@@ -225,8 +266,8 @@ DataUtil.ObjUtils = {
     extendArr: (arr1, arr2) => {
         let list
         if (_.isArray(arr1) && _.isArray(arr2)) {
-            /* list = _.filter(arr1, item => {
-                 return !DataUtil.ObjUtils.includes(arr2, item)
+            /* list = _.filter(arr1, itemLabel => {
+                 return !DataUtil.ObjUtils.includes(arr2, itemLabel)
              })*/
             arr1.forEach(item => {
                 arr2.push(item)
@@ -247,15 +288,36 @@ DataUtil.ObjUtils = {
             return obj
         }
         let rs = {}
-        keys.forEach((key) => {
+        keys.forEach(key => {
             rs[key] = obj[key]
         })
         return rs
     },
-
+    isObjectValueEqual: function (a, b) {
+        let aProps = Object.getOwnPropertyNames(a)
+        let bProps = Object.getOwnPropertyNames(b)
+        if (aProps.length != bProps.length) {
+            return false
+        }
+        for (let i = 0; i < aProps.length; i++) {
+            let propName = aProps[i]
+            let propA = a[propName]
+            let propB = b[propName]
+            if ((typeof (propA) === 'object')) {
+                if (this.isObjectValueEqual(propA, propB)) {
+                    // return true     这里不能return ,后面的对象还没判断
+                } else {
+                    return false
+                }
+            } else if (propA !== propB) {
+                return false
+            }
+        }
+        return true
+    },
     isEqual: function (object, other) {
         if ((!object && other) || (object && !other)) {
-            window.console.warn('DataUtil.ObjUtils.isEqual: object or other is null', object, other)
+            //window.console.warn('DataUtil.ObjUtils.isEqual: object or other is null', object, other)
             return false
         }
         return _.isEqual(object, other)
@@ -350,7 +412,7 @@ DataUtil.ObjUtils = {
      * @param json
      * @param except
      */
-    cleanJson: function (json, except) {
+    cleanJson: function (json, except=[]) {
         let rs = {}
         let item
         for (const key in json) {
@@ -379,6 +441,8 @@ DataUtil.ObjUtils = {
                 rs[key] = []
             } else if (DataUtil.is.Object(item)) {
                 rs[key] = {}
+            } else if (DataUtil.is.Boolean(item)) {
+                rs[key] = false
             }
         }
         return rs
@@ -440,7 +504,7 @@ DataUtil.ObjUtils = {
         return arr
     },
     /**
-     * 初始化 数组或对象
+     * 初始化 数组或对象 Select, Radio
      * [{name:'tom', id:1}, {name:'jerry', id:2}] ==> {'1':'tom','2':'jerry'}
      * {1:'tom',2:'jerry'} ==> {'1':'tom','2':'jerry'}
      * @param _this
@@ -453,7 +517,7 @@ DataUtil.ObjUtils = {
                     const item = list[i]
                     const id = String(item[param.id])
                     if (item[param.id] == undefined || item[param.name] == undefined) {
-                        window.console.error('FrwkUtil.transform: param.id or param.name is undefined')
+                        window.console.error('CoreUtil.transform: param.id or param.name is undefined')
                     }
                     objs[id] = String(item[param.name])
                 }
@@ -463,12 +527,32 @@ DataUtil.ObjUtils = {
                 })
             }
             if ($.isEmptyObject(objs)) {
-                window.console.error(list, 'FrwkUtil.transform: objs is null!!!')
+                window.console.error(list, 'CoreUtil.transform: objs is null!!!')
             }
         } catch (e) {
-            window.console.error('FrwkUtil.transform', e, list, param)
+            window.console.error('CoreUtil.transform', e, list, param)
         }
         return objs
+    },
+    /**
+     * 转换object到新object
+     * {id:1,name:'tom'} , {id:'personId', name:'personName'}, false => {personId:1, personName:'tom'}
+     * {id:1,name:'tom', age:13}, []
+     */
+    transformParams: function (item, param) {
+        const obj = {}
+        if (DataUtil.is.Object(item) && DataUtil.is.Object(param)) {
+            Object.keys(param).forEach(key => {
+                const tkey = param[key]
+                obj[tkey] = CoreUtil.store.getValeByKey(item, key)
+            })
+        } else if (DataUtil.is.Object(item) && DataUtil.is.Array(param)) {
+            param.forEach(key => {
+                obj[key] = item[key]
+            })
+            return obj
+        }
+        return item
     },
     /**
      * 去重 alist 从 blist 里去重
@@ -530,7 +614,6 @@ DataUtil.ObjUtils = {
             return arr.includes(item[key])
         })
     },
-
     /***
      * 过滤
      * {id:1,name:tom,age:20}, [name, age] -> {name:tom,age:20}
@@ -542,7 +625,17 @@ DataUtil.ObjUtils = {
         })
         return rs
     },
-
+    /***
+     * 过滤
+     * [{id:1,name:tom, age:14},{id:2,name:jerry,age:20}, {id:3,name:ho, age:23}], [id,name] -> [{id:1,name:tom}, {id:2,name:jerry, {id:3,name:ho}}]
+     */
+    filterWhereListByKeys: (list, keys) => {
+        const arr = []
+        !_.isEmpty(list) && list.forEach(i => {
+            arr.push(DataUtil.ObjUtils.filterObjByKeys(i, keys))
+        })
+        return arr
+    },
     /***
      * 过滤
      * {1: "project001", 3: "project002", 4: "project004", 5: "project005"}, [1,3]-> ["project001", "project002"]
@@ -671,69 +764,60 @@ DataUtil.ObjUtils = {
                 }
             })
         }
-    }
-}
-
-DataUtil.validate = {
-    zero: function (str) {
-        if (DataUtil.StringUtils.trim(str + '') == '0') {
-            return false
-        }
-        return true
-    },
-    empty: function (str) {
-        if (DataUtil.StringUtils.trim(str + '') == '') {
-            return false
-        }
-        return true
-    },
-    required: function (str) {
-        if (str == null || str == undefined || DataUtil.StringUtils.trim(str + '') == '') {
-            return false
-        }
-        return true
-    },
-    boolean: function (str) {
-        return DataUtil.is.Boolean(str)
     },
     /**
-     * 身份证校验
-     * @param str
-     * @returns {boolean}
+     * 深度克隆
      */
-    lgalIdCard: function (str) {
-        if (str == undefined) {
-            return false
-        }
-        var idCardReg_15 = /^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$/
-        //^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$
-        var idCardReg_18 = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/
-
-        return idCardReg_15.test($.trim(str.toLowerCase())) || idCardReg_18.test($.trim(str.toLowerCase()))
-    },
-    email: function (str) {
-        var reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
-        return reg.test(str)
+    deepClone: obj => {
+        return JSON.parse(JSON.stringify(obj))
     },
     /**
-     * 手机号
-     * @param str 仅校验11位
-     * @returns {boolean}
+     * 判断str是对象
      */
-    mobile: function (str) {
-        str = str + ''
-        if (str && str.length == 11) {
-            return true
+    isObject: str => {
+        try {
+            const obj = JSON.parse(str)
+            return _.isObject(obj)
+        } catch (e) {
+            //window.console.cluster(e)
         }
         return false
-        /*var reg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
-         return reg.test(str);*/
-    }/*,
-     maxLength: function (str) {
-     str = trim(str + '');
-     if(str && str.length )
-     return reg.test(str);
-     }*/
+    },
+    /**
+     * 分割object，分成三个obj
+     *
+     */
+    split: (list, keys = {bin: 'id', end: 'key'}, key = 'key') => {
+        if (_.isEmpty(keys)) {
+            return {l: [], m: list, r: []}
+        }
+        if (!_.isEmpty(list.l) && !_.isEmpty(list.m)) {
+            return list
+        }
+        let l = true, m = false, r = false
+        const data = {l: [], m: [], r: []}
+        !_.isEmpty(list) && list.forEach(i => {
+            if (l) {
+                if (keys.bin == i[key]) {
+                    l = false
+                    m = true
+                    // data.m.push(i)
+                } else {
+                    data.l.push(i)
+                }
+            }
+            if (m) {
+                if (keys.end == i[key]) {
+                    m = false
+                    r = true
+                }
+                data.m.push(i)
+            } else if (r) {
+                data.r.push(i)
+            }
+        })
+        return data
+    }
 }
 
 DataUtil.Date = {
@@ -748,9 +832,9 @@ DataUtil.Date = {
  * 取的缓存中的数据
  */
 DataUtil.getLocalStorageData = function (storageCode, defaultData) {
-    if (localStorage) {
-        var result = {}
-        var data = localStorage.getItem(storageCode)
+    if (window.localStorage) {
+        let result = {}
+        let data = window.localStorage.getItem(storageCode)
         if (data) {
             result = JSON.parse(data)
         } else {
@@ -770,9 +854,9 @@ DataUtil.getLocalStorageData = function (storageCode, defaultData) {
  * @param storageData
  */
 DataUtil.setLocalStorageData = function (storageCode, storageData) {
-    if (localStorage) {
-        localStorage.removeItem(storageCode)
-        localStorage.setItem(storageCode, JSON.stringify(storageData))
+    if (window.localStorage) {
+        window.localStorage.removeItem(storageCode)
+        window.localStorage.setItem(storageCode, JSON.stringify(storageData))
     }
 }
 
@@ -796,6 +880,85 @@ DataUtil.deteleTable = function (table, item, key = 'id') {
         }
     }
     return rs
+}
+
+DataUtil.JsonSchemaFormat = jsonSchema => {
+
+    const exeObj = item => {
+        exeDom(item)
+    }
+
+    const exeArr = item => {
+        exeDom({'items': item.items})
+        item.list = [{'items': item.items}]
+    }
+
+    const exeDom = data => {
+        for (let key in data) {
+            const item = data[key]
+            const type = item.type ? item.type.toLocaleLowerCase() : ''
+            if (type) {
+                if (type === 'object' && Object.keys(item.properties).length > 0) {
+                    exeObj(item.properties)
+                } else if (type === 'array') {
+                    exeArr(item)
+                }
+            }
+        }
+    }
+
+    const type = jsonSchema.type.toLocaleLowerCase()
+    if (type === 'object') {
+        exeObj(jsonSchema.properties)
+    } else if (type === 'array') {
+        exeArr(jsonSchema)
+    }
+
+    return jsonSchema
+}
+
+DataUtil.JsonSchemaToJson = jsonSchema => {
+
+    let json = {}
+
+    const exeObj = (json, item) => {
+        for (let key in item) {
+            const val = item[key]
+            const type = val.type ? val.type.toLocaleLowerCase() : ''
+            if (type) {
+                if (type === 'object' && Object.keys(val.properties).length > 0) {
+                    json[key] = {}
+                    json[key] = exeObj(json[key], val.properties)
+                } else if (type === 'array') {
+                    json[key] = []
+                    json[key] = exeArr(json[key], val)
+                } else {
+                    json[key] = ''
+                }
+            }
+        }
+        return json
+    }
+
+    const exeArr = (json, item) => {
+        if (item.items.type === 'array') {
+            json.push(exeArr(json, item.items))
+        } else if (item.items.type === 'object') {
+            //json[0] = {}
+            json.push(exeObj({}, item.items.properties))
+        }
+        return json
+    }
+
+    const type = jsonSchema.type.toLocaleLowerCase()
+    if (type === 'object') {
+        return exeObj(json, jsonSchema.properties)
+    } else if (type === 'array') {
+        json = []
+        return exeArr(json, jsonSchema)
+    } else {
+        return ''
+    }
 }
 
 export default DataUtil

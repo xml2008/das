@@ -13,7 +13,7 @@ import Immutable from 'immutable'
 import QueueAnim from 'rc-queue-anim'
 import {DataUtil} from '../util/Index'
 import {Button, DatePicker, Input, Popover, Tooltip} from 'antd'
-import {CheckboxGroupPlus} from '../index'
+import {CheckboxGroupPlus} from '../Index'
 
 /**
  * div table
@@ -203,7 +203,7 @@ export default class TableList extends Component {
                                                             options={item.map} keyType={item.key}/>}>
                     <Button icon='filter' size='small'/>
                 </Popover>
-                /*<SelectPlus items={item.map} mode='multiple' valueLink={this.objName + '.items'}/>*/
+                /*<SelectPlus items={itemLabel.map} mode='multiple' valueLink={this.objName + '.items'}/>*/
             } else if (item.timePicker) {
                 const {RangePicker} = DatePicker
                 return <Popover placement='left' title={item.name} trigger='click'
@@ -249,7 +249,7 @@ export default class TableList extends Component {
                                         columnInfo && columnInfo.get('column').map((item, i) => {
                                             item = item.toJS()
                                             const _className = classNames(item.sortArrow + '_style', item.classNametitle)
-                                            //const imgsrc = this.getImageStyles(item.sortArrow)
+                                            //const imgsrc = this.getImageStyles(itemLabel.sortArrow)
                                             return <Col style={{width: item.width + '%'}}
                                                         className={_className}
                                                         onClick={() => {

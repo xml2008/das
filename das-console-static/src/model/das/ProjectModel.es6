@@ -3,6 +3,7 @@ import {UserEnv} from '../../view/components/utils/util/Index'
 
 @Model('ProjectModel')
 export default class ProjectModel {
+
     static rs
 
     static list = []
@@ -108,7 +109,8 @@ export default class ProjectModel {
         userIds: [],
         dbsetNamees: '',
         items: [],
-        users: []
+        users: [],
+        attributes: {autoReloadEnabled: 0}
     }
 
     static member = {

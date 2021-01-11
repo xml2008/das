@@ -7,7 +7,7 @@ import {View} from 'ea-react-dm-v14'
 import {DataSearchControl} from '../../../../controller/Index'
 import {Button, Col, Row, Form, Alert} from 'antd'
 import QueueAnim from 'rc-queue-anim'
-import {SplitEditor, RsuiteTable, SelectPlus} from '../../utils'
+import {SplitEditor, RsuiteTable, SelectPlus} from '../../utils/Index'
 import {FrwkUtil, DataUtil} from '../../utils/util/Index'
 import _ from 'underscore'
 

@@ -3,7 +3,7 @@ import Component from '../../../utils/base/ComponentAlert'
 import {Table} from 'eagle-ui'
 import {Button} from 'antd'
 import './ApiParamsTab.less'
-import {InputPlus} from '../../../utils/index'
+import {InputPlus} from '../../../utils/Index'
 
 export default class ApiParamsTab extends Component {
 

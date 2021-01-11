@@ -7,7 +7,7 @@ import TablePanle from '../base/TablePanle'
 import {View} from 'ea-react-dm-v14'
 import {ServerGroupControl} from '../../../../controller/Index'
 import {Modal} from 'antd'
-import {Inputlabel, InputPlus, TextArea} from '../../utils/index'
+import {Inputlabel, InputPlus, TextArea} from '../../utils/Index'
 import ServerManage from './ServerManage'
 import {das_msg} from '../../../../model/base/BaseModel'
 
@@ -54,7 +54,7 @@ export default class ServerGroupManage extends ManagePanle {
                       onCancel={::this.handleCancel}>
             <Inputlabel title='Server Group 名称'>
                 <InputPlus {..._props} validRules={{isDbName: true, maxLength: 24}}
-                           placeholder={das_msg.apollo_namespace}
+                           placeholder={das_msg.apollo_namespace()}
                            defaultValue={item.name} valueLink={this.objName + '.name'}
                            disabled={states.editerType == 1}/>
             </Inputlabel>

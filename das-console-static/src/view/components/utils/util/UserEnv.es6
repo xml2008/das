@@ -5,6 +5,11 @@ import FrwkUtil from './FrwkUtil'
  */
 let UserEnv = UserEnv || {}
 
+UserEnv.isMock = () => {
+    const rs = {yes: true, no: false}
+    return rs.no
+}
+
 UserEnv.getDasEnv = () => {
     return window.DASENV
 }
@@ -50,6 +55,10 @@ UserEnv.refresh = callBack => {
             callBack && callBack(data)
         }
     })
+}
+
+UserEnv.getAppUrl = () => {
+    return window.location.origin
 }
 
 export default UserEnv

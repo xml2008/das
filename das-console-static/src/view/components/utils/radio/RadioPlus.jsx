@@ -4,7 +4,7 @@
 import React from 'react'
 import Component from '../base/Component'
 import {Radio} from 'antd'
-import {DataUtil} from '../../utils/util/Index'
+import {DataUtil} from '../util/Index'
 import _ from 'underscore'
 
 export default class RadioPlus extends Component {
@@ -33,14 +33,14 @@ export default class RadioPlus extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {selectedId} = nextProps
-        if (selectedId != this.state.selectedId) {
+        if (selectedId != null && selectedId != this.state.selectedId) {
             this.setState({selectedId})
         }
     }
 
     initData() {
         const {selectedId, valueLink} = this.props
-        if(valueLink){
+        if (valueLink) {
             this.setValueByReducers(valueLink, selectedId)
         }
     }
@@ -60,7 +60,9 @@ export default class RadioPlus extends Component {
         const {onChangeCallback, valueLink} = this.props
         const selectedId = e.target.value
         this.setState({selectedId})
-        this.setValueByReducers(valueLink, selectedId)
+        if (valueLink) {
+            this.setValueByReducers(valueLink, selectedId)
+        }
         onChangeCallback && onChangeCallback(selectedId)
     }
 

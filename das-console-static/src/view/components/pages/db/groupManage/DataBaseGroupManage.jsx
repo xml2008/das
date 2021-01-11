@@ -8,7 +8,7 @@ import {View} from 'ea-react-dm-v14'
 import {DataBaseGroupControl} from '../../../../../controller/Index'
 import TreePanle from '../../base/TreePanle'
 import {Modal} from 'antd'
-import {DropDownSuggestion, Inputlabel, InputPlus} from '../../../utils/index'
+import {DropDownSuggestion, Inputlabel, InputPlus} from '../../../utils/Index'
 import Immutable from 'immutable'
 
 @View(DataBaseGroupControl)

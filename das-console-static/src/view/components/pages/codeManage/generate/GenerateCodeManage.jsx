@@ -7,7 +7,7 @@ import {View} from 'ea-react-dm-v14'
 import {GenerateCodeControl} from '../../../../../controller/Index'
 import FileTree from './FileTree'
 import {Row, Col, Button, Spin} from 'antd'
-import {CodeEditor} from '../../../utils/index'
+import {CodeEditor} from '../../../utils/Index'
 import FrwkUtil from '../../../utils/util/FrwkUtil'
 import QueueAnim from 'rc-queue-anim'
 

@@ -18,6 +18,7 @@ export default class DataBaseSetSyncControl extends Action {
     }
 
     static addDbSet(dbSet, _this, callback) {
+        dbSet.pattern = JSON.stringify(dbSet.pattern)
         DasUtil.transformStrategyListToStr(dbSet, 'apiParams', 'strategySource')
         return this.ajaxPost('/groupdbset/syncdb', dbSet, 'rs', _this, callback)
     }

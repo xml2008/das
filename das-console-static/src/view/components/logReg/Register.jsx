@@ -1,10 +1,10 @@
 import React from 'react'
 import {Row, Col, Grid, Panel, PanelContent} from 'eagle-ui'
-import {Inputlabel, InputPlus} from '../utils/index'
+import {Inputlabel, InputPlus} from '../utils/Index'
 import {Button, Steps, Icon, Alert, Spin} from 'antd'
 import {LogRegControl} from '../../../controller/Index'
 import {View} from 'ea-react-dm-v14'
-import {DataUtil} from '../utils/util/Index'
+import {DataUtil, CoreUtil} from '../utils/util/Index'
 import {actionType} from '../../../constants/action-type'
 import $ from 'jquery'
 import Common from '../app/Common'
@@ -50,7 +50,7 @@ export default class Register extends Common {
 
     checkData() {
         const reginfo = this.getValueByReducers('LogRegModel.reginfo').toJS()
-        const isCanReg = DataUtil.validate.email(reginfo.userEmail) && (reginfo.userName.length < 20 && reginfo.userName.length > 2) && (reginfo.password.length < 20 && reginfo.password.length > 5) && reginfo.password == reginfo.password2
+        const isCanReg = CoreUtil.validate.email(reginfo.userEmail) && (reginfo.userName.length < 20 && reginfo.userName.length > 2) && (reginfo.password.length < 20 && reginfo.password.length > 5) && reginfo.password == reginfo.password2
         if (isCanReg) {
             this.setState({
                 regBtn: 'primary'
@@ -65,7 +65,7 @@ export default class Register extends Common {
 
     checkEmail(val) {
         this.setState({
-            emailerrshow: !DataUtil.validate.email(val)
+            emailerrshow: !CoreUtil.validate.email(val)
         })
         this.checkData()
     }

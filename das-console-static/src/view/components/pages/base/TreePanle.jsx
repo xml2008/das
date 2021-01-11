@@ -308,7 +308,7 @@ export default class TreePanle extends Component {
         return (
             <div className='treePanle' style={{resize: 'horizontal'}}>
                 {searchShow &&
-                <Search size='large' style={{marginBottom: 8}} placeholder='Search' value={searchValue}
+                <Search size='large' style={{marginBottom: 8}} placeholder='请输入appId查询' value={searchValue}
                         onChange={::this.onChange}/>}
                 <Tree showLine={this.props.showLine}
                       selectedKeys={selectedKeys}

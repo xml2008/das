@@ -2,7 +2,7 @@ import React from 'react'
 import Component from '../../utils/base/ComponentAlert'
 import {Table} from 'eagle-ui'
 import './DatabaseTab.less'
-import {InputPlus} from '../../utils/index'
+import {InputPlus} from '../../utils/Index'
 import {DataUtil, UserEnv} from '../../utils/util/Index'
 import {Select, Checkbox, Tooltip, Button} from 'antd'
 import {das_msg} from '../../../../model/base/BaseModel'
@@ -119,7 +119,7 @@ export default class DatabaseTab extends Component {
                                                        valueLink={`DatabaseModel.dalGroupDBList.${index}.dbname`}
                                                        validRules={{isDbName: true, maxLength: UserEnv.getCons().dataBaseNameMaxLength}}
                                                        onChangeCallBack={onChangeCallback}
-                                                       placeholder={das_msg.apollo_namespace}/>
+                                                       placeholder={das_msg.apollo_namespace()}/>
                                         </td>
                                         <th className='msg'>{this.createLable(item)}</th>
                                         <td className='comment'>

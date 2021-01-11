@@ -103,6 +103,7 @@ export default class DatabaseSetModel {
         strategyType: 1,
         dynamicStrategyId: 0,
         groupId: '',
+        pattern: {type: 0, description: 0},
         apiParams: [
             /*{
                 'key': 'key',

@@ -13,7 +13,7 @@ import {display} from '../../../../model/base/BaseModel'
 import Immutable from 'immutable'
 import {DataUtil} from '../util/Index'
 //import _ from 'underscore'
-import {CodeEditor, CheckboxGroupPlus} from '../index'
+import {CodeEditor, CheckboxGroupPlus} from '../Index'
 import FrwkUtil from '../util/FrwkUtil'
 
 /**
@@ -335,7 +335,7 @@ export default class TheadList extends Component {
                                                             options={item.map} keyType={item.key}/>}>
                     <Button icon='filter' size='small'/>
                 </Popover>
-                /*<SelectPlus items={item.map} mode='multiple' valueLink={this.objName + '.items'}/>*/
+                /*<SelectPlus items={itemLabel.map} mode='multiple' valueLink={this.objName + '.items'}/>*/
             } else if (item.timePicker) {
                 const {RangePicker} = DatePicker
                 return <Popover placement='top' title={item.name} trigger='click'
@@ -352,7 +352,7 @@ export default class TheadList extends Component {
         else {
             return <Button icon='reload' size='small' onClick={::this.clearSearch}>查询重置</Button>
         }
-        /*<Search onChange={e => ::this.searchOnChange(e.target.value, item)}
+        /*<Search onChange={e => ::this.searchOnChange(e.target.value, itemLabel)}
                                           placeholder='查询....' style={{
                                       width: '100%',
                                       paddingLeft: '14px'

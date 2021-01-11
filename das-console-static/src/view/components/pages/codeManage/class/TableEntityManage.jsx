@@ -9,7 +9,7 @@ import {Col, Modal, Row, Select} from 'antd'
 import ManagePanle from '../../base/ManagePanle'
 import Immutable from 'immutable'
 import FrwkUtil from '../../../utils/util/FrwkUtil'
-import {InputPlus, Inputlabel, RadioPlus} from '../../../utils'
+import {InputPlus, Inputlabel, RadioPlus} from '../../../utils/Index'
 import DataUtil from '../../../utils/util/DataUtil'
 import {das_msg, dataFieldTypeEnum, fieldTypes} from '../../../../../model/base/BaseModel'
 import TableEntityTab from './TableEntityTab'
@@ -69,7 +69,7 @@ export default class TableEntityManage extends ManagePanle {
     editorCallBack = item => {
         return item
         //const task_table = this.getValueByReducers(this.objName).toJS()
-        //this.loadCatalogs(item.dbset_id, item)
+        //this.loadCatalogs(itemLabel.dbset_id, itemLabel)
     }
 
     /** @Override **/

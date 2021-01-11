@@ -8,12 +8,12 @@ import {View} from 'ea-react-dm-v14'
 import {DatabaseSetControl} from '../../../../../controller/Index'
 import TreePanle from '../../base/TreePanle'
 import {Modal} from 'antd'
-import {Inputlabel, InputPlus, RadioPlus, SelectPlus} from '../../../utils/index'
+import {Inputlabel, InputPlus, RadioPlus, SelectPlus} from '../../../utils/Index'
 import Immutable from 'immutable'
 import DatabaseSetEntry from './DatabaseSetEntry'
 import ApiParamsTab from '../paramsTab/ApiParamsTab'
 import {DasUtil} from '../../../utils/util/Index'
-import {strategyDbsetType, databaseTypes, das_msg, display} from '../../../../../model/base/BaseModel'
+import {strategyDbsetType, databaseTypes, das_msg, display, patternTypes} from '../../../../../model/base/BaseModel'
 import FrwkUtil from '../../../utils/util/FrwkUtil'
 import DataUtil from '../../../utils/util/DataUtil'
 
@@ -48,7 +48,8 @@ export default class DataBaseSetManage extends ManagePanle {
             publicStrategyList: [],
             publicStrategyApiParams: [],
             confirmLoading: false,
-            currentCheckedId: 0
+            currentCheckedId: 0,
+            displayMgrReadWriteSplitting: false
         }
         this.loadPublicStrategy()
     }
@@ -68,6 +69,12 @@ export default class DataBaseSetManage extends ManagePanle {
     }
 
     /** @Override **/
+    addCallBack = () => {
+        this.cleanObjName()
+        this.setValueToImmutable(this.objName + '.pattern', {type: 0, description: 0})
+    }
+
+    /** @Override **/
     beforeDefaultSelected = item => {
         if (item.length > 0) {
             this.setState({dbSetEntryVisible: true})
@@ -81,16 +88,14 @@ export default class DataBaseSetManage extends ManagePanle {
 
     /** @Override **/
     /*    cleanObjName = () => {
-            let item = this.getValueByReducers(this.objName).toJS()
-            item.comment = ''
-            item.id = ''
-            item.dbType = 1
-            item.dynamicStrategyId = 0
-            item.name = ''
+            let itemLabel = this.getValueByReducers(this.objName).toJS()
+            itemLabel.comment = ''
+            itemLabel.id = ''
+            itemLabel.dbType = 1
+            itemLabel.dynamicStrategyId = 0
+            itemLabel.name = ''
 
-            this.setValueByReducers(this.objName, Immutable.fromJS(item))
-
-
+            this.setValueByReducers(this.objName, Immutable.fromJS(itemLabel))
         }*/
 
     /** @Override **/
@@ -195,6 +200,14 @@ export default class DataBaseSetManage extends ManagePanle {
                 <RadioPlus {..._props}
                            items={databaseTypes} valueLink={this.objName + '.dbType'} selectedId={item.dbType}
                            disabled={states.editerType === 1}/>
+            </Inputlabel>
+            <Inputlabel title='支持MGR'>
+                <RadioPlus {..._props} items={patternTypes} valueLink={this.objName + '.pattern.type'}
+                           selectedId={item.pattern.type}/>
+            </Inputlabel>
+            <Inputlabel title='MGR读写分离' display={item.pattern.type === 1}>
+                <RadioPlus {..._props} items={patternTypes} valueLink={this.objName + '.pattern.description'}
+                           selectedId={item.pattern.description}/>
             </Inputlabel>
             <Inputlabel title='逻辑数据库名'>
                 <InputPlus {..._props}

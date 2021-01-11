@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import Component from '../../utils/base/Component'
-import {TheadList} from '../../utils/index'
+import {TheadList} from '../../utils/Index'
 import {column, display} from '../../../../model/base/BaseModel'
 import Immutable from 'immutable'
 import _ from 'underscore'
@@ -17,6 +17,7 @@ export default class TablePanle extends Component {
     static defaultProps = {
         tyep: 1, //1: 裸表，2:单表, 3: 多表, 4:左侧树+多表
         title: 'title',
+        showTable: true,
         //addButtonShow: true,    //是否显示添加按钮
         checkButtonShow: false,
         pageStyle: null,
@@ -54,7 +55,7 @@ export default class TablePanle extends Component {
 
     constructor(props, context) {
         super(props, context)
-        const {modelName, loadListFiler, isLoadTheadList, isloadList} = props
+        const {modelName, loadListFiler, isLoadTheadList, isloadList, showTable} = props
         this.initValueLink(modelName)
         isloadList && this.loadList(this.getValueToJson(this.searchInfo), this, null, loadListFiler)
         this.state = {
@@ -62,10 +63,11 @@ export default class TablePanle extends Component {
             checkButtonShow: props.checkButtonShow,
             isLoadTheadList: isLoadTheadList
         }
-        setTimeout(() => {
-            this.initColumn()
-        }, 500)
-
+        if (showTable) {
+            setTimeout(() => {
+                this.initColumn()
+            }, 500)
+        }
     }
 
     initValueLink = modelName => {
@@ -257,6 +259,19 @@ export default class TablePanle extends Component {
         const {isLoadTheadList, addButtonShow, checkButtonShow} = this.state
         const theadList = this.getValueByReducers(this.searchResultList)
         const columnInfo = this.getValueByReducers(this.columnInfo)
+        if (type === 0) {
+            return <div>
+                <PageBase title={this.props.title} navigation={this.props.navigation} clickBack={::this.props.add}
+                          clickCheckBack={::this.props.clickCheckBack} checkButtonShow={checkButtonShow}
+                          addButtonShow={addButtonShow} style={pageStyle} zDepth={zDepth}>
+                    {
+                        React.Children.map(children, (child) => {
+                            return <Row><Col sm={24}>{child}</Col></Row>
+                        })
+                    }
+                </PageBase>
+            </div>
+        }
         const table = <TheadList {...this.props}
                                  isSearchAble={isSearchAble}
                                  zDepth={1}

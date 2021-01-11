@@ -11,15 +11,18 @@ export default class DatabaseSetControl extends Action {
 
     static addDbSet(dbSet, _this, callback) {
         DasUtil.transformStrategyListToStr(dbSet, 'apiParams', 'strategySource')
+        dbSet.pattern = JSON.stringify(dbSet.pattern)
         return this.ajaxPost('/groupdbset/add', dbSet, 'rs', _this, callback)
     }
 
     static deleteDbSet(dbSet, _this, callback) {
+        dbSet.pattern = JSON.stringify(dbSet.pattern)
         return this.ajaxDelete('/groupdbset/delete', dbSet, 'rs', _this, callback)
     }
 
     static updateDbSet(dbSet, _this, callback) {
         DasUtil.transformStrategyListToStr(dbSet, 'apiParams', 'strategySource')
+        dbSet.pattern = JSON.stringify(dbSet.pattern)
         return this.ajaxPut('/groupdbset/update', dbSet, 'rs', _this, callback)
     }
 

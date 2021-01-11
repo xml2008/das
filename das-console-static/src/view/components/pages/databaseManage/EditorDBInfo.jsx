@@ -1,6 +1,6 @@
 import React from 'react'
 import Component from '../../utils/base/ComponentAlert'
-import {Inputlabel, InputPlus, RadioPlus} from '../../utils/index'
+import {Inputlabel, InputPlus, RadioPlus} from '../../utils/Index'
 import {Row} from 'antd'
 import {databaseTypes} from '../../../../model/base/BaseModel'
 import {UserEnv} from '../../utils/util/Index'

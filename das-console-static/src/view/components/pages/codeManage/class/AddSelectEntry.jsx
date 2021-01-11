@@ -4,7 +4,7 @@
 import React from 'react'
 import Component from '../../../utils/base/ComponentAlert'
 import {Row, Col, Button, Steps, Spin, Alert} from 'antd'
-import {InputPlus, Inputlabel, CodeEditor, SelectPlus, RadioPlus} from '../../../utils'
+import {InputPlus, Inputlabel, CodeEditor, SelectPlus, RadioPlus} from '../../../utils/Index'
 import FrwkUtil from '../../../utils/util/FrwkUtil'
 import Immutable from 'immutable'
 import {DataUtil} from '../../../utils/util/Index'

@@ -226,7 +226,7 @@ export default class SelectPlus extends Component {
             </Select>)
         }
         if (selectedValue) {
-            _props.value = defaultValue
+            _props.defaultValue = defaultValue
         }
         return (
             <Select {..._props} style={{width: width}} showSearch={true} placeholder={placeholder}

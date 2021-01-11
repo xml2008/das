@@ -1,4 +1,5 @@
 export DataUtil from './DataUtil'
+export UserEnv from './UserEnv'
 export FrwkUtil from './FrwkUtil'
 export DasUtil from './DasUtil'
-export UserEnv from './UserEnv'
+export CoreUtil from './CoreUtil'

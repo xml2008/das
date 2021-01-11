@@ -18,6 +18,7 @@ export default class PageModel {
         memberManage: false,
         databaseManage: false,
         dataBaseGroupManage: false,
+        databaseBatchManage: false,
         logicDataBaseManage: false,
         projectManage: false,
         projectListManage: false,
@@ -27,7 +28,8 @@ export default class PageModel {
         groupSyncManage: false,
         projectSyncManage: false,
         dataBaseSyncManage: false,
-        dataBaseSetSyncManage: false
+        dataBaseSetSyncManage: false,
+        queryIndex: false
     }
 
     static chartsdata = [

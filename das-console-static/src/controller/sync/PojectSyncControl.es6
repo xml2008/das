@@ -13,6 +13,8 @@ export default class PojectSyncControl extends Action {
     }
 
     static addProject(project, _this, callback) {
+        project.namespace = 'com.ppdai.platform.das'
+        project.attributes = JSON.stringify(project.attributes)
         return this.ajaxPost('/project/syncdb', project, 'rs', _this, callback)
     }
 }

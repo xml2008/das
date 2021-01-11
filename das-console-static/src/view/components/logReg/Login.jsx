@@ -1,6 +1,6 @@
 import React from 'react'
 import {Row, Col, Grid, Panel, PanelContent, PanelHeader} from 'eagle-ui'
-import {Inputlabel, InputPlus} from '../utils/index'
+import {Inputlabel, InputPlus} from '../utils/Index'
 import {Button} from 'antd'
 import {LogRegControl} from '../../../controller/Index'
 import {View} from 'ea-react-dm-v14'

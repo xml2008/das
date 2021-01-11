@@ -7,7 +7,7 @@ import TablePanle from '../base/TablePanle'
 import {View} from 'ea-react-dm-v14'
 import {ServerConfigControl} from '../../../../controller/Index'
 import {Modal} from 'antd'
-import {Inputlabel, InputPlus} from '../../utils/index'
+import {Inputlabel, InputPlus} from '../../utils/Index'
 import Immutable from 'immutable'
 import {DataUtil} from '../../utils/util/Index'
 

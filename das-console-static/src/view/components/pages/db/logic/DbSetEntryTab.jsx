@@ -2,7 +2,7 @@ import React from 'react'
 import Component from '../../../utils/base/ComponentAlert'
 import {Table} from 'eagle-ui'
 import './DbSetEntryTab.less'
-import {Inputlabel, InputPlus, SelectPlus, RadioPlus} from '../../../utils/index'
+import {Inputlabel, InputPlus, SelectPlus, RadioPlus} from '../../../utils/Index'
 import {das_msg, databaseShardingTypes} from '../../../../../model/base/BaseModel'
 import {Col, Row, Spin} from 'antd'
 
@@ -76,7 +76,7 @@ export default class DbSetEntryTab extends Component {
                                                                    defaultValue={item.name}
                                                                    valueLink={`DatabaseSetEntryModel.dbSetEntryList.${index}.name`}
                                                                    validRules={{isDbName: true, maxLength: 50}}
-                                                                   placeholder={das_msg.apollo_namespace}/>
+                                                                   placeholder={das_msg.apollo_namespace()}/>
                                                     </td>
                                                     <td className='addteam'>
                                                         <RadioPlus {..._props}

@@ -9,14 +9,19 @@ export default class PojectControl extends Action {
     }
 
     static addProject(project, _this, callback) {
+        project.namespace = 'com.ppdai.platform.das'
+        project.attributes = JSON.stringify(project.attributes)
         return this.ajaxPost('/project/add', project, 'rs', _this, callback)
     }
 
     static deleteProject(project, _this, callback) {
+        project.attributes = JSON.stringify(project.attributes)
         return this.ajaxDelete('/project/delete', project, 'rs', _this, callback)
     }
 
     static updateProject(project, _this, callback) {
+        project.namespace = 'com.ppdai.platform.das'
+        project.attributes = JSON.stringify(project.attributes)
         return this.ajaxPut('/project/update', project, 'rs', _this, callback)
     }
 
