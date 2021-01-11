@@ -1,10 +1,10 @@
 package com.ppdai.das.console.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ppdai.das.console.api.UserConfiguration;
 import com.ppdai.das.console.common.interceptor.CommStatusInterceptor;
 import com.ppdai.das.console.common.interceptor.permissions.UserLoginInterceptor;
 import com.ppdai.das.console.constant.Message;
-import com.ppdai.das.console.controller.UserController;
 import com.ppdai.das.console.dao.LoginUserDao;
 import com.ppdai.das.console.dto.entry.das.LoginUser;
 import com.ppdai.das.console.dto.model.Paging;
@@ -49,6 +49,9 @@ public class UserControllerTest {
 
     @MockBean
     private LoginUserDao loginUserDao;
+
+    @MockBean
+    private UserConfiguration userConfiguration;
 
     private MockMvc mockMvc;
     private String requestJson;

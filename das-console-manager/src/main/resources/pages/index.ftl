@@ -37,7 +37,7 @@
 <#else>
     <link rel="stylesheet" type="text/css" href="../pages/dist/index.css"/>
     <script src="../pages/dist/common.js"></script>
-    <script src="../pages/dist/index.js?t=20200615"></script>
+    <script src="../pages/dist/index.js?t=20210111"></script>
 </#if>
 </body>
 </html>

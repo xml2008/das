@@ -160,6 +160,22 @@ public class DatabaseController {
         return databaseService.updateDataCenter(user, dataBaseInfo);
     }
 
+    /**
+     * 批量修改端口、地址
+     */
+    @RequestMapping(value = "/update/batch", method = RequestMethod.PUT)
+    public ServiceResult<String> updateBatch(@Validated(UpdateDataBase.class) @RequestBody List<DataBaseInfo> list, @CurrentUser LoginUser user, Errors errors) throws Exception {
+        list.stream().forEach(i -> {
+            i.setUpdateUserNo(user.getUserNo());
+        });
+        ValidateResult validateRes = databaseService.validatePermision(user, errors)
+                .addAssert(() -> databaseService.updateDBInfoBatch(list), message.db_message_update_operation_failed).validate();
+        if (!validateRes.isValid()) {
+            return ServiceResult.fail(validateRes.getSummarize());
+        }
+        return databaseService.updateDataBatchCenter(user, list);
+    }
+
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public ServiceResult<String> delete(@Validated(DeleteDataBase.class) @RequestBody DataBaseInfo dataBaseInfo, @CurrentUser LoginUser user, Errors errors) throws Exception {
         dataBaseInfo.setUpdateUserNo(user.getUserNo());

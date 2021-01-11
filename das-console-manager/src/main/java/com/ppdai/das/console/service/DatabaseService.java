@@ -195,6 +195,10 @@ public class DatabaseService {
         return ServiceResult.success();
     }
 
+    public boolean updateDBInfoBatch(List<DataBaseInfo> list) throws SQLException {
+        return dataBaseDao.updateDataBaseInfoBatch(list).length > 0;
+    }
+
     public boolean updateDBInfo(DataBaseInfo dataBaseInfo) throws SQLException {
         dataBaseInfo.setDb_password(DasEnv.encdecConfiguration.encrypt(dataBaseInfo.getDb_password()));
         return dataBaseDao.updateDataBaseInfo(dataBaseInfo) > 0;
@@ -337,6 +341,17 @@ public class DatabaseService {
         try {
             DataBaseInfo oldDataBaseInfo = dataBaseDao.getDataBaseInfoByDbId(dataBaseInfo.getId());
             dataBaseConfiguration.updateDataBase(user, oldDataBaseInfo, dataBaseInfo);
+        } catch (Exception e) {
+            return ServiceResult.fail(StringUtil.getMessage(e));
+        }
+        return ServiceResult.success();
+    }
+
+    public ServiceResult<String> updateDataBatchCenter(LoginUser user, List<DataBaseInfo> list) {
+        try {
+            for (DataBaseInfo dataBaseInfo : list) {
+                this.updateDataCenter(user, dataBaseInfo);
+            }
         } catch (Exception e) {
             return ServiceResult.fail(StringUtil.getMessage(e));
         }

@@ -1,6 +1,6 @@
 package com.ppdai.das.console.cloud.service;
 
-import com.ppdai.das.console.cloud.controller.TableEntityCloudDao;
+import com.ppdai.das.console.cloud.dao.TableEntityCloudDao;
 import com.ppdai.das.console.cloud.dto.model.ServiceResult;
 import com.ppdai.das.console.cloud.dto.model.TablCodeModel;
 import com.ppdai.das.console.common.codeGen.CodeGenConsts;

@@ -1,7 +1,7 @@
 package com.ppdai.das.console.enums;
 
 public enum RoleTypeEnum {
-    Admin(1, "管理员"),
+    Admin(1, "组管理员"),
     Limited(2, "普通用户");
 
     private int type;
@@ -27,6 +27,4 @@ public enum RoleTypeEnum {
     public void setDetail(String detail) {
         this.detail = detail;
     }
-
-
 }

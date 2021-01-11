@@ -1956,6 +1956,49 @@ div.paleTable {
   color: red;
   margin-right: 10px;
 }
+.itemlabel .alert-col {
+  font-size: 15px;
+  color: dimgray;
+  padding: 6px 0px 0px 7px;
+}
+.itemlabel .pad-row {
+  padding: 10px 0px 10px 0px;
+}
+.itemlabel .base-col {
+  padding: 13px 6px 10px 10px;
+}
+.itemlabel .spanInline {
+  display: inline;
+  float: right;
+}
+.itemlabel .spanInlineLeft {
+  display: inline;
+  float: left;
+  padding-left: 7px;
+}
+.itemlabel .redFont {
+  color: red;
+  margin-right: 10px;
+}
+.itemlabel .label-div {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 5px;
+}
+.itemlabel .ant-form-item-label {
+  text-align: right;
+  vertical-align: middle;
+  height: 30px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.labelWarn {
+  color: red;
+  font-size: 12px;
+  padding: 0px 0px 0px 14px;
+}
 .codeEditor .aceEditorstyle {
   position: absolute;
 }
@@ -2293,6 +2336,279 @@ div.paleTable {
   left: 2px;
   width: 10px;
 }
+div.paleTable {
+  border: 0px solid #FFFFFF;
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+.divTable.paleTable .divTableCell,
+.divTable.paleTable .divTableHead {
+  border: 1px solid #dddddd;
+  padding: 3px 2px;
+}
+.divTable.paleTable .divTableBody .divTableCell {
+  /*font-size: 13px;*/
+  word-break: break-all;
+  margin: 0 auto;
+  vertical-align: middle;
+}
+.divTable.paleTable .divTableRow:nth-child(even) {
+  background: #f5f5f5;
+}
+.divTable.paleTable .divTableRow:nth-child(even):hover {
+  background-color: #ecf6fd;
+}
+.paleTable .tableFootStyle {
+  font-size: 14px;
+}
+/* DivTable.com */
+.divTable {
+  display: table;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.divTableRow {
+  display: table-row;
+}
+.divTableRow:hover {
+  background-color: #ecf6fd;
+}
+.divTableHeading {
+  display: table-header-group;
+}
+.divTableCell,
+.divTableHead {
+  display: table-cell;
+}
+.divTableHeading {
+  display: table-header-group;
+}
+.divTableFoot {
+  display: table-footer-group;
+}
+.divTableBody {
+  display: table-row-group;
+}
+@media screen and (max-width: 1710px) {
+  .tradeList {
+    overflow-x: auto;
+  }
+  .tradeList::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 4px;
+    /*高宽分别对应横竖滚动条的尺寸*/
+    height: 6px;
+  }
+  .tradeList::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .tradeList::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.1);
+  }
+  .eg-default {
+    width: 1500px;
+  }
+}
+.tradeList {
+  position: relative;
+}
+.tradeList .text-align-center {
+  word-wrap: break-word;
+  text-align: center;
+  /* font-size: 15px;*/
+}
+.tradeList .text-align-center .cursor {
+  cursor: pointer;
+}
+.tradeList .padding-top-20 {
+  padding-top: 14px;
+}
+.tradeList .col-width {
+  width: 10%;
+}
+.tradeList .col-lr {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+.tradeList .col-div-width {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+.tradeList .col-color-hover:hover {
+  cursor: pointer;
+}
+.tradeList .col-color-select {
+  background-color: rgba(141, 192, 219, 0.25);
+  cursor: pointer;
+}
+.tradeList .noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  /* Konqueror */
+  /* Firefox */
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently not supported by any browser */
+}
+.tradeList img {
+  width: 19px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.tradeList .eg-row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.tradeRow {
+  clear: both;
+  overflow: hidden;
+  width: 100%;
+}
+.tradeRow a {
+  cursor: pointer;
+  color: #0699e0;
+}
+.tradeRow .row-color-odd {
+  background-color: #fff;
+  border-bottom: 1px solid #dddddd;
+}
+.tradeRow .row-color-odd:hover {
+  background-color: #ecf6fd;
+}
+.tradeRow .row-color-eve {
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #dddddd;
+}
+.tradeRow .row-color-eve:hover {
+  background-color: #ecf6fd;
+}
+.tradeRow .col-width {
+  width: 10%;
+}
+.tradeRow .col-div-width {
+  border-right: 1px solid #ddd;
+  margin-bottom: -1000px;
+  padding-bottom: 1000px;
+}
+.tradeRow .text-align-right {
+  padding-right: 0px;
+  text-align: right;
+}
+.tradeRow .text-align-right .eg-btn-sm {
+  padding-right: 0px;
+  font-size: 16px;
+  margin-left: 10px;
+}
+.tradeRow .text-align-left {
+  padding-left: 0px;
+  text-align: left;
+}
+.tradeRow .text-align-left .eg-btn-sm {
+  padding-left: 0px;
+  font-size: 16px;
+  color: #ee5511;
+  margin-left: -10px;
+}
+.tradeRow .text-align-centert {
+  font-size: 13px;
+  text-align: center;
+}
+.tradeRow .text-align-centert .eg-btn-sm {
+  font-size: 16px;
+  color: #ee5511;
+  margin-left: -10px;
+}
+.tradeRow .cursor {
+  cursor: pointer;
+}
+.tradeRow .eg-btn-link {
+  color: #ee5511;
+}
+.tradeRow .button-editor {
+  text-align: center;
+  margin: 2px;
+}
+.panelHeader {
+  /*font-size: 15px;*/
+  font-weight: 500;
+}
+.outerPanel {
+  background-color: white;
+  border-radius: 4px;
+}
+.marginTopSpace {
+  margin-top: 0px;
+}
+.marginTopSpace .eg-panel-padding {
+  padding: 0px !important;
+}
+.marginSpacePanelHeader {
+  padding: 0px !important;
+}
+.paging-margin {
+  margin: 0px 30px 0px 0px !important;
+}
+.panelHeader {
+  background-color: #eee;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.divTablelistRow {
+  display: table-row;
+}
+table.buttonTable {
+  text-align: center;
+}
+.editData-cell .editable-cell {
+  position: relative;
+}
+.editData-cell .editable-cell-input-wrapper,
+.editData-cell .editable-cell-text-wrapper {
+  padding-right: 24px;
+}
+.editData-cell .editable-cell-text-wrapper {
+  padding: 5px 24px 5px 5px;
+}
+.editData-cell .editable-cell-icon,
+.editData-cell .editable-cell-icon-check {
+  position: absolute;
+  right: 0;
+  width: 20px;
+  cursor: pointer;
+}
+.editData-cell .editable-cell-icon {
+  line-height: 18px;
+  display: none;
+}
+.editData-cell .editable-cell-icon-check {
+  line-height: 28px;
+}
+.editData-cell .editable-cell:hover .editable-cell-icon {
+  display: inline-block;
+}
+.editData-cell .editable-cell-icon:hover,
+.editData-cell .editable-cell-icon-check:hover {
+  color: #108ee9;
+}
+.editData-cell .editable-add-btn {
+  margin-bottom: 8px;
+}
+.spin-plus .ant-spin-nested-loading > div > .ant-spin {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  max-height: 100%;
+  z-index: 4;
+}
 .treePanle .ant-tree {
   margin: 0;
   padding: 0;
@@ -2542,6 +2858,40 @@ div.paleTable {
 }
 .apiParamsTab .table td {
   width: 20%;
+}
+.editData-cell .editable-cell {
+  position: relative;
+}
+.editData-cell .editable-cell-input-wrapper,
+.editData-cell .editable-cell-text-wrapper {
+  padding-right: 24px;
+}
+.editData-cell .editable-cell-text-wrapper {
+  padding: 5px 24px 5px 5px;
+}
+.editData-cell .editable-cell-icon,
+.editData-cell .editable-cell-icon-check {
+  position: absolute;
+  right: 0;
+  width: 20px;
+  cursor: pointer;
+}
+.editData-cell .editable-cell-icon {
+  line-height: 18px;
+  display: none;
+}
+.editData-cell .editable-cell-icon-check {
+  line-height: 28px;
+}
+.editData-cell .editable-cell:hover .editable-cell-icon {
+  display: inline-block;
+}
+.editData-cell .editable-cell-icon:hover,
+.editData-cell .editable-cell-icon-check:hover {
+  color: #108ee9;
+}
+.editData-cell .editable-add-btn {
+  margin-bottom: 8px;
 }
 .projectManage .ant-alert-description {
   font-size: 16px;

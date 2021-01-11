@@ -1,19 +1,26 @@
 package com.ppdai.das.console.dao;
 
+import com.ppdai.das.console.api.ConfigLoader;
+import com.ppdai.das.console.common.utils.ResourceUtil;
 import com.ppdai.das.console.dto.entry.das.AppGroup;
 import com.ppdai.das.console.dto.model.Paging;
 import com.ppdai.das.console.dto.view.AppGroupView;
+import com.ppdai.das.core.ClientConfigureLoader;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AppGroupDao.class})
@@ -28,8 +35,19 @@ public class AppGroupDaoTest {
 
     Paging<AppGroup> paging;
 
+    @MockBean
+    ConfigLoader configLoader;
+
+    @MockBean
+    ClientConfigureLoader clientConfigureLoader;
+
+    @Mock
+    ResourceUtil resourceUtil;
+
     @Before
     public void setUp() {
+        ResourceUtil.setClasspath("/Users/ppd-03020210/work/java/github/das/das-console-manager/target");
+        when(configLoader.isLoaderFile()).thenReturn(true);
         paging = new Paging<>();
         appGroupModel = AppGroup.builder().build();
         appGroup = AppGroup.builder().serverGroupId(1L).comment("abc@123.com").name("tom").serverEnabled(1).build();

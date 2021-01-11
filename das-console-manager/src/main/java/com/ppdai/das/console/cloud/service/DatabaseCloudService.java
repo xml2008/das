@@ -1,10 +1,14 @@
 package com.ppdai.das.console.cloud.service;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.ppdai.das.console.cloud.dao.DataBaseCloudDao;
 import com.ppdai.das.console.cloud.dto.entry.DataBaseEntry;
+import com.ppdai.das.console.cloud.dto.entry.PhysicalHostEntry;
 import com.ppdai.das.console.cloud.dto.model.ServiceResult;
 import com.ppdai.das.console.cloud.dto.view.DataBaseView;
+import com.ppdai.das.console.cloud.dto.view.relation.LogicView;
+import com.ppdai.das.console.cloud.dto.view.relation.PhysicalHostView;
 import com.ppdai.das.console.common.validates.chain.ValidateResult;
 import com.ppdai.das.console.common.validates.chain.ValidatorChain;
 import com.ppdai.das.console.dao.DataBaseDao;
@@ -22,7 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DatabaseCloudService {
@@ -108,6 +115,36 @@ public class DatabaseCloudService {
                 .dal_group_id(dataBaseEntry.getDas_group_id())
                 .build();
     }
+
+    public List<LogicView> getAllSetDbHosts() throws SQLException {
+        List<LogicView> list = new ArrayList<>();
+        List<PhysicalHostEntry> rs = dataBaseCloudDao.getAllSetDbHosts();
+        Map<String, List> map = new HashMap();
+        rs.stream().forEach(i -> put(map, i));
+        for (Map.Entry<String, List> entry : map.entrySet()) {
+            list.add(LogicView.builder().logicDBName(entry.getKey()).physicalHosts(entry.getValue()).build());
+        }
+        return list;
+    }
+
+    private void put(Map<String, List> map, PhysicalHostEntry entry) {
+        if (map.containsKey(entry.getName())) {
+            add(map.get(entry.getName()), entry);
+        } else {
+            List list = new ArrayList<>();
+            add(list, entry);
+            map.put(entry.getName(), list);
+        }
+    }
+
+    private void add(List list, PhysicalHostEntry entry) {
+        List<String> catalog = Splitter.on(",").omitEmptyStrings().trimResults().splitToList(entry.getCatalog());
+        List<String> arr = Splitter.on("|").omitEmptyStrings().trimResults().splitToList(entry.getAddress());
+        PhysicalHostView physicalHostView = PhysicalHostView.builder().host(arr.get(0)).port(arr.get(1)).build();
+        physicalHostView.setCatalog(catalog);
+        list.add(physicalHostView);
+    }
+
 }
 
 

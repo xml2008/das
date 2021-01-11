@@ -34,10 +34,13 @@ public class MenuService {
                 itemModel.getChildren().add(new ChildModel("代码转换", "transManage", "fa-random"));
             }
             if (navigationConig.isDataSearchMain()) {
-                itemModel.getChildren().add(new ChildModel("数据查询", "dataSearchMain", " fa-search-plus"));
+                itemModel.getChildren().add(new ChildModel("数据查询", "dataSearchMain", "fa-search-plus"));
             }
             if (navigationConig.isProjectListManage()) {
                 itemModel.getChildren().add(new ChildModel("项目一览", "projectListManage", "fa-table"));
+            }
+            if (navigationConig.isProjectListManage()) {
+                itemModel.getChildren().add(new ChildModel("复合查询", "queryIndex", "fa-search"));
             }
             items.add(itemModel);
         }
@@ -48,6 +51,9 @@ public class MenuService {
             }
             if (navigationConig.isDataBaseGroupManage()) {
                 itemModel.getChildren().add(new ChildModel("物理库分组", "dataBaseGroupManage", "fa-cubes"));
+            }
+            if (navigationConig.isDatabaseBatchManage()) {
+                itemModel.getChildren().add(new ChildModel("批量操作物理库", "databaseBatchManage", "fa-object-group"));
             }
             items.add(itemModel);
         }

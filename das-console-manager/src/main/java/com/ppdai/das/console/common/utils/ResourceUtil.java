@@ -2,6 +2,7 @@ package com.ppdai.das.console.common.utils;
 
 import com.ppdai.das.console.dao.base.BaseDao;
 import com.ppdai.das.core.configure.DalConfigureFactory;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +43,9 @@ public class ResourceUtil {
 
     private static ResourceUtil singleInstance = null;
 
+    @Setter
+    private static String classpath = null;
+
     public static ResourceUtil getSingleInstance() {
         if (singleInstance == null) {
             synchronized (ResourceUtil.class) {
@@ -59,9 +63,12 @@ public class ResourceUtil {
     }
 
     public String getClasspath() {
-        ApplicationHome h = new ApplicationHome(DbUtil.class);
-        File jarF = h.getSource();
-        return jarF.getParentFile().toString();
+        if (null == classpath) {
+            ApplicationHome h = new ApplicationHome(DbUtil.class);
+            File jarF = h.getSource();
+            return jarF.getParentFile().toString();
+        }
+        return classpath;
     }
 
     public boolean isDatasourceExist() {

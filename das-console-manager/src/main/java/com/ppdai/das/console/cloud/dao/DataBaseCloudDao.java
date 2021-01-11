@@ -1,5 +1,6 @@
 package com.ppdai.das.console.cloud.dao;
 
+import com.ppdai.das.console.cloud.dto.entry.PhysicalHostEntry;
 import com.ppdai.das.console.cloud.dto.view.DataBaseView;
 import com.ppdai.das.console.dao.base.BaseDao;
 import com.ppdai.das.console.dto.entry.das.DataBaseInfo;
@@ -30,5 +31,18 @@ public class DataBaseCloudDao extends BaseDao {
         List<DataBaseInfo> list = this.getDasClient().queryBySample(dataBaseInfo);
         return CollectionUtils.isNotEmpty(list) ? list.get(0) : null;
     }
+
+    public List<PhysicalHostEntry> getAllSetDbHosts() throws SQLException {
+        String sql = "select t.name, t.address, group_concat(t.db_catalog) catalog from (\n" +
+                "select t3.name, CONCAT(t1.db_address,'|',t1.db_port) address,  t1.db_catalog  from alldbs t1\n" +
+                "inner join databasesetentry t2 on t1.id = t2.db_Id\n" +
+                "inner join databaseset t3 on t3.id = t2.dbset_id\n" +
+                ") t\n" +
+                "group by t.name, t.address\n" +
+                "having count(t.db_catalog) >1\n" +
+                "order by  t.name";
+        return this.queryBySql(sql, PhysicalHostEntry.class);
+    }
+
 
 }

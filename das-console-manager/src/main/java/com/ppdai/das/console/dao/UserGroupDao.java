@@ -33,6 +33,7 @@ public class UserGroupDao extends BaseDao {
         userGroup.setGroup_id(group_id);
         userGroup.setRole(role);
         userGroup.setOpt_user(opt_user);
+        userGroup.setUserNo(String.valueOf(opt_user));
         this.getDasClient().insert(userGroup, Hints.hints().setIdBack());
         return userGroup.getId();
     }

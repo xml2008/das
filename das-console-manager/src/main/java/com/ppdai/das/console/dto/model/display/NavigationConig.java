@@ -19,11 +19,13 @@ public class NavigationConig {
     private boolean transManage;
     private boolean dataSearchMain;
     private boolean projectListManage;
+    private boolean queryIndex;
 
     /**
      * 物理库管理
      */
     private boolean databaseManage;
+    private boolean databaseBatchManage;
     private boolean dataBaseGroupManage;
 
     /**

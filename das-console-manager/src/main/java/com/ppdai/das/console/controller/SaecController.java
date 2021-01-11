@@ -1,6 +1,5 @@
 package com.ppdai.das.console.controller;
 
-import com.ppdai.das.console.api.SecurityConfiguration;
 import com.ppdai.das.console.config.annotation.CurrentUser;
 import com.ppdai.das.console.dao.ProjectDao;
 import com.ppdai.das.console.dto.entry.das.LoginUser;
@@ -28,9 +27,6 @@ public class SaecController {
 
     @Autowired
     private SecurityService securityService;
-
-    @Autowired
-    private SecurityConfiguration securityConfiguration;
 
     /**
      * 1、加密连接串

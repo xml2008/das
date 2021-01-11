@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class StringUtil {
 
@@ -26,6 +27,17 @@ public class StringUtil {
             return m.group(1);
         }
         return str;
+    }
+
+    public static <T> String joinCollectByComma(Collection<T> collection, String separator) {
+        if (StringUtils.isBlank(separator)) {
+            return Joiner.on(",").skipNulls().join(collection);
+        } else {
+            List list = new ArrayList();
+            StringBuffer sb = new StringBuffer();
+            collection.stream().forEach(i -> list.add("'" + i + "'"));
+            return Joiner.on(",").skipNulls().join(list);
+        }
     }
 
 
@@ -62,7 +74,6 @@ public class StringUtil {
         return ListUtils.EMPTY_LIST;
     }
 
-
     public static List<Long> toLongList(List<String> values) {
         List<Long> rs = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(values)) {
@@ -79,6 +90,19 @@ public class StringUtil {
             return Splitter.on(separator).omitEmptyStrings().trimResults().splitToList(values);
         }
         return ListUtils.EMPTY_LIST;
+    }
+
+    /**
+     * "a,b,c,d ---> 'a','b','c','d'
+     */
+    public static String toString(String values) {
+        if (StringUtils.isNotBlank(values)) {
+            String regex = ",|，|\\s+";
+            String strAry[] = values.split(regex);
+            List<String> list = Arrays.stream(strAry).map(i -> i = "'" + i + "'").collect(Collectors.toList());
+            return Joiner.on(",").skipNulls().join(list);
+        }
+        return StringUtils.EMPTY;
     }
 
     public static String getMessage(Exception e) {

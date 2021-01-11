@@ -685,7 +685,7 @@ public class DbUtils {
                 dbType = connection.getMetaData().getDatabaseProductName();
                 CodeGenConsts.databaseType.put(db_id, dbType);
             } catch (Throwable e) {
-                throw new SQLException(String.format("getDbType error,alldbs_id is:%s", db_id), e);
+                throw new SQLException(String.format("getDbType error,alldbs_id is:%s", db_id) + " 详情: " + e.getMessage());
             } finally {
                 DbUtil.close(connection);
             }

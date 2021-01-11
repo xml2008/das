@@ -26,6 +26,7 @@ import com.ppdai.das.console.dto.model.page.ListResult;
 import com.ppdai.das.console.dto.model.page.PagerUtil;
 import com.ppdai.das.console.dto.view.ProjectView;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -59,6 +60,9 @@ public class ProjectService {
     private PermissionService permissionService;
 
     @Autowired
+    private SecurityService securityService;
+
+    @Autowired
     private DeleteCheckDao deleteCheckDao;
 
     @Autowired
@@ -78,7 +82,9 @@ public class ProjectService {
 
     public ServiceResult<String> insertProject(Project project) throws SQLException {
         boolean isSussess = projectDao.getDasClient().execute(() -> {
-            Long id = projectDao.insertProject(project);
+            Project _project = new Project();
+            BeanUtils.copyProperties(project, _project);
+            Long id = projectDao.insertProject(_project);
             if (id <= 0) {
                 throw new TransactionException(message.db_message_delete_operation_failed);
             }
@@ -289,19 +295,19 @@ public class ProjectService {
     public ServiceResult<String> addDataCenter(LoginUser user, Project project) {
         try {
             projectConfiguration.addProject(user, project);
+            return securityService.getSecurityToken(user, project);
         } catch (Exception e) {
             return ServiceResult.fail(StringUtil.getMessage(e));
         }
-        return ServiceResult.success();
     }
 
     public ServiceResult<String> updateDataCenter(LoginUser user, Project oldProject, ProjectView oldProjectView, Project newProject) {
         try {
             projectConfiguration.updateProject(user, oldProject, oldProjectView, newProject);
+            return securityService.getSecurityToken(user, newProject);
         } catch (Exception e) {
             return ServiceResult.fail(StringUtil.getMessage(e));
         }
-        return ServiceResult.success();
     }
 
     public ServiceResult<String> deleteDataCenter(LoginUser user, Project projec) {

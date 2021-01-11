@@ -23,7 +23,7 @@ public class MenuItemManager implements MenuItemConfiguration {
     public NavigationConig getNavigationFlag(LoginUser user) throws Exception {
         if (permissionService.isManagerById(user.getId())) {
             return NavigationConig.builder()
-                    .codeManage(true).projectManage(true).transManage(true).dataSearchMain(false).projectListManage(true)
+                    .codeManage(true).projectManage(true).transManage(true).dataSearchMain(false).projectListManage(true).queryIndex(true)
                     .databaseManage(true).dataBaseGroupManage(true)
                     .dataBaseSetManage(true).publicStrategyManage(false)
                     .groupManage(true).memberManage(true)

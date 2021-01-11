@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.ppdai.das.console.cloud.dto.entry.DataBaseEntry;
 import com.ppdai.das.console.cloud.dto.model.ServiceResult;
 import com.ppdai.das.console.cloud.dto.view.DataBaseView;
+import com.ppdai.das.console.cloud.dto.view.relation.LogicView;
 import com.ppdai.das.console.cloud.service.DatabaseCloudService;
 import com.ppdai.das.console.common.validates.group.db.AddDataBase;
 import com.ppdai.das.console.dto.model.Item;
@@ -56,5 +57,14 @@ public class DatabaseCloudController {
     @RequestMapping(value = "/catalogs")
     public ServiceResult<List<String>> getDBCatalogs(@RequestParam("dbset_id") Long dbsetId) throws Exception {
         return ServiceResult.toServiceResult(databaseService.getDBCatalogs(dbsetId));
+    }
+
+    @RequestMapping(value = "/logic/catalogs")
+    public ServiceResult<List<LogicView>> getDBCatalogs() {
+        try {
+            return ServiceResult.success(databaseCloudService.getAllSetDbHosts());
+        } catch (Exception e) {
+            return ServiceResult.fail("接口异常!!!" + e.getMessage());
+        }
     }
 }

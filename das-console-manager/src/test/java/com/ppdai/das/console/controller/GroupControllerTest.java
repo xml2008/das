@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.ppdai.das.console.common.interceptor.CommStatusInterceptor;
 import com.ppdai.das.console.common.interceptor.permissions.UserLoginInterceptor;
 import com.ppdai.das.console.constant.Message;
-import com.ppdai.das.console.controller.GroupController;
 import com.ppdai.das.console.dao.*;
 import com.ppdai.das.console.dto.entry.das.DasGroup;
 import com.ppdai.das.console.dto.model.Paging;

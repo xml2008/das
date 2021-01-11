@@ -39,6 +39,10 @@ public class DataBaseDao extends BaseDao {
         return this.updateDataBaseInfo(dataBaseInfo.getId(), dataBaseInfo.getDbname(), dataBaseInfo.getDb_address(), dataBaseInfo.getDb_port(), dataBaseInfo.getDb_user(), dataBaseInfo.getDb_password(), dataBaseInfo.getDb_catalog(), dataBaseInfo.getDb_type(), dataBaseInfo.getComment(), dataBaseInfo.getUpdateUserNo());
     }
 
+    public int[] updateDataBaseInfoBatch(List<DataBaseInfo> list) throws SQLException {
+        return this.getDasClient().batchUpdate(list);
+    }
+
     public int updateDataBaseInfo(Long id, String dbname, String db_address, String db_port, String db_user,
                                   String db_password, String db_catalog, Integer db_type, String comment, String updateUserNo) throws SQLException {
         String sql = "UPDATE alldbs SET db_name=?, db_address=?, db_port=?, db_user=?, db_password=?, db_catalog=?, db_type=?, comment=?, update_user_no=? WHERE id=?";
