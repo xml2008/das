@@ -186,6 +186,26 @@ public class ServerSelectorTest {
             return null;
         }
 
+        @Override
+        public TxGeneralResponse txConfirm(TxGeneralRequest req) throws TException {
+            return null;
+        }
+
+        @Override
+        public TxGeneralResponse txCancel(TxGeneralRequest req) throws TException {
+            return null;
+        }
+
+        @Override
+        public TxGeneralResponse txConfirmFail(TxGeneralRequest req) throws TException {
+            return null;
+        }
+
+        @Override
+        public TxGeneralResponse txCancelFail(TxGeneralRequest req) throws TException {
+            return null;
+        }
+
 
     }
 }

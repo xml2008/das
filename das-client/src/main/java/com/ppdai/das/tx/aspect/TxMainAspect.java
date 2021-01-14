@@ -2,6 +2,7 @@ package com.ppdai.das.tx.aspect;
 
 import com.google.common.base.Splitter;
 import com.ppdai.das.client.delegate.remote.ServerSelector;
+import com.ppdai.das.service.CommandService;
 import com.ppdai.das.service.DasService;
 import com.ppdai.das.service.TxCommitCommandRequest;
 import com.ppdai.das.service.TxGeneralRequest;
@@ -16,14 +17,18 @@ import com.ppdai.das.tx.monitor.BusEventManager;
 import com.ppdai.das.tx.process.DasTransactionalBeanPostProcessor;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.server.TThreadedSelectorServer;
 import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.transport.TNonblockingServerSocket;
 import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransportException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
@@ -34,6 +39,7 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 
 @Aspect
@@ -45,6 +51,9 @@ public class TxMainAspect implements Ordered, InitializingBean {
     private DasService.Client client;
 
     List<String> servers;
+
+    @Autowired
+    DasTransactionalBeanPostProcessor postProcessor;
 
     @Value("${txServers}")
     private String txServers;
@@ -62,8 +71,6 @@ public class TxMainAspect implements Ordered, InitializingBean {
     public void txTransactionPointcut() {
     }
 
-    Map<String, NodeMeta> metas = new HashMap<>();
-
     @Around("txTransactionPointcut()")
     public Object transactionRunning(ProceedingJoinPoint point) throws Throwable {
         if(DasTxContext.getAndIncrease() > 0) {
@@ -73,22 +80,108 @@ public class TxMainAspect implements Ordered, InitializingBean {
         BusEventManager.post(new BusEvent("start DasTransactional process"));
         DasTransactional annotation = getDasTransactional(point);
 
-        registerApplication(annotation, point.getSignature().getName());
+        final String node = point.getSignature().getName();
+        registerApplication(annotation, node);
 
         try {
-            sendTxBegin(point.getSignature().getName(), annotation.type());
+            sendTxBegin(node, annotation.type());
 
             Object result = retry(point, annotation.retry());
 
-            sendTxCommit(point.getSignature().getName());
+            sendTxCommit(node);
 
             return result;
         } catch (Throwable t) {
             BusEventManager.post(new BusEvent("ready to rollback: " + t.getMessage()));
-            sendTxRollback(point.getSignature().getName());
+            sendTxRollback(node);
             throw t;
         } finally {
+            callConfirmCancel(node, point.getTarget());
             cleanUp();
+        }
+    }
+
+    private void callConfirmCancel(String name, Object target) throws UnknownHostException {
+        if (DasTxContext.isCommitted()) {
+            callConfirm(name, target);
+        } else {
+            callCancel(name, target);
+        }
+    }
+
+    private void callConfirm(String name, Object target) throws UnknownHostException {
+        try {
+            postProcessor.getConfirm(name).invoke(target);
+            sendTxConfirm(name);
+        } catch (Exception e) {
+            e.printStackTrace();//TODO
+            sendTxConfirmFail(name);
+        }
+    }
+
+    private void sendTxConfirmFail(String name) throws UnknownHostException {
+        TxGeneralRequest request = createTxGeneralRequest(name);
+        try {
+            TxGeneralResponse response = client.txConfirmFail(request);
+            DasTxContext.setStatus("TxConfirmFail");
+        } catch (TException tException){
+            tException.printStackTrace();
+            //TODO:
+        }
+    }
+
+    private void sendTxConfirm(String name) throws UnknownHostException {
+        TxGeneralRequest request =  createTxGeneralRequest(name);
+        try {
+            TxGeneralResponse response = client.txConfirm(request);
+            DasTxContext.setStatus("TxConfirm");
+        } catch (TException tException){
+            tException.printStackTrace();
+            //TODO:
+        }
+    }
+
+    private void callCancel(String name, Object target) throws UnknownHostException {
+        try{
+            postProcessor.getCancel(name).invoke(target);
+            sendTxCancel(name);
+        }catch (Exception e) {
+            e.printStackTrace();//TODO
+            sendTxCancelFail(name);
+        }
+
+    }
+
+    private TxGeneralRequest createTxGeneralRequest(String name) throws UnknownHostException {
+        TxGeneralRequest request = new TxGeneralRequest() //TODO
+                .setAppId("test_id")
+                .setNode(name)
+                .setIp(InetAddress.getLocalHost().getHostAddress())
+                .setTxType(TxType.findByValue(0))
+                .setXid(DasTxContext.getXID());
+        return request;
+    }
+
+    private void sendTxCancelFail(String name) throws UnknownHostException {
+        TxGeneralRequest request = createTxGeneralRequest(name);
+
+        try {
+            TxGeneralResponse response = client.txCancelFail(request);
+            DasTxContext.setStatus("TxConfirm");
+        } catch (TException tException){
+            tException.printStackTrace();
+            //TODO:
+        }
+    }
+
+    private void sendTxCancel(String name) throws UnknownHostException {
+        TxGeneralRequest request = createTxGeneralRequest(name);
+        try {
+            TxGeneralResponse response = client.txCancel(request);
+            DasTxContext.setStatus("TxConfirm");
+        } catch (TException tException){
+            tException.printStackTrace();
+            //TODO:
         }
     }
 
@@ -125,49 +218,35 @@ public class TxMainAspect implements Ordered, InitializingBean {
         nodeMeta.getConfirmMethod().invoke(nodeMeta.getTarget());
     }
 
-    private void sendTxCommit(String name) throws TException, UnknownHostException {
-        TxGeneralRequest request = new TxGeneralRequest();
-        request.setAppId("test_id");//TODO
-        request.setNode(name);//TODO
-        request.setIp(InetAddress.getLocalHost().getHostAddress());
-        TxType txType = TxType.findByValue(0);
-        request.setTxType(txType);//
-        request.setXid(DasTxContext.getXID());
+    private void sendTxCommit(String name) throws UnknownHostException {
+        TxGeneralRequest request = createTxGeneralRequest(name);
+
         try {
             TxGeneralResponse response = client.txCommit(request);
+            DasTxContext.setStatus("TxCommit");
         } catch (TException tException){
             tException.printStackTrace();
             //TODO:
         }
     }
 
-    private void sendTxRollback(String name) throws TException, UnknownHostException{
-        TxGeneralRequest request = new TxGeneralRequest();
-        request.setAppId("test_id");//TODO
-        request.setNode(name);//TODO
-        request.setIp(InetAddress.getLocalHost().getHostAddress());
-        TxType txType = TxType.findByValue(0);
-        request.setTxType(txType);//
-        request.setXid(DasTxContext.getXID());
+    private void sendTxRollback(String name) throws UnknownHostException{
+        TxGeneralRequest request =  createTxGeneralRequest(name);
         try {
             TxGeneralResponse response = client.txRollback(request);
+            DasTxContext.setStatus("TxRollback");
         } catch (TException tException){
             tException.printStackTrace();
             //TODO:
         }
     }
 
-    private void sendTxBegin(String tryName, TxTypeEnum typeEnum) throws TException, UnknownHostException {
-        TxGeneralRequest request = new TxGeneralRequest();
-        request.setAppId("test_id");//TODO
-        request.setNode(tryName);//TODO
-        request.setIp(InetAddress.getLocalHost().getHostAddress());
-        TxType txType = TxType.findByValue(typeEnum == TxTypeEnum.TCC ? 0 : 1);
-        request.setTxType(txType);//
-        request.setXid(DasTxContext.getXID());
+    private void sendTxBegin(String tryName, TxTypeEnum typeEnum) throws  UnknownHostException {
+        TxGeneralRequest request = createTxGeneralRequest(tryName);
         try {
             TxGeneralResponse response = client.txBegin(request);
             DasTxContext.setXID(response.getXid());
+            DasTxContext.setStatus("TxBegin");
         } catch (TException tException){
             tException.printStackTrace();
             //TODO:
@@ -175,13 +254,7 @@ public class TxMainAspect implements Ordered, InitializingBean {
     }
 
     private void registerApplication(DasTransactional annotation, String name) throws UnknownHostException {
-        TxGeneralRequest request = new TxGeneralRequest();
-        request.setAppId("test_id");//TODO
-        request.setNode(name);//TODO
-        request.setIp(InetAddress.getLocalHost().getHostAddress());
-        TxType txType = TxType.findByValue(annotation.type() == TxTypeEnum.TCC ? 0 : 1);
-        request.setTxType(txType);//
-        request.setXid(DasTxContext.getXID());
+        TxGeneralRequest request = createTxGeneralRequest(name);
        try {
             TxGeneralResponse response = client.registerApplication(request);
         } catch (TException tException){
@@ -194,8 +267,6 @@ public class TxMainAspect implements Ordered, InitializingBean {
         this.client = client;
     }
 
-
-
     @Override
     public void afterPropertiesSet() throws Exception {
         servers = Splitter.on(",").omitEmptyStrings().splitToList(txServers);
@@ -205,5 +276,64 @@ public class TxMainAspect implements Ordered, InitializingBean {
         TBinaryProtocol protocol = new TBinaryProtocol(ft);
         transport.open();//TODO:
         this.client = new DasService.Client(protocol);
+
+        Executors.newCachedThreadPool().submit(()->{
+            TBinaryProtocol.Factory protocolFactory = new TBinaryProtocol.Factory();
+
+            CommandService.Processor<CommandService.Iface> processor = new CommandService.Processor<>(
+                    new CommandService.Iface(){
+                        @Override
+                        public TxGeneralResponse confirmCommand(TxGeneralRequest request) throws TException {
+                            String name = request.getNode();
+                            TxGeneralResponse response = new TxGeneralResponse();
+                            response.setXid(request.getXid());
+
+                            try {
+                                postProcessor.callConfirm(name);
+                                response.setResult("success");
+                            } catch (InvocationTargetException | IllegalAccessException e) {
+                                response.setErrorMessage(e.getMessage());
+                                response.setResult("fail");
+                                e.printStackTrace(); //TODO
+                            }
+
+                            return response;
+                        }
+
+                        @Override
+                        public TxGeneralResponse cancelCommand(TxGeneralRequest request) throws TException {
+                            String name = request.getNode();
+                            TxGeneralResponse response = new TxGeneralResponse();
+                            response.setXid(request.getXid());
+
+                            try {
+                                postProcessor.callCancel(name);
+                                response.setResult("success");
+                            } catch (InvocationTargetException | IllegalAccessException e) {
+                                response.setErrorMessage(e.getMessage());
+                                response.setResult("fail");
+                                e.printStackTrace(); //TODO
+                            }
+
+                            return response;
+                        }
+                    });
+
+            TThreadedSelectorServer ttServer = null;
+            try {
+                ttServer = new TThreadedSelectorServer(
+                        new TThreadedSelectorServer.Args(new TNonblockingServerSocket(9091))
+                                .selectorThreads(2)
+                                .processor(processor)
+                                .workerThreads(2)
+                                .protocolFactory(protocolFactory));
+            } catch (TTransportException e) {
+                e.printStackTrace();//TODO
+            }
+            System.out.println("CommandService up!");//TODO
+
+            ttServer.serve();
+        });
+
     }
 }

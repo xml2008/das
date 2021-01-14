@@ -341,9 +341,23 @@ service DasService  {
 
    TxGeneralResponse txBegin(1:TxGeneralRequest req),
 
-   TxNodeStartResponse nodeStart(1:TxNodeStartRequest req)
+   TxNodeStartResponse nodeStart(1:TxNodeStartRequest req),
 
-   TxGeneralResponse txCommit(1:TxGeneralRequest req)
+   TxGeneralResponse txCommit(1:TxGeneralRequest req),
 
-   TxGeneralResponse txRollback(1:TxGeneralRequest req)
+   TxGeneralResponse txRollback(1:TxGeneralRequest req),
+
+   TxGeneralResponse txConfirm(1:TxGeneralRequest req),
+
+   TxGeneralResponse txCancel(1:TxGeneralRequest req),
+
+   TxGeneralResponse txConfirmFail(1:TxGeneralRequest req),
+
+   TxGeneralResponse txCancelFail(1:TxGeneralRequest req),
+}
+
+service CommandService  {
+   TxGeneralResponse confirmCommand(1:TxGeneralRequest request),
+
+   TxGeneralResponse cancelCommand(1:TxGeneralRequest request)
 }
