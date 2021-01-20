@@ -32,7 +32,7 @@ DAS不支持分布式事务，如果在事务中发现试图访问非当前数�
 ## 生成代码
 DAS支持团队配置好应用的逻辑数据库之后，应用开发人员可以登陆das console，选取自己所在的项目，想生成代码的逻辑数据库，生成对应于表或者查询结果的entity类
 ## 访问数据库
-应用开发人员通过das client的API和生成的entity来对逻辑数据库做CRUD操作。具体请参考das mclient使用手册
+应用开发人员通过das client的API和生成的entity来对逻辑数据库做CRUD操作。具体请参考das client使用手册
 
 # DAS开发团队
 ## 发起人
