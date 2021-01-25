@@ -1,5 +1,6 @@
 package com.ppdai.das.client.sqlbuilder;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -9,11 +10,16 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import com.ppdai.das.client.BatchUpdateBuilder;
 import com.ppdai.das.client.Segment;
 import com.ppdai.das.client.SqlBuilder;
 import com.ppdai.das.core.DasDiagnose;
 
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,6 +54,19 @@ public class SqlBuilderSerializer implements Serializer {
 
     public static String serializeSegment(SqlBuilder segment) {
         return instance.outGson.toJson(segment);
+    }
+
+    public static String serializeColumnOrders(List<ColumnOrder> columnOrders) {
+        return instance.outGson.toJson(columnOrders);
+    }
+
+    public static List<ColumnOrder> deserializeColumnOrders(String json) {
+        if(Strings.isNullOrEmpty(json)){
+            return new ArrayList<>();
+        }
+
+        Type jsonType = new TypeToken<List<ColumnOrder>>() {}.getType();
+        return instance.outGson.fromJson(json, jsonType);
     }
 
     public static SqlBuilder deserializeSegment(String json) {
@@ -144,7 +163,31 @@ public class SqlBuilderSerializer implements Serializer {
                 root.add("value", new JsonPrimitive(f));
                 return root;
             })
+            .registerTypeHierarchyAdapter(Double.class, (JsonSerializer<Double>) (f, typeOfSrc, context) -> {
+                JsonObject root = new JsonObject();
+                root.addProperty("type", Double.class.getSimpleName());
+                root.add("value", new JsonPrimitive(f));
+                return root;
+            })
+            .registerTypeHierarchyAdapter(BigInteger.class, (JsonSerializer<BigInteger>) (f, typeOfSrc, context) -> {
+                JsonObject root = new JsonObject();
+                root.addProperty("type", BigInteger.class.getSimpleName());
+                root.add("value", new JsonPrimitive(f.longValue()));
+                return root;
+            })
+            .registerTypeHierarchyAdapter(BigDecimal.class, (JsonSerializer<BigDecimal>) (f, typeOfSrc, context) -> {
+                JsonObject root = new JsonObject();
+                root.addProperty("type", BigDecimal.class.getSimpleName());
+                root.add("value", new JsonPrimitive(f.doubleValue()));
+                return root;
+            })
             .registerTypeHierarchyAdapter(Date.class, (JsonSerializer<Date>) (l, typeOfSrc, context) -> {
+                JsonObject root = new JsonObject();
+                root.addProperty("type", typeOfSrc.getTypeName());
+                root.add("value", new JsonPrimitive(l.getTime()));
+                return root;
+            })
+            .registerTypeHierarchyAdapter(Time.class, (JsonSerializer<Time>) (l, typeOfSrc, context) -> {
                 JsonObject root = new JsonObject();
                 root.addProperty("type", typeOfSrc.getTypeName());
                 root.add("value", new JsonPrimitive(l.getTime()));
@@ -188,6 +231,9 @@ public class SqlBuilderSerializer implements Serializer {
         if(type.equals(Integer.class.getSimpleName())){
             return () -> primitive.getAsInt();
         }
+        if(type.equals(Double.class.getSimpleName())){
+            return () -> primitive.getAsDouble();
+        }
         if(type.equals(Boolean.class.getSimpleName())){
             return () -> primitive.getAsBoolean();
         }
@@ -197,8 +243,20 @@ public class SqlBuilderSerializer implements Serializer {
         if(type.equals(Date.class.getName())){
             return () -> new Date(primitive.getAsLong());
         }
+        if(type.equals(java.sql.Date.class.getName())){
+            return () -> new java.sql.Date(primitive.getAsLong());
+        }
         if(type.equals(Timestamp.class.getName())){
             return () -> new Timestamp(primitive.getAsLong());
+        }
+        if(type.equals(Time.class.getName())){
+            return () -> new Time(primitive.getAsLong());
+        }
+        if(type.equals(BigInteger.class.getSimpleName())){
+            return () -> BigInteger.valueOf(primitive.getAsLong());
+        }
+        if(type.equals(BigDecimal.class.getSimpleName())){
+            return () -> BigDecimal.valueOf(primitive.getAsDouble());
         }
         return () -> null;
     }

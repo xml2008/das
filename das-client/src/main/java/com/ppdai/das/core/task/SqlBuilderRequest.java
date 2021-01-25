@@ -51,6 +51,9 @@ public class SqlBuilderRequest<T> implements SqlRequest<T>{
         if(shards != null && shards.size() > 1 && hints.isCrossShardsPageRoughly()) {
             SqlBuilder sqlBuilder = provider.getRawRequest();
             sqlBuilder.reWritePage(shards.size());
+            if(!sqlBuilder.getBuiltParameters().isEmpty()){//remote case
+                sqlBuilder.buildParameterSegments();
+            }
         }
         this.parameters = provider.buildParameters();
     }

@@ -10,8 +10,10 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.collect.ComparisonChain;
+import com.google.gson.Gson;
 import com.ppdai.das.client.sqlbuilder.ColumnOrder;
 import com.ppdai.das.core.ResultMerger;
+import com.ppdai.das.service.Entity;
 
 
 public class DalListMerger<T> implements ResultMerger<List<T>> {
@@ -39,6 +41,12 @@ public class DalListMerger<T> implements ResultMerger<List<T>> {
 						v1 = Optional.of(((Map)o1).get(colName)).orElse(least);
 						v2 = Optional.of(((Map)o2).get(colName)).orElse(least);
 
+					} else if(o1 instanceof Entity || o2 instanceof Entity){
+						Map map1 = new Gson().fromJson(((Entity)o1).getValue(), Map.class);
+						v1 = Optional.of(map1.get(colName)).orElse(least);
+
+						Map map2 = new Gson().fromJson(((Entity)o2).getValue(), Map.class);
+						v2 = Optional.of(map2.get(colName)).orElse(least);
 					} else {//POJO entity
 						Field f = o1.getClass().getDeclaredField(Introspector.decapitalize(colName));
 						f.setAccessible(true);

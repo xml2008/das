@@ -46,6 +46,7 @@ public class ConvertUtilsTest {
         assertEquals(1, maps.size());
         Map<String, Object> map = maps.get(0);
 
+        assertEquals(pojo.getMyBigInteger(), map.get("MyBigInteger"));
         assertEquals(pojo.getMyID(), map.get("MyID"));
         assertEquals(pojo.getMyBit(), map.get("MyBit"));
         assertEquals(pojo.getMyTinyint(), Integer.valueOf(map.get("MyTinyint").toString()));
@@ -69,6 +70,7 @@ public class ConvertUtilsTest {
         assertArrayEquals(pojo.getMyBlob(), (byte[])map.get("MyBlob"));
 
         TesttableMySQL testtableMySQL = entity.get(0);
+        assertEquals(pojo.getMyBigInteger(), testtableMySQL.getMyBigInteger());
         assertEquals(pojo.getMyID(), testtableMySQL.getMyID());
         assertEquals(pojo.getMyBit(), testtableMySQL.getMyBit());
         assertEquals(pojo.getMyTinyint(), testtableMySQL.getMyTinyint());

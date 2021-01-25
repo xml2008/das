@@ -1,6 +1,7 @@
 package com.ppdai.das.client;
 
 import com.ppdai.das.SafeLoggerTest;
+import com.ppdai.das.client.sqlbuilder.BuilderUtilsTest;
 import com.ppdai.das.client.transaction.normal.BaseDalTransactionalAnnotationTest;
 import com.ppdai.das.core.DatabaseSetTest;
 import com.ppdai.das.core.DefaultDataSourceConfigureLocatorTest;
@@ -55,6 +56,7 @@ import com.ppdai.das.util.ConvertUtilsTest;
     NestedTransactionTest.class,
     BaseDalTransactionalAnnotationTest.class,
 
+    BuilderUtilsTest.class,
     ConvertUtilsTest.class,
     DataSyncConfigurationTest.class,
     SequenceGeneratorTest.class,

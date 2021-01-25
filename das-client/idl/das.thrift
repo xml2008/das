@@ -100,7 +100,12 @@ enum DasHintEnum {
     includedColumns,
     excludedColumns,
 
-    diagnoseMode
+    diagnoseMode,
+    updateNullField,
+
+    sortColumns,
+    crossShardsPageRoughly,
+    applyDefaultShard
 }
 
 struct DasHints {

@@ -6,6 +6,7 @@ import com.ppdai.das.client.TableDefinition;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.JDBCType;
 import java.sql.Time;
@@ -19,6 +20,7 @@ public class TesttableMySQL {
     public static final TesttableMySQLDefinition TESTTABLEMYSQL = new TesttableMySQLDefinition();
 
     public static class TesttableMySQLDefinition extends TableDefinition {
+        public final ColumnDefinition MyBigInteger;
         public final ColumnDefinition MyID;
         public final ColumnDefinition MyBit;
         public final ColumnDefinition MyTinyint;
@@ -56,6 +58,7 @@ public class TesttableMySQL {
         public TesttableMySQLDefinition() {
             super("testtable");
             setColumnDefinitions(
+                    MyBigInteger = column("MyBigInteger", JDBCType.BIGINT),
                     MyID = column("MyID", JDBCType.INTEGER),
                     MyBit = column("MyBit", JDBCType.BIT),
                     MyTinyint = column("MyTinyint", JDBCType.TINYINT),
@@ -81,6 +84,8 @@ public class TesttableMySQL {
         }
     }
 
+    @Column(name = "MyBigInteger")
+    private BigInteger myBigInteger;
 
     @Id
     @Column(name = "MyID")
@@ -146,6 +151,15 @@ public class TesttableMySQL {
 
     @Column(name = "MyBlob")
     private byte[] myBlob;
+
+    public BigInteger getMyBigInteger() {
+        return myBigInteger;
+    }
+
+    public TesttableMySQL setMyBigInteger(BigInteger myBigInteger) {
+        this.myBigInteger = myBigInteger;
+        return this;
+    }
 
     public Integer getMyID() {
         return myID;

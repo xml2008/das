@@ -7,6 +7,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -25,7 +26,9 @@ import static com.ppdai.das.util.ConvertUtils.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ppdai.das.client.*;
+import com.ppdai.das.client.sqlbuilder.ColumnOrder;
 import com.ppdai.das.client.sqlbuilder.SqlBuilderSerializer;
 
 import com.ppdai.das.core.DasLogger;
@@ -429,6 +432,28 @@ public class DasServer implements DasService.Iface {
         if(Boolean.valueOf(map.get(DasHintEnum.diagnoseMode))) {
             result.diagnose();
         }
+        if(Boolean.valueOf(map.get(DasHintEnum.updateNullField))) {
+            result.updateNullField();
+        }
+        if(Boolean.valueOf(map.get(DasHintEnum.crossShardsPageRoughly))) {
+            result.crossShardsPageRoughly();
+        }
+        if(Boolean.valueOf(map.get(DasHintEnum.applyDefaultShard))) {
+            result.applyDefaultShard();
+        }
+        String sortJson = map.get(DasHintEnum.sortColumns);
+        List<ColumnOrder> columnOrders = SqlBuilderSerializer.deserializeColumnOrders(sortJson);
+        if(!columnOrders.isEmpty()){
+            result.sortBy(columnOrders.toArray(new ColumnOrder[columnOrders.size()]));
+        }
+
+        String excludedColumnsString = map.get(DasHintEnum.excludedColumns);
+        Type jsonType = new TypeToken<Set<String>>() {}.getType();
+        Set<String> excludedColumns = new Gson().fromJson(excludedColumnsString, jsonType);
+        if(!excludedColumns.isEmpty()){
+            result.setExcluded(excludedColumns);
+        }
+
         return result;
     }
 
@@ -566,7 +591,7 @@ public class DasServer implements DasService.Iface {
     private static void startupHSServer() {
         HttpServer server;
         try {
-            server = HttpServer.create(new InetSocketAddress(8080), 0);
+            server = HttpServer.create(new InetSocketAddress(8085), 0);
         } catch (IOException e) {
             logger.error("Fail to startup HSServer", e);
             throw new RuntimeException(e);

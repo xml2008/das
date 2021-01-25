@@ -1,6 +1,6 @@
 package com.ppdai.das.core.datasource;
 
-import com.mysql.jdbc.MySQLConnection;
+import com.mysql.cj.jdbc.ConnectionImpl;
 import com.ppdai.das.core.helper.MySqlConnectionHelper;
 
 import org.apache.tomcat.jdbc.pool.PoolProperties;
@@ -36,8 +36,8 @@ public class DataSourceValidator implements Validator {
             }
 
             if (query == null) {
-                if (connection instanceof MySQLConnection) {
-                    MySQLConnection mySqlConnection = (MySQLConnection) connection;
+                if (connection instanceof ConnectionImpl) {
+                    ConnectionImpl mySqlConnection = (ConnectionImpl) connection;
                     isValid = MySqlConnectionHelper.isValid(mySqlConnection, DEFAULT_VALIDATE_TIMEOUT_IN_SECONDS);
                 } else {
                     isValid = connection.isValid(DEFAULT_VALIDATE_TIMEOUT_IN_SECONDS);

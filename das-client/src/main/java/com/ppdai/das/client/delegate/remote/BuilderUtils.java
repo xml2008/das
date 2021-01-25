@@ -1,6 +1,5 @@
 package com.ppdai.das.client.delegate.remote;
 
-import com.google.common.base.Function;
 import com.ppdai.das.client.BatchCallBuilder;
 import com.ppdai.das.client.CallBuilder;
 import com.ppdai.das.client.Parameter;
@@ -168,7 +167,7 @@ public class BuilderUtils {
         return new Table(tableMap.get(tableNameKey).toString()).inShard(Objects.toString(tableMap.get(shardIdKey), null)).shardBy(Objects.toString(tableMap.get(shardValueKey), null));
     }
 
-    public static <T,K> List<K> toList(List<T> l, Function<T, K> f) {
+    public static <T,K> List<K> toList(List<T> l, java.util.function.Function<T, K> f) {
         return l.stream().map(f).collect(Collectors.toList());
     }
 

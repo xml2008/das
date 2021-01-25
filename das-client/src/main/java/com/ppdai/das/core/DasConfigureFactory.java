@@ -31,6 +31,13 @@ public class DasConfigureFactory {
         }));
     }
 
+    public static void refresh(DasConfigureContext newConfigContext) throws Exception {
+        configContextRef.getAndSet(newConfigContext);
+        for(String appId: newConfigContext.getAppIds()) {
+            StatusManager.registerApplication(appId, newConfigContext.getConfigure(appId));
+        }
+    }
+
     public static void initialize(DasConfigureContext configContext) {
         if(initialzed.get()) {
             return;
@@ -46,7 +53,7 @@ public class DasConfigureFactory {
                     SqlRequestExecutor.init(
                             configContext.getTaskFactory().getProperty(SqlRequestExecutor.MAX_POOL_SIZE),
                             configContext.getTaskFactory().getProperty(SqlRequestExecutor.KEEP_ALIVE_TIME));
-            
+
                     StatusManager.initializeGlobal();
                     for(String appId: configContext.getAppIds()) {
                         StatusManager.registerApplication(appId, configContext.getConfigure(appId));

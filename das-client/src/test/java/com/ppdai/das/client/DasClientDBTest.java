@@ -245,7 +245,7 @@ public class DasClientDBTest extends DataPreparer {
             for(Map p : plist) {
                 if(pre != null) {
                     //Assert order
-                    assertTrue(Integer.parseInt(p.get("PeopleID").toString())  >= Integer.parseInt(pre.get("PeopleID").toString()));
+                    assertTrue(((Comparable)p.get("PeopleID")).compareTo(((Comparable)pre.get("PeopleID"))) >=0 );
                 }
                 pre = p;
             }

@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 import com.microsoft.sqlserver.jdbc.SQLServerCallableStatement;
 import com.microsoft.sqlserver.jdbc.SQLServerDataTable;
-import com.mysql.jdbc.exceptions.MySQLTimeoutException;
+import com.mysql.cj.jdbc.exceptions.MySQLTimeoutException;
 import com.ppdai.das.client.Parameter;
 import com.ppdai.das.core.markdown.ErrorContext;
 
