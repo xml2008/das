@@ -100,17 +100,19 @@ public class CompoundQueryDao extends BaseDao {
 
     public List<DataBaseInfoView> findDbPageListByGroupIds(Paging<String> paging) throws SQLException {
         String sql = this.getPageListByGroupIdsSql(paging, false) + this.appenCondition(paging);
-        ;
         return this.queryBySql(sql, DataBaseInfoView.class);
     }
 
     private String getDbSetPageListByDbNamesSql(Paging<String> paging, boolean isCount) {
-        StringBuffer sql = new StringBuffer("select t4.group_name, t1.name, t1.strategy_source, t3.db_catalog from databaseset t1 \n" +
+        StringBuffer sql = new StringBuffer("select distinct t4.group_name, group_concat(distinct t6.app_id) app_id, t1.name, t1.strategy_source, t3.db_catalog from databaseset t1 \n" +
                 "inner join databasesetentry t2 on t2.dbset_id = t1.id \n" +
                 "inner join alldbs t3 on t3.id = t2.db_Id \n" +
                 "inner join dal_group t4 on t1.group_id = t4.id \n" +
-                "where t3.db_catalog in (" + paging.getData() + ")\n" +
-                "order by t4.group_name, t3.db_catalog");
+                "inner join project_dbset_relation t5 on t5.dbset_id = t1.id\n" +
+                "inner join project t6 on t6.id = t5.project_id\n" +
+                "where t3.db_catalog in  (" + paging.getData() + ")\n" +
+                "group by t1.name \n" +
+                "order by t4.group_name, t3.db_catalog ");
         if (isCount) {
             return "select count(1) from (" + sql.toString() + ") t";
         }
@@ -133,7 +135,7 @@ public class CompoundQueryDao extends BaseDao {
                 "inner join databaseset t3 on t3.id = t2.dbset_id\n" +
                 "left join user_project t4 on t4.project_id = t1.id\n" +
                 "left join login_users t5 on t5.id = t4.user_id\n" +
-                "where t3.name in ('ppdai_loan_svip', 'ppdai_loan_svip_dev')\n" +
+                "where t3.name in (" + paging.getData() + ")\n" +
                 "group by t1.app_id\n" +
                 "order by t1.app_id");
         if (isCount) {
@@ -152,11 +154,14 @@ public class CompoundQueryDao extends BaseDao {
     }
 
     private String getDataBasePageListByDbSetNamesSql(Paging<String> paging, boolean isCount) {
-        StringBuffer sql = new StringBuffer("select distinct t0.group_name, t1.db_name, t1.dal_group_id, t1.db_address, t1.db_port, t1.db_user, t1.db_catalog, t1.db_type  from alldbs t1\n" +
+        StringBuffer sql = new StringBuffer("select distinct t0.group_name, group_concat(distinct t5.app_id) app_id, t1.db_name, t1.dal_group_id, t1.db_address, t1.db_port, t1.db_user, t1.db_catalog, t1.db_type  from alldbs t1\n" +
                 "inner join dal_group t0 on t0.id = t1.dal_group_id\n" +
                 "inner join databasesetentry t2 on t2.db_Id = t1.id\n" +
                 "inner join databaseset t3 on t3.id = t2.dbset_id\n" +
-                "where t3.name in ('marvel_thor_debt')\n" +
+                "inner join project_dbset_relation t4 on t4.dbset_id = t3.id\n" +
+                "inner join project t5 on t5.id = t4.project_id\n" +
+                "where t3.name in (" + paging.getData() + ")\n" +
+                "group by t1.id\n" +
                 "order by t0.group_name, t1.db_catalog");
         if (isCount) {
             return "select count(1) from (" + sql.toString() + ") t";

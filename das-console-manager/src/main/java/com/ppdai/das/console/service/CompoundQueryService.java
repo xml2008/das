@@ -84,7 +84,7 @@ public class CompoundQueryService {
 
     public ListResult<DataBaseInfoView> getTotalCountDataBasePageListByDBSetNames(Paging<String> paging) throws SQLException {
         paging.setData(StringUtil.toString(paging.getData()));
-        Long count = compoundQueryDao.getTotalCountPageListByDBSetNames(paging);
+        Long count = compoundQueryDao.getTotalCountDataBasePageListByDBSetNames(paging);
         return PagerUtil.find(count, paging.getPage(), paging.getPageSize(), () -> {
             List<DataBaseInfoView> list = compoundQueryDao.findDataBasePageListByDbSetNames(paging);
             if (CollectionUtils.isEmpty(list)) {

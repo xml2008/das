@@ -16,6 +16,9 @@ public class DbSetInfoView {
     @Column(name="group_name")
     private String group_name;
 
+    @Column(name="app_id")
+    private String app_id;
+
     @Column(name="name")
     private String name;
 

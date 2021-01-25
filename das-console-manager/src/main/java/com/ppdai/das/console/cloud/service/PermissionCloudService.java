@@ -17,6 +17,7 @@ import com.ppdai.das.console.dto.entry.das.UserGroup;
 import com.ppdai.das.console.dto.model.ServiceResult;
 import com.ppdai.das.console.dto.model.UserIdentityModel;
 import com.ppdai.das.console.enums.RoleTypeEnum;
+import com.ppdai.das.console.service.PermissionService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -204,7 +205,8 @@ public class PermissionCloudService {
                     .userEmail(userIdentity.getUserEmail())
                     .userName(userIdentity.getUserName())
                     .password(encdecConfiguration.parseUnidirection("111111"))
-                    .update_user_no(userIdentity.getWorkNumber())
+                    .userNo(userIdentity.getWorkNumber())
+                    .update_user_no(String.valueOf(PermissionService.getSUPERID()))
                     .build();
             return loginUserDao.insertUser(user);
         } else {

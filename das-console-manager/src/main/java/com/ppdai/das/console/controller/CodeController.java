@@ -66,6 +66,9 @@ public class CodeController {
             } else {
                 currentFile = new File(currentProjectDir, name);
             }
+            if (null == currentFile || null == currentFile.listFiles()) {
+                return ServiceResult.fail(currentProjectDir.getPath() + ", 文件目录未创建成功，请添加目录操作权限!!!");
+            }
             for (File f : currentFile.listFiles()) {
                 W2uiElement element = new W2uiElement();
                 if (null == name || name.isEmpty()) {

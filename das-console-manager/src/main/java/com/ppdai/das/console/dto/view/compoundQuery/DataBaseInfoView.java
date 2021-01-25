@@ -19,6 +19,9 @@ public class DataBaseInfoView {
     @Column(name="app_id")
     private String app_id;
 
+    @Column(name="name")
+    private String name;
+
     @Column(name="db_name")
     private String db_name;
 
