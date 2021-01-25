@@ -113,7 +113,7 @@ export const urls = {
             case 'db_page_by_dbset_names':
                 return UserEnv.getAppUrl() + '/compound/query/db/page/by/dbset/names'
             case 'group_tree':
-                return UserEnv.getAppUrl() + '/group/tree'
+                return UserEnv.getAppUrl() + '/compound/query/group/tree'
         }
     },
     type: {

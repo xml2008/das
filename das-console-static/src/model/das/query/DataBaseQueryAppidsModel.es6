@@ -43,7 +43,7 @@ export default class DataBaseQueryAppidsModel {
             },
             {
                 name: '物理库名',
-                width: 15,
+                width: 20,
                 key: 'db_catalog'
             },
             {
@@ -57,8 +57,13 @@ export default class DataBaseQueryAppidsModel {
                 key: 'db_port'
             },
             {
-                name: '类型',
+                name: '用户名',
                 width: 10,
+                key: 'db_user'
+            },
+            {
+                name: '类型',
+                width: 5,
                 map: {1: 'MySql', 2: 'SQLServer'},
                 key: 'db_type'
             },
@@ -66,11 +71,6 @@ export default class DataBaseQueryAppidsModel {
                 name: '负责人',
                 width: 10,
                 key: 'user_name'
-            },
-            {
-                name: '备注',
-                width: 10,
-                key: 'comment'
             }
         ]
     }

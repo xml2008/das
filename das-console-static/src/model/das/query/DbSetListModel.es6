@@ -33,13 +33,18 @@ export default class DbSetListModel {
             },
             {
                 name: '逻辑库名',
-                width: 40,
+                width: 20,
                 key: 'name'
             },
             {
                 name: '物理库名',
-                width: 50,
+                width: 20,
                 key: 'db_catalog'
+            },
+            {
+                name: 'APPID',
+                width: 50,
+                key: 'app_id'
             }
         ]
     }

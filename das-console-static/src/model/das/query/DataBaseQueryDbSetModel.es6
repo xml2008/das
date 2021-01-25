@@ -28,34 +28,49 @@ export default class DataBaseQueryDbSetModel {
         column: [
             {
                 name: '类型',
-                width: 15,
+                width: 5,
                 map: {1: 'MySql', 2: 'SQLServer'},
                 key: 'db_type'
             },
             {
                 name: '所属组',
+                width: 10,
+                key: 'group_name'
+            },
+            {
+                name: 'APPID',
+                width: 15,
+                key: 'app_id'
+            },
+            {
+                name: '逻辑库名',
                 width: 15,
                 key: 'group_name'
             },
             {
                 name: '数据库标识符',
-                width: 20,
+                width: 10,
                 key: 'db_name'
             },
             {
                 name: '物理库名',
-                width: 20,
+                width: 15,
                 key: 'db_catalog'
             },
             {
                 name: '地址',
-                width: 15,
+                width: 10,
                 key: 'db_address'
             },
             {
                 name: '端口',
-                width: 15,
+                width: 5,
                 key: 'db_port'
+            },
+            {
+                name: '用户名',
+                width: 15,
+                key: 'db_user'
             }
         ]
     }

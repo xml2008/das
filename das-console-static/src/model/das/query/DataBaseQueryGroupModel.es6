@@ -57,6 +57,11 @@ export default class DataBaseQueryGroupModel {
                 key: 'db_port'
             },
             {
+                name: '用户名',
+                width: 10,
+                key: 'db_user'
+            },
+            {
                 name: '类型',
                 width: 10,
                 map: {1: 'MySql', 2: 'SQLServer'},
@@ -66,11 +71,6 @@ export default class DataBaseQueryGroupModel {
                 name: '负责人',
                 width: 10,
                 key: 'user_name'
-            },
-            {
-                name: '备注',
-                width: 10,
-                key: 'comment'
             }
         ]
     }
