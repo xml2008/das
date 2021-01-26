@@ -97,7 +97,6 @@ CREATE TABLE `databaseset` (
   `update_user_no` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `insert_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `pattern` tinytext COLLATE utf8mb4_unicode_ci COMMENT '模式:0:普通，1：mgr',
   PRIMARY KEY (`id`),
   UNIQUE KEY `AK_unique_key` (`name`),
   KEY `FK_Reference_4` (`group_id`),
