@@ -109,6 +109,10 @@ export default class Init extends Component {
 
     initAdminInfo(current) {
         const admin = this.getValueToJson(this.admin)
+        if(!admin.password || admin.password.length < 6 || admin.password.length >20){
+            this.showErrorsMsg('密码长度6~20位')
+            return
+        }
         this.props.initAdminInfo(admin, this, (_this, data) => {
             if (data.code == 200) {
                 _this.showSuccessMsg('admin初始化成功')
