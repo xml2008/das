@@ -22,8 +22,6 @@ import org.slf4j.LoggerFactory;
 import com.ppdai.das.core.configure.DataSourceConfigure;
 import com.ppdai.das.core.configure.DataSourceConfigureConstants;
 import com.ppdai.das.core.datasource.tomcat.DalTomcatDataSource;
-import com.ppdai.das.core.helper.ConnectionPhantomReferenceCleaner;
-import com.ppdai.das.core.helper.DefaultConnectionPhantomReferenceCleaner;
 import com.ppdai.das.core.helper.PoolPropertiesHelper;
 import com.ppdai.das.core.helper.ServiceLoaderHelper;
 import com.ppdai.das.core.log.Callback;
@@ -41,7 +39,6 @@ public class SingleDataSource implements DataSourceConfigureConstants {
     private static final String DATASOURCE_CREATE_DATASOURCE = "DataSource::createDataSource:%s";
     private static ILogger ilogger = ServiceLoaderHelper.getInstance(ILogger.class, DefaultLoggerImpl.class);
 
-    private static ConnectionPhantomReferenceCleaner connectionPhantomReferenceCleaner = new DefaultConnectionPhantomReferenceCleaner();
     private static AtomicBoolean containsMySQL=new AtomicBoolean(false);
     private static final String MYSQL_URL_PREFIX = "jdbc:mysql://";
     public static final String JMX_TOMCAT_DATASOURCE = "TomcatDataSource";
@@ -90,7 +87,6 @@ public class SingleDataSource implements DataSourceConfigureConstants {
         try {
             if (!containsMySQL.get()) {
                 if (dataSourceConfigure.getConnectionUrl().startsWith(MYSQL_URL_PREFIX)){
-                    connectionPhantomReferenceCleaner.start();
                     containsMySQL.set(true);
                 }
             }
