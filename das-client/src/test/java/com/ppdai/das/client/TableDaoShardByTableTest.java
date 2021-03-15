@@ -224,7 +224,7 @@ public class TableDaoShardByTableTest extends DataPreparer {
             }
 
             if(!allowInsertWithId())
-                statements = DbSetupUtil.handle(String.format("Person_%d", j), statements);
+                statements = DbSetupUtil.handle(String.format("person_%d", j), statements);
             
             BatchUpdateBuilder builder = new BatchUpdateBuilder(statements);
             builder.hints().inTableShard(j);

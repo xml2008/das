@@ -201,11 +201,11 @@ public class TableDaoShardByDbTableTest extends DataPreparer {
             for (int j = 0; j < TABLE_MODE; j++) {
                 String[] statements = new String[TABLE_MODE];
                 for (int k = 0; k < TABLE_MODE; k++) {
-                    statements[k] = String.format("INSERT INTO Person_%d(PeopleID, Name, CountryID, CityID, ProvinceID) VALUES(%d, 'test', %d, %d, 1)", j, k + 1, i, j);
+                    statements[k] = String.format("INSERT INTO person_%d(PeopleID, Name, CountryID, CityID, ProvinceID) VALUES(%d, 'test', %d, %d, 1)", j, k + 1, i, j);
                 }
                 
                 if(!allowInsertWithId())
-                    statements = DbSetupUtil.handle(String.format("Person_%d", j), statements);
+                    statements = DbSetupUtil.handle(String.format("person_%d", j), statements);
                 
                 BatchUpdateBuilder builder = new BatchUpdateBuilder(statements);
                 builder.hints().inShard(i);

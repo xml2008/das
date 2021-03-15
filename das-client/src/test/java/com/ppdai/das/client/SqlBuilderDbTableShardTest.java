@@ -76,12 +76,12 @@ public class SqlBuilderDbTableShardTest extends DataPreparer {
                 for (int k = 0; k < TABLE_MODE; k++) {
                     String name = name(i,j,k);
                     statements[k] = String.format(
-                            "INSERT INTO Person_%d(PeopleID, Name, CountryID, CityID, ProvinceID, DataChange_LastTime )" +
+                            "INSERT INTO person_%d(PeopleID, Name, CountryID, CityID, ProvinceID, DataChange_LastTime )" +
                                     " VALUES(%d, '%s', %d, %d, 1, '" + testDate + "')", j, k + 1, name, i, j);
                 }
                 
                 if(!allowInsertWithId())
-                    statements = DbSetupUtil.handle(String.format("Person_%d", j), statements);
+                    statements = DbSetupUtil.handle(String.format("person_%d", j), statements);
                 
                 BatchUpdateBuilder builder = new BatchUpdateBuilder(statements);
                 builder.hints().inShard(i);
